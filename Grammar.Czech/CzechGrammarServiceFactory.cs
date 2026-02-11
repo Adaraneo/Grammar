@@ -1,0 +1,61 @@
+﻿using Grammar.Core.Interfaces;
+using Grammar.Czech.Interfaces;
+using Grammar.Czech.Models;
+using Grammar.Czech.Providers;
+using Grammar.Czech.Services;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Grammar.Czech
+{
+    public static class CzechGrammarServiceFactory
+    {
+        /// <summary>
+        /// Registruje všechny datové providery a služby pro českou gramatiku.
+        /// </summary>
+        /// <param name="services">Service collection (např. z Program.cs).</param>
+        /// <param name="dataPath">Cesta ke složce s daty (např. "Data/").</param>
+        /// <returns>ServiceCollection s přidanými službami.</returns>
+        public static IServiceCollection AddCzechGrammarServices(this IServiceCollection services, string dataPath)
+        {
+            // Providers
+            services.AddSingleton<IVerbDataProvider>(new JsonVerbDataProvider(dataPath));
+            services.AddSingleton<INounDataProvider>(new JsonNounDataProvider(dataPath));
+            services.AddSingleton<IAdjectiveDataProvider>(new JsonAdjectiveDataProvider(dataPath));
+            services.AddSingleton<IPrefixDataProvider>(new JsonPrefixDataProvider(dataPath));
+            services.AddSingleton<IParticleDataProvider>(new JsonParticlesDataProvider(dataPath));
+            services.AddSingleton<IPrepositionDataProvider>(new JsonPrepositionsDataProvider(dataPath));
+            services.AddSingleton<IPronounDataProvider>(new JsonPronounDataProvider(dataPath));
+
+            // Services
+            services.AddSingleton<IWordStructureResolver<CzechWordRequest>, CzechWordStructureResolver>();
+            services.AddSingleton<IPhonologyService, CzechPhonologyService>();
+            services.AddSingleton<ISofteningRuleEvaluator<CzechWordRequest>, CzechSofteningRuleEvaluator>();
+            services.AddSingleton<IEndingOverrideService<CzechWordRequest>, CzechEndingOverrideService>();
+            services.AddSingleton<CzechVerbConjugationService>();
+            services.AddSingleton<CzechNounDeclensionService>();
+            services.AddSingleton<CzechAdjectiveDeclensionService>();
+            services.AddSingleton<CzechPronounService>();
+            services.AddSingleton<ICzechPronounService>(sp => sp.GetRequiredService<CzechPronounService>());
+            services.AddSingleton<IInflectionService<CzechWordRequest>>(sp => sp.GetRequiredService<CzechPronounService>());
+
+            services.AddSingleton<CzechPrefixService>();
+            services.AddSingleton<ICzechPrefixService>(sp => sp.GetRequiredService<CzechPrefixService>());
+
+            services.AddSingleton<CzechParticleService>();
+            services.AddSingleton<ICzechParticleService>(sp => sp.GetRequiredService<CzechParticleService>());
+
+            services.AddSingleton<ICzechPrepositionService, CzechPrepositionService>();
+
+            services.AddSingleton<CzechAuxiliaryVerbService>();
+            services.AddSingleton<CzechVerbPhraseBuilderService>();
+            services.AddSingleton<INegationService<CzechWordRequest>, CzechNegationService>();
+
+            
+
+            services.AddSingleton<MorphologyEngine>();
+            services.AddSingleton<CzechWordFormComposer>();
+
+            return services;
+        }
+    }
+}
