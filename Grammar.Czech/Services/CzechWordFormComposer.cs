@@ -18,9 +18,6 @@ namespace Grammar.Czech.Services
             this.morphologyEngine = morphologyEngine;
         }
 
-        public bool HasExplicitSubject { get; set; }
-        public bool IsReflexive { get; set; }
-
         public WordForm GetFullForm(CzechWordRequest request)
         {
             // TODO: Make full form of phrase (especially verb for now). If word is single, return single form.
