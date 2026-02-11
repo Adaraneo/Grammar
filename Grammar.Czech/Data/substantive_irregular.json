@@ -19,7 +19,7 @@
     "chlapec": {
         "inheritsFrom": "muž",
         "overrides": {
-            "signular": {
+            "singular": {
                 "5": "-e"
             }
         }

@@ -138,7 +138,7 @@
             }
         }
 
-        private static void PrintVerbForms(CzechWordFormComposer composer, CzechWordRequest request, Modus modus = Modus.Coniuctive)
+        private static void PrintVerbForms(CzechWordFormComposer composer, CzechWordRequest request, Modus modus = Modus.Conjuctive)
         {
             PrintWordInfo(request);
             foreach (var cTense in Enum.GetValues<Tense>())
