@@ -10,7 +10,7 @@ namespace Grammar.Core.Enums
     {
         Conditional,
         Imperative,
-        Conjuctive,
+        Conjunctive,
         Indicative
     }
 }
