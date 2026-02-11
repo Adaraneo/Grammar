@@ -293,7 +293,7 @@ namespace Grammar.Czech.Services
                     }
                     else
                     {
-                        return new WordForm(pattern.Infinitive ?? word.Lemma);
+                        return new WordForm(word.Lemma);
                     }
                 }
                 else
