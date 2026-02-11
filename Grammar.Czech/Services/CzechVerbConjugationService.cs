@@ -105,9 +105,9 @@ namespace Grammar.Czech.Services
             // Heuristická pravidla:
             var imperativeForm = (word.Number, word.Person) switch
             {
-                (Number.Singular, Person.Second) => $"{prefix}{stem}",
-                (Number.Plural, Person.First) => $"{prefix}{stem}me",
-                (Number.Plural, Person.Second) => $"{prefix}{stem}te",
+                (Number.Singular, Person.Second) => $"{stem}",
+                (Number.Plural, Person.First) => $"{stem}me",
+                (Number.Plural, Person.Second) => $"{stem}te",
                 _ => throw new InvalidOperationException("Imperative exists only for 2nd person (sg/pl) and 1st person plural.")
             };
 
@@ -305,6 +305,7 @@ namespace Grammar.Czech.Services
 
         public VerbAspect GuessVerbAspect(string lemma)
         {
+            throw new NotImplementedException("Guessing aspect is not implemented yet. Consider implementing a heuristic based on prefixes or known patterns.");
             return prefixService.HasPerfectivePrefix(lemma)
                 ? VerbAspect.Perfective
                 : VerbAspect.Imperfective;
