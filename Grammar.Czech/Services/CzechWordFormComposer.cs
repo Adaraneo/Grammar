@@ -49,11 +49,11 @@ namespace Grammar.Czech.Services
                 }
                 else if (request.Modus == Modus.Conditional)
                 {
-                    verbForm = verbPhraseBuilderService.BuildConditionalPhrase(verbForm, request.Number, request.Person, HasExplicitSubject, request.IsNegative);
+                    verbForm = verbPhraseBuilderService.BuildConditionalPhrase(verbForm, request.Number, request.Person, request.HasExplicitSubject.GetValueOrDefault(), request.IsNegative);
                     verbNegationApplied = request.IsNegative;
                 }
 
-                if (IsReflexive)
+                if (request.HasReflexive.GetValueOrDefault())
                 {
                     verbForm = verbPhraseBuilderService.BuildReflexivePhrase(verbForm, (request.Case == Case.Dative));
                 }

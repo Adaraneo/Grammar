@@ -21,6 +21,7 @@
         public CzechWordRequest() { }
         public Degree? Degree { get; set; }
         public bool? HasReflexive { get; set; }
+        public bool? HasExplicitSubject { get; set; }
         public VerbClass? VerbClass { get; set; }
         public string Lemma { get; set; } = string.Empty;
         public Gender? Gender { get; set; }
