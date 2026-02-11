@@ -9,7 +9,7 @@ using JL = Grammar.Core.Helpers.JsonLoader;
 
 namespace Grammar.Czech.Services
 {
-    public class CzechVerbConjugationService : IInflectionService<CzechWordRequest>
+    public class CzechVerbConjugationService : IVerbInflectionService<CzechWordRequest>
     {
         private readonly CzechPrefixService prefixService;
         private readonly CzechParticleService particleService;
@@ -155,7 +155,7 @@ namespace Grammar.Czech.Services
             this.czechPrefixService = czechPrefixService;
         }
 
-        public WordForm GetForm(CzechWordRequest word)
+        public WordForm GetBasicForm(CzechWordRequest word)
         {
             if (word.Modus == Modus.Imperative && word.Voice == Voice.Passive)
             {

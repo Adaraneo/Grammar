@@ -9,6 +9,6 @@ namespace Grammar.Core.Interfaces
 {
     public interface IInflectionService<TWord> where TWord : IWordRequest
     {
-        WordForm GetForm(TWord word);
+        WordForm GetForm(TWord wordRequest);
     }
 }

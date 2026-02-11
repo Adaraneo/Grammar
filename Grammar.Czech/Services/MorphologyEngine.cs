@@ -32,7 +32,7 @@ namespace Grammar.Czech.Services
                 WordCategory.Noun => nounDeclensionService.GetForm(word),
                 WordCategory.Adjective => adjectiveDeclensionService.GetForm(word),
                 WordCategory.Pronoun => pronounService.GetForm(word),
-                WordCategory.Verb => verbConjugationService.GetForm(word),
+                WordCategory.Verb => verbConjugationService.GetBasicForm(word),
                 _ => throw new NotSupportedException($"Unsupported category: {word.WordCategory}")
             };
         }
