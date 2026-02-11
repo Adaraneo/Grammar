@@ -74,6 +74,7 @@
 
             PrintVerbForms(composer, doRequest);
             PrintVerbForms(composer, carryRequest);
+            PrintVerbForms(composer, carryRequest, Modus.Imperative);
 
             var negativeCarryRequest = new CzechWordRequest
             {
@@ -148,8 +149,20 @@
                     foreach (var cPerson in Enum.GetValues<Person>())
                     {
                         request.Tense = cTense;
-                        request.Number = cNumber;
-                        request.Person = cPerson;
+                        
+                        if (modus == Modus.Imperative
+                            && (cPerson is Person.Third
+                            || cPerson is Person.First && cNumber is Number.Singular
+                            || cPerson is Person.Second && cNumber is Number.Singular or Number.Plural))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            request.Number = cNumber;
+                            request.Person = cPerson;
+                        }
+
                         request.Modus = modus;
                         var result = composer.GetFullForm(request);
                         Console.WriteLine("\t({1};{2};{3};{4};{5};{6}): {0}", result.Form, request.Tense, request.Number, request.Person, request.Modus, request.Gender, request.Aspect);

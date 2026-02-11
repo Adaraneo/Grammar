@@ -47,7 +47,9 @@ namespace Grammar.Czech.Services
             var lemma = word.Lemma;
             var wordStructure = wordStructureResolver.AnalyzeStructure(word);
             var (prefix, stem) = (wordStructure.Prefix, wordStructure.Root + wordStructure.DerivationSuffix);
-            if (dataProvider.GetIrregulars().TryGetValue(word.Pattern.ToLower(), out var irregularPattern) && !string.IsNullOrEmpty(irregularPattern.ImperativeStem))
+
+            var hasIrregular = dataProvider.GetIrregulars().TryGetValue(word.Pattern!.ToLower(), out var irregularPattern);
+            if (hasIrregular && !string.IsNullOrEmpty(irregularPattern!.ImperativeStem))
             {
                 var baseImperative = irregularPattern.ImperativeStem;
 
@@ -67,9 +69,9 @@ namespace Grammar.Czech.Services
                 return new WordForm($"{prefix}{result}");
             }
 
-            if (dataProvider.GetIrregulars().TryGetValue(word.Pattern.ToLower(), out var irrefgularPattern))
+            if (hasIrregular)
             {
-                var baseStem = irregularPattern.ImperativeStem ?? irrefgularPattern.Stem ?? word.Lemma;
+                var baseStem = irregularPattern!.ImperativeStem ?? irregularPattern!.Stem ?? word.Lemma;
 
                 string baseImperative = baseStem;
                 if (word.Number == Number.Singular && word.Person == Person.Second)
@@ -299,8 +301,6 @@ namespace Grammar.Czech.Services
                     return new WordForm(MorphologyHelper.ApplyFormEnding(stem, ending));
                 }
             }
-
-            throw new InvalidOperationException("Form generation failed");
         }
 
         public VerbAspect GuessVerbAspect(string lemma)
