@@ -21,11 +21,11 @@ namespace Grammar.Czech.Services
         public WordForm GetFullForm(CzechWordRequest request)
         {
             // TODO: Make full form of phrase (especially verb for now). If word is single, return single form.
-            WordForm form = morphologyEngine.GetForm(request);
+            WordForm form;
             var verbNegationApplied = false;
             if (request.WordCategory == WordCategory.Verb)
             {
-                var verbForm = form.Form;
+                var verbForm = morphologyEngine.GetBasicForm(request).Form;
                 if (request.Aspect == VerbAspect.Imperfective && request.Tense == Tense.Future)
                 {
                     verbForm = verbPhraseBuilderService.BuildSynteticFuturePhrase(verbForm, request.Number, request.Person, request.Modus, request.Gender, request.IsNegative);
@@ -56,6 +56,10 @@ namespace Grammar.Czech.Services
                 }
 
                 form = new WordForm(verbForm);
+            }
+            else
+            {
+                form = morphologyEngine.GetForm(request);
             }
 
             if (request.IsNegative && !verbNegationApplied)

@@ -28,7 +28,7 @@ namespace Grammar.Czech.Services
                 Modus = modus
             };
 
-            var baseForm = engine.GetForm(request).Form;
+            var baseForm = engine.GetBasicForm(request).Form;
 
             return isNegative ? $"ne{baseForm}" : baseForm;
         }
