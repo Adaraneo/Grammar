@@ -44,7 +44,7 @@
             },
             "plural": {
                 "MasculineAnimate": [ "-ovi", "-ových", "-ovým", "-ovy", "-ovi", "-ových", "-ovými" ],
-                "MasculineInanimate": [ "-ovy", "-ových", "-ovým", "-ovy", "-ovy", "ových", "-ovými" ],
+                "MasculineInanimate": [ "-ovy", "-ových", "-ovým", "-ovy", "-ovy", "-ových", "-ovými" ],
                 "Feminine": [ "-ovy", "-ových", "-ovým", "-ovy", "-ovy", "-ových", "-ovými" ],
                 "Neuter": [ "-ova", "-ových", "-ovým", "-ova", "-ova", "-ových", "-ovými" ]
             }
