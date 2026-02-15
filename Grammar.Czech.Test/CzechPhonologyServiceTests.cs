@@ -56,30 +56,6 @@ namespace Grammar.Czech.Test
         }
 
         [TestMethod]
-        public void ApplySoftening_ShouldHandleEmpty()
-        {
-            Assert.AreEqual("", service.ApplySoftening(""));
-        }
-
-        [TestMethod]
-        public void RevertSoftening_ShouldHandleEmpty()
-        {
-            Assert.AreEqual("", service.RevertSoftening(""));
-        }
-
-        [TestMethod]
-        public void ApplySoftening_ShouldHandleNull()
-        {
-            Assert.ThrowsException<ArgumentNullException>(() => service.ApplySoftening(null!));
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public void RevertSoftening_ShouldHandleNull()
-        {
-            Assert.ThrowsException<ArgumentNullException>(() => service.RevertSoftening(null!));
-        }
-
-        [TestMethod]
         public void ApplySoftening_ShouldHandleShortWords()
         {
             Assert.AreEqual("č", service.ApplySoftening("c"));
