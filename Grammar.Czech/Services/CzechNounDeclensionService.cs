@@ -84,7 +84,7 @@ namespace Grammar.Czech.Services
                 stem = phonologyService.ApplySoftening(stem);
             }
 
-            return new WordForm(MorphologyHelper.ApplyFormEnding(stem, softeningRuleEvaluator.GetEngingTransformation(word) ?? ending));
+            return new WordForm(MorphologyHelper.ApplyFormEnding(stem, softeningRuleEvaluator.GetEndingTransformation(word) ?? ending));
         }
 
         public (Gender, string, Number, bool) GuessGenderAndPattern(string lemma)

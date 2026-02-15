@@ -12,7 +12,7 @@ namespace Grammar.Czech.Services
         {
             new("žena", WordCategory.Noun, Number.Singular, Case.Dative, req => req.Lemma.EndsWith("ka"), EndingTransformation: "-e"),
             new("žena", WordCategory.Noun, Number.Singular, Case.Locative, req => req.Lemma.EndsWith("ka"), EndingTransformation: "-e"),
-            //new("žena", WordCategory.Noun, Number.Plural, Case.Genitive, req => req.Lemma.EndsWith("ka"), EndingTransformation: "-ek"),
+            new("žena", WordCategory.Noun, Number.Plural, Case.Genitive, req => req.Lemma.EndsWith("ka"), ApplySoftening: false, EndingTransformation: "-ek"),
 
             new("žena", WordCategory.Noun, Number.Singular, Case.Dative, req => !req.Lemma.EndsWith("ka") && req.Lemma != "žena"),
             new("žena", WordCategory.Noun, Number.Singular, Case.Locative, req => !req.Lemma.EndsWith("ka") && req.Lemma != "žena"),
@@ -21,28 +21,27 @@ namespace Grammar.Czech.Services
                 req => req.Lemma?.EndsWith("ec") == true)
         };
 
-        public string? GetEngingTransformation(CzechWordRequest wordRequest)
+        public string? GetEndingTransformation(CzechWordRequest wordRequest)
         {
-            var rule = rules.FirstOrDefault(rule =>
+            var rule = GetMatchingRule(wordRequest);
+            return rule?.EndingTransformation;
+        }
+
+        private SofteningRule? GetMatchingRule(CzechWordRequest wordRequest)
+        {
+            return rules.FirstOrDefault(rule =>
                 (rule.Pattern == null || rule.Pattern == wordRequest.Pattern) &&
                 (rule.Category == null || rule.Category == wordRequest.WordCategory) &&
                 (rule.Number == null || rule.Number == wordRequest.Number) &&
                 (rule.Case == null || rule.Case == wordRequest.Case) &&
                 (rule.CustomPredicate == null || rule.CustomPredicate(wordRequest))
             );
-
-            return rule?.EndingTransformation;
         }
 
         public bool ShouldApplySoftening(CzechWordRequest request)
         {
-            return rules.Any(rule =>
-                (rule.Pattern == null || rule.Pattern == request.Pattern) &&
-                (rule.Category == null || rule.Category == request.WordCategory) &&
-                (rule.Number == null || rule.Number == request.Number) &&
-                (rule.Case == null || rule.Case == request.Case) &&
-                (rule.CustomPredicate == null || rule.CustomPredicate(request))
-            );
+            var rule = GetMatchingRule(request);
+            return rule?.ApplySoftening ?? false;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Grammar.Czech.Models
         Number? Number = null,
         Case? Case = null,
         Func<CzechWordRequest, bool>? CustomPredicate = null,
+        bool ApplySoftening = true,
         string? EndingTransformation = null
     );
 }
