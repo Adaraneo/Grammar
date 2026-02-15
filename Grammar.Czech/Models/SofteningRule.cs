@@ -7,6 +7,7 @@ namespace Grammar.Czech.Models
         WordCategory? Category = null,
         Number? Number = null,
         Case? Case = null,
-        Func<CzechWordRequest, bool>? CustomPredicate = null
+        Func<CzechWordRequest, bool>? CustomPredicate = null,
+        string? EndingTransformation = null
     );
 }

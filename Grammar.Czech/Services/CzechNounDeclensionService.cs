@@ -13,15 +13,13 @@ namespace Grammar.Czech.Services
         private readonly IWordStructureResolver<CzechWordRequest> wordStructureResolver;
         private readonly IPhonologyService phonologyService;
         private readonly ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator;
-        private readonly IEndingOverrideService<CzechWordRequest> endingOverrideService;
 
-        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, IPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEndingOverrideService<CzechWordRequest> endingOverrideService)
+        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, IPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator)
         {
             this.dataProvider = dataProvider;
             this.wordStructureResolver = wordStructureResolver;
             this.phonologyService = phonologyService;
             this.softeningRuleEvaluator = softeningRuleEvaluator;
-            this.endingOverrideService = endingOverrideService;
         }
 
         public WordForm GetForm(CzechWordRequest word)
@@ -86,7 +84,7 @@ namespace Grammar.Czech.Services
                 stem = phonologyService.ApplySoftening(stem);
             }
 
-            return new WordForm(MorphologyHelper.ApplyFormEnding(stem, endingOverrideService.GetEndingOverride(word, ending) ?? ending));
+            return new WordForm(MorphologyHelper.ApplyFormEnding(stem, softeningRuleEvaluator.GetEngingTransformation(word) ?? ending));
         }
 
         public (Gender, string, Number, bool) GuessGenderAndPattern(string lemma)
