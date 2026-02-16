@@ -1,0 +1,51 @@
+{
+    "na": {
+        "OriginType": "Original",
+        "Variants": [
+        {
+            "Case": "Accusative",
+            "SemanticGroup": "Direction"
+        },
+        {
+            "Case": "Locative",
+            "SemanticGroup": "Location"
+        }
+        ]
+    },
+    "v": {
+        "OriginType": "Original",
+        "Variants": [
+        {
+            "Case": "Locative",
+            "SemanticGroup": "Location"
+        }
+        ]
+    },
+    "do": {
+        "OriginType": "Original",
+        "Variants": [
+        {
+            "Case": "Genitive",
+            "SemanticGroup": "Direction"
+        }
+        ]
+    },
+    "kvůli": {
+        "OriginType": "Derived",
+        "Variants": [
+        {
+            "Case": "Dative",
+            "SemanticGroup": "Cause"
+        }
+        ]
+    },
+    "v rámci": {
+        "OriginType": "Compound",
+        "Variants": [
+        {
+            "Case": "Genitive",
+            "SemanticGroup": "Location"
+        }
+        ]
+    }
+}
