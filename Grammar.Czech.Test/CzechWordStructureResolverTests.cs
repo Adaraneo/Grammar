@@ -60,7 +60,11 @@ namespace Grammar.Czech.Test
             var result = resolver.AnalyzeStructure(request);
 
             Assert.AreEqual("student", result.Root);
+<<<<<<< HEAD
             Assert.AreEqual("k", result.DerivationSuffix);
+=======
+            Assert.AreEqual("k", result.DerivationSuffix); // nebo "" podle kontextu
+>>>>>>> 315afc4e20af2e4982821f13dec6965996c280b9
         }
 
         #endregion
