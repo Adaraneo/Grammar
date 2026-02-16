@@ -8,7 +8,7 @@ using Grammar.Czech.Interfaces;
 
 namespace Grammar.Czech.Providers
 {
-    internal class JsonPrefixDataProvider : IPrefixDataProvider
+    public class JsonPrefixDataProvider : IPrefixDataProvider
     {
         private readonly string _prefixPath;
         private Dictionary<string, List<string>> _prefixes;

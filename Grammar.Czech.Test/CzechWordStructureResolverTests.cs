@@ -1,0 +1,113 @@
+﻿using Grammar.Core.Enums;
+using Grammar.Czech.Interfaces;
+using Grammar.Czech.Models;
+using Grammar.Czech.Providers;
+using Grammar.Czech.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Grammar.Czech.Test
+{
+    [TestClass]
+    public class CzechWordStructureResolverTests
+    {
+        private CzechWordStructureResolver resolver;
+        private IVerbDataProvider verbDataProvider;
+        private CzechPrefixService prefixService;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            verbDataProvider = new JsonVerbDataProvider(Path.Combine("Data"));
+            var perfixProvider = new JsonPrefixDataProvider(Path.Combine("Data"));
+            prefixService = new CzechPrefixService(perfixProvider);
+            resolver = new CzechWordStructureResolver(verbDataProvider, prefixService);
+        }
+
+        #region Nouns
+        [TestMethod]
+        public void AnalyzeNoun_SimplePattern_ExtractsRootCorrectly()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "žena",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Nominative
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("žen", result.Root);
+            Assert.IsNull(result.Prefix);
+        }
+
+        [TestMethod]
+        public void AnalyzeNoun_WithKaSuffix_HandlesDerivationalSuffix()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "studentka",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("student", result.Root);
+            Assert.AreEqual("k", result.DerivationSuffix);
+        }
+
+        #endregion
+
+        #region Verbs
+
+        [TestMethod]
+        public void AnalyzeVerb_WithPrefix_ExtractsPrefixAndStem()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "donést",
+                Pattern = "nese",
+                WordCategory = WordCategory.Verb,
+                Tense = Tense.Present
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("do", result.Prefix);
+            Assert.AreEqual("nes", result.Root);
+        }
+
+        [TestMethod]
+        public void AnalyzeVerb_IrregularBýt_UsesPresentStem()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "být",
+                Pattern = "být",
+                WordCategory = WordCategory.Verb,
+                Tense = Tense.Present
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("js", result.Root); // presentStem z JSON
+        }
+
+        #endregion
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void AnalyzeStructure_EmptyLemma_ThrowsException()
+        {
+            var request = new CzechWordRequest { Lemma = "", Pattern = "žena" };
+            resolver.AnalyzeStructure(request);
+        }
+    }
+}

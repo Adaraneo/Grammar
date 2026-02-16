@@ -12,7 +12,7 @@ namespace Grammar.Czech.Test
     {
         private CzechPhonologyService service;
         [TestInitialize]
-        public void Init()
+        public void Setup()
         {
             service = new CzechPhonologyService();
         }
@@ -58,15 +58,13 @@ namespace Grammar.Czech.Test
         [TestMethod]
         public void ApplySoftening_ShouldHandleShortWords()
         {
-            Assert.AreEqual("č", service.ApplySoftening("c"));
-            Assert.AreEqual("š", service.ApplySoftening("ch"));
+            Assert.AreEqual("hoš", service.ApplySoftening("hoch"));
         }
 
         [TestMethod]
         public void RevertSoftening_ShouldHandleShortWords()
         {
-            Assert.AreEqual("c", service.RevertSoftening("č"));
-            Assert.AreEqual("ch", service.RevertSoftening("š"));
+            Assert.AreEqual("hoch", service.RevertSoftening("hoš"));
         }
 
         [TestMethod]

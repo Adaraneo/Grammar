@@ -20,26 +20,32 @@ namespace Grammar.Czech.Services
         private static readonly Dictionary<string, string> reverseMap =
             softMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
 
-        public string ApplySoftening(string word)
+        public string ApplySoftening(string stem)
         {
-            if (word.EndsWith("ch"))
-                return word[..^2] + "š";
+            if (stem is null)
+                throw new ArgumentNullException(nameof(stem));
 
-            var last = word[^1..];
+            if (stem.EndsWith("ch"))
+                return stem[..^2] + "š";
+
+            var last = stem[^1..];
             return softMap.TryGetValue(last, out var softened)
-                ? word[..^1] + softened
-                : word;
+                ? stem[..^1] + softened
+                : stem;
         }
 
-        public string RevertSoftening(string word)
+        public string RevertSoftening(string stem)
         {
-            if (word.EndsWith("š"))
-                return word[..^1] + "ch";
+            if (stem is null)
+                throw new ArgumentNullException(nameof(stem));
 
-            var last = word[^1..];
+            if (stem.EndsWith("š"))
+                return stem[..^1] + "ch";
+
+            var last = stem[^1..];
             return reverseMap.TryGetValue(last, out var original)
-                ? word[..^1] + original
-                : word;
+                ? stem[..^1] + original
+                : stem;
         }
     }
 }
