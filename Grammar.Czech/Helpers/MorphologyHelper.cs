@@ -47,7 +47,7 @@ namespace Grammar.Czech.Helpers
 
         public static bool IsConsonant(char c)
         {
-            return !"aeiouáéíóúýě".Contains(char.ToLower(c)); // české samohlásky
+            return !"aáeéěiíyýoóuúů".Contains(char.ToLower(c));
         }
 
         public static bool IsEnding(string ending) => ending.Contains("-");

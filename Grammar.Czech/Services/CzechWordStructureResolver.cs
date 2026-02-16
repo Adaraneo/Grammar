@@ -1,6 +1,7 @@
 ﻿using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models;
+using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 using Microsoft.Extensions.Logging;
@@ -54,13 +55,54 @@ namespace Grammar.Czech.Services
                 throw new ArgumentException("Pattern cannost be empty.", nameof(wordRequest));
             }
         }
-
+        #region Noun
         private WordStructure AnalyzeNoun(CzechWordRequest wordRequest)
         {
-            // TODO: Implement noun structure analysis logic here
-            throw new NotImplementedException();
+            var lemma = wordRequest.Lemma;
+            var pattern = wordRequest.Pattern;
+
+            var root = ExtractNounRoot(lemma);
+
+            var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern!, wordRequest);
+
+            if (!string.IsNullOrEmpty(derivationSuffix))
+            {
+                if (root.EndsWith(derivationSuffix))
+                {
+                    root = root[..^derivationSuffix.Length];
+                }
+            }
+
+            return new WordStructure
+            {
+                Root = root,
+                DerivationSuffix = derivationSuffix
+            };
         }
 
+        private string ExtractNounRoot(string lemma)
+        {
+            if (lemma.Length > 1 && !MorphologyHelper.IsConsonant(lemma[^1]))
+            {
+                // Feminine and neuter nouns often end with a vowel, so we can try removing it to find the root
+                return lemma[..^1];
+            }
+
+            // For masculine nouns, the lemma often ends with a consonant, so we can return it as is
+            return lemma;
+        }
+
+        private string? DetectNounDerivationSuffix(string lemma, string pattern, CzechWordRequest request)
+        {
+            if (pattern == "žena" && lemma.EndsWith("ka") && lemma.Length > 2)
+            {
+                return "k";
+            }
+
+            return null;
+        }
+        #endregion
+            #region Verb
         private WordStructure AnalyzeVerb(CzechWordRequest wordRequest)
         {
             var prefix = ExtractPrefix(wordRequest.Lemma);
@@ -75,12 +117,6 @@ namespace Grammar.Czech.Services
             };
         }
 
-        private WordStructure AnalyzeAdjective(CzechWordRequest wordRequest)
-        {
-            // TODO: Implement adjective structure analysis logic here
-            throw new NotImplementedException();
-        }
-
         private string? ExtractPrefix(string lemma)
         {
             return prefixService.FindPerfectivePrefix(lemma);
@@ -88,10 +124,92 @@ namespace Grammar.Czech.Services
 
         private string GetVerbStem(CzechWordRequest wordRequest, string lemmaWithoutPrefix)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            var pattern = wordRequest.Pattern;
+
+            if (verbDataProvider.GetIrregulars().TryGetValue(pattern.ToLower(), out var irregular))
+            {
+                return GetStemFromPattern(wordRequest, irregular);
+            }
+
+            if (verbDataProvider.GetPatterns().TryGetValue(pattern!.ToLower(), out var regularPattern))
+            {
+                return GetStemFromPattern(wordRequest, regularPattern);
+            }
+
+            return ExtractVerbStemHeuristic(lemmaWithoutPrefix);
         }
 
+        private string GetStemFromPattern(CzechWordRequest request, VerbPattern pattern)
+        {
+            return request.Tense switch
+            {
+                Tense.Present when pattern.Aspect == VerbAspect.Imperfective => pattern.PresentStem ?? pattern.Stem,
+                Tense.Future when pattern.Aspect == VerbAspect.Perfective => pattern.FutureStem ?? pattern.PresentStem ?? pattern.Stem,
+                Tense.Future when pattern.Aspect == VerbAspect.Imperfective && request.Lemma == "být" => pattern.FutureStem ?? throw new InvalidOperationException("Missing Future stem for 'být'"),
+                Tense.Past => pattern.PastStem ?? pattern.Stem,
+                _ => pattern.Stem
+            };
+        }
+
+        private string ExtractVerbStemHeuristic(string lemmaWithoutPrefix)
+        {
+            // Heruistiky s -t
+            if (lemmaWithoutPrefix.EndsWith("at") || lemmaWithoutPrefix.EndsWith("át"))
+            {
+                return lemmaWithoutPrefix[..^2]; // dělat
+            }
+
+            if (lemmaWithoutPrefix.EndsWith("it") || lemmaWithoutPrefix.EndsWith("ít"))
+            {
+                return lemmaWithoutPrefix[..^2]; // prosit
+            }
+
+            if (lemmaWithoutPrefix.EndsWith("et") || lemmaWithoutPrefix.EndsWith("ět"))
+            {
+                return lemmaWithoutPrefix[..^2]; // trpět, sázet
+            }
+
+            if (lemmaWithoutPrefix.EndsWith("ovat"))
+            {
+                return lemmaWithoutPrefix[..^4]; // kupovat
+            }
+
+            if (lemmaWithoutPrefix.EndsWith("nout"))
+            {
+                return lemmaWithoutPrefix[..^4]; // tisknout
+            }
+
+            return lemmaWithoutPrefix;
+        }
+        #endregion
+        #region Adjective
+        private WordStructure AnalyzeAdjective(CzechWordRequest wordRequest)
+        {
+            var lemma = wordRequest.Lemma;
+            var root = ExtractAdjectiveRoot(lemma);
+            return new WordStructure
+            {
+                Root = root
+            };
+        }
+
+        private string ExtractAdjectiveRoot(string lemma)
+        {
+            if (lemma.EndsWith("ý") || lemma.EndsWith("á") || lemma.EndsWith("é") ||
+                lemma.EndsWith("í"))
+            {
+                return lemma[..^1];
+            }
+
+            if (lemma.EndsWith("ův") || lemma.EndsWith("in"))
+            {
+                return lemma[..^2];
+            }
+
+            return lemma;
+        }
+        #endregion
+        #region Pronoun
         private WordStructure AnalyzePronoun(CzechWordRequest wordRequest)
         {
             return new WordStructure
@@ -99,5 +217,6 @@ namespace Grammar.Czech.Services
                 Root = wordRequest.Lemma
             };
         }
+        #endregion
     }
 }

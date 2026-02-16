@@ -46,6 +46,21 @@ namespace Grammar.Czech.Test
         }
 
         [TestMethod]
+        public void AnalyzeNoun_KostPattern_ExtractsRootCorrectly()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "radost",
+                Pattern = "kost",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Nominative
+            };
+            var result = resolver.AnalyzeStructure(request);
+            Assert.AreEqual("radost", result.Root);
+            Assert.IsNull(result.Prefix);
+        }
+
+        [TestMethod]
         public void AnalyzeNoun_WithKaSuffix_HandlesDerivationalSuffix()
         {
             var request = new CzechWordRequest
@@ -63,6 +78,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("k", result.DerivationSuffix);
         }
 
+        #endregion
+
+        #region Adjectives
         #endregion
 
         #region Verbs
