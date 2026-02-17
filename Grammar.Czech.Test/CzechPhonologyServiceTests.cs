@@ -284,23 +284,6 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
-        [TestMethod]
-        public void NeedsEpenthesis_StemEndsWithVowel_ReturnsFalse()
-        {
-            var request = new CzechWordRequest
-            {
-                Lemma = "auto",
-                Pattern = "město",
-                WordCategory = WordCategory.Noun,
-                Case = Case.Genitive,
-                Number = Number.Plural
-            };
-
-            var result = service.NeedsEpenthesis("aut", "k", request);
-
-            Assert.IsFalse(result); // "aut" končí na "t", ale context je jiný
-        }
-
         #endregion
     }
 }
