@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
-using Grammar.Core.Models;
+using Grammar.Core.Models.Word;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services

@@ -1,7 +1,7 @@
 ﻿using Grammar.Core.Interfaces;
-using Grammar.Core.Models;
 using Grammar.Czech.Models;
 using Grammar.Core.Enums;
+using Grammar.Core.Models.Word;
 
 namespace Grammar.Czech.Services
 {

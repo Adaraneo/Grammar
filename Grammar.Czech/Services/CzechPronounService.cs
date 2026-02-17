@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Grammar.Core.Enums;
-using Grammar.Core.Models;
 using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
+using Grammar.Core.Models.Word;
 
 namespace Grammar.Czech.Services
 {

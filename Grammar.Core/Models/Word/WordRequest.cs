@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 
-namespace Grammar.Core.Models
+namespace Grammar.Core.Models.Word
 {
     public struct WordRequest : IWordRequest
     {

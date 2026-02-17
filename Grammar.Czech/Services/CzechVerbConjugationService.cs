@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
-using Grammar.Core.Models;
+using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;

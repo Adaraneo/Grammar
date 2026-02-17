@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Models;
+﻿using Grammar.Core.Models.Word;
 using System;
 using System.Collections.Generic;
 using System.Linq;
