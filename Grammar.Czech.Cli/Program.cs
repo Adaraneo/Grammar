@@ -80,12 +80,23 @@
                 IsAnimate = true,
             };
 
+            var horseRequest = new CzechWordRequest
+            {
+                Lemma = "kůň",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Masculine,
+                Number = Number.Singular,
+                Pattern = "muž",
+                IsAnimate = true
+            };
+
             PrintNounForms(composer, studentRequest);
             PrintNounForms(composer, studentkaRequest);
             PrintNounForms(composer, womanRequest);
             PrintNounForms(composer, dogRequest);
             PrintNounForms(composer, studentikRequest);
             PrintNounForms(composer, hochRequest);
+            PrintNounForms(composer, horseRequest);
 
             //var doRequest = new CzechWordRequest
             //{
