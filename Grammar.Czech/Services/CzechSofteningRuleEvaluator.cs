@@ -17,7 +17,12 @@ namespace Grammar.Czech.Services
             new("žena", WordCategory.Noun, Number.Singular, Case.Locative, req => !req.Lemma.EndsWith("ka") && req.Lemma != "žena"),
 
             new(null, WordCategory.Noun, null, Case.Vocative,
-                req => req.Lemma?.EndsWith("ec") == true)
+                req => req.Lemma?.EndsWith("ec") == true),
+
+            new("pán", WordCategory.Noun, Number.Plural, Case.Vocative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch")),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Nominative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch")),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Locative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-ích"),
+            new("pán", WordCategory.Noun, Number.Singular, Case.Vocative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-u", ApplySoftening: false)
         };
 
         public string? GetEndingTransformation(CzechWordRequest wordRequest)

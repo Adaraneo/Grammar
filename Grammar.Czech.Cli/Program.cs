@@ -57,75 +57,98 @@
                 Gender = Gender.Masculine,
                 Number = Number.Singular,
                 Pattern = "pán",
+                IsAnimate = true,
+            };
+
+            var studentikRequest = new CzechWordRequest
+            {
+                Lemma = "studentík",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Masculine,
+                Number = Number.Singular,
+                Pattern = "pán",
+                IsAnimate = true,
+            };
+
+            var hochRequest = new CzechWordRequest
+            {
+                Lemma = "hoch",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Masculine,
+                Number = Number.Singular,
+                Pattern = "pán",
+                IsAnimate = true,
             };
 
             PrintNounForms(composer, studentRequest);
             PrintNounForms(composer, studentkaRequest);
             PrintNounForms(composer, womanRequest);
             PrintNounForms(composer, dogRequest);
+            PrintNounForms(composer, studentikRequest);
+            PrintNounForms(composer, hochRequest);
 
-            var doRequest = new CzechWordRequest
-            {
-                Lemma = "dělat",
-                WordCategory = WordCategory.Verb,
-                Gender = Gender.Masculine,
-                Aspect = VerbAspect.Imperfective,
-                Pattern = "dělá",
-            };
+            //var doRequest = new CzechWordRequest
+            //{
+            //    Lemma = "dělat",
+            //    WordCategory = WordCategory.Verb,
+            //    Gender = Gender.Masculine,
+            //    Aspect = VerbAspect.Imperfective,
+            //    Pattern = "dělá",
+            //};
 
-            var carryRequest = new CzechWordRequest
-            {
-                Lemma = "nést",
-                WordCategory = WordCategory.Verb,
-                Gender = Gender.Masculine,
-                Aspect = VerbAspect.Imperfective,
-                Pattern = "nese",
-            };
+            //var carryRequest = new CzechWordRequest
+            //{
+            //    Lemma = "nést",
+            //    WordCategory = WordCategory.Verb,
+            //    Gender = Gender.Masculine,
+            //    Aspect = VerbAspect.Imperfective,
+            //    Pattern = "nese",
+            //};
 
-            PrintVerbForms(composer, doRequest);
-            PrintVerbForms(composer, carryRequest);
-            PrintVerbForms(composer, carryRequest, Modus.Imperative);
+            //PrintVerbForms(composer, doRequest);
+            //PrintVerbForms(composer, carryRequest);
 
-            var negativeCarryRequest = new CzechWordRequest
-            {
-                Lemma = carryRequest.Lemma,
-                WordCategory = carryRequest.WordCategory,
-                Gender = carryRequest.Gender,
-                Aspect = carryRequest.Aspect,
-                Pattern = carryRequest.Pattern,
-                IsNegative = true,
-            };
+            //var negativeCarryRequest = new CzechWordRequest
+            //{
+            //    Lemma = carryRequest.Lemma,
+            //    WordCategory = carryRequest.WordCategory,
+            //    Gender = carryRequest.Gender,
+            //    Aspect = carryRequest.Aspect,
+            //    Pattern = carryRequest.Pattern,
+            //    IsNegative = true,
+            //};
 
-            PrintVerbForms(composer, negativeCarryRequest);
+            //PrintVerbForms(composer, negativeCarryRequest);
+            //PrintVerbForms(composer, carryRequest, Modus.Imperative);
 
-            var meRequest = new CzechWordRequest
-            {
-                Lemma = "já",
-                WordCategory = WordCategory.Pronoun,
-            };
+            //var meRequest = new CzechWordRequest
+            //{
+            //    Lemma = "já",
+            //    WordCategory = WordCategory.Pronoun,
+            //};
 
-            var sheRequest = new CzechWordRequest
-            {
-                Lemma = "ona",
-                WordCategory = WordCategory.Pronoun,
-            };
+            //var sheRequest = new CzechWordRequest
+            //{
+            //    Lemma = "ona",
+            //    WordCategory = WordCategory.Pronoun,
+            //};
 
-            var theyRequest = new CzechWordRequest
-            {
-                Lemma = "ona_",
-                WordCategory = WordCategory.Pronoun,
-            };
+            //var theyRequest = new CzechWordRequest
+            //{
+            //    Lemma = "ona_",
+            //    WordCategory = WordCategory.Pronoun,
+            //};
 
-            var myRequest = new CzechWordRequest
-            {
-                Lemma = "můj",
-                WordCategory = WordCategory.Pronoun,
-            };
+            //var myRequest = new CzechWordRequest
+            //{
+            //    Lemma = "můj",
+            //    WordCategory = WordCategory.Pronoun,
+            //};
 
-            PrintPronounForms(engine, meRequest);
-            PrintPronounForms(engine, sheRequest);
-            PrintPronounForms(engine, theyRequest);
-            PrintPronounForms(engine, myRequest);
+            //PrintPronounForms(engine, meRequest);
+            //PrintPronounForms(engine, sheRequest);
+            //PrintPronounForms(engine, theyRequest);
+            //PrintPronounForms(engine, myRequest);
         }
 
         private static void PrintWordInfo(CzechWordRequest request)
