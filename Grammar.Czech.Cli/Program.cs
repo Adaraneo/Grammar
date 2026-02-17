@@ -50,9 +50,19 @@
                 Pattern = "žena",
             };
 
+            var dogRequest = new CzechWordRequest
+            {
+                Lemma = "pes",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Masculine,
+                Number = Number.Singular,
+                Pattern = "pán",
+            };
+
             PrintNounForms(composer, studentRequest);
             PrintNounForms(composer, studentkaRequest);
             PrintNounForms(composer, womanRequest);
+            PrintNounForms(composer, dogRequest);
 
             var doRequest = new CzechWordRequest
             {

@@ -65,11 +65,16 @@ namespace Grammar.Czech.Services
 
             var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern!, wordRequest);
 
-            if (!string.IsNullOrEmpty(derivationSuffix))
+            if (derivationSuffix is not null)
             {
                 if (root.EndsWith(derivationSuffix))
                 {
                     root = root[..^derivationSuffix.Length];
+                }
+
+                if (derivationSuffix.Equals(string.Empty))
+                {
+                    root = root[..^1];
                 }
             }
 
@@ -96,6 +101,11 @@ namespace Grammar.Czech.Services
         {
             if (pattern == "žena" && lemma.EndsWith("ka") && lemma.Length > 2)
             {
+                if (request.Case == Case.Genitive && request.Number == Number.Plural)
+                {
+                    return string.Empty;
+                }
+
                 return "k";
             }
 

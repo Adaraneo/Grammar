@@ -68,7 +68,7 @@ namespace Grammar.Czech.Test
                 Lemma = "studentka",
                 Pattern = "žena",
                 WordCategory = WordCategory.Noun,
-                Case = Case.Genitive,
+                Case = Case.Nominative,
                 Number = Number.Plural
             };
 
@@ -76,6 +76,24 @@ namespace Grammar.Czech.Test
 
             Assert.AreEqual("student", result.Root);
             Assert.AreEqual("k", result.DerivationSuffix);
+        }
+
+        [TestMethod]
+        public void AnalyzeNoun_WithKaSuffix_HandlesGenitivePluralDerivationalSuffix()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "studentka",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("student", result.Root);
+            Assert.AreEqual(string.Empty, result.DerivationSuffix);
         }
 
         #endregion
