@@ -10,5 +10,9 @@ namespace Grammar.Core.Interfaces
     {
         string ApplySoftening(string word);
         string RevertSoftening(string word);
+
+        bool HasMobileVowel(string stem);
+        string RemoveMobileVowel(string stem);
+        string InsertMobileVowel(string stem, int position);
     }
 }

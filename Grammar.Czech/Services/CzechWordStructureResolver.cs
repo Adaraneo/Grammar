@@ -12,13 +12,15 @@ namespace Grammar.Czech.Services
     {
         private readonly IVerbDataProvider verbDataProvider;
         private readonly CzechPrefixService prefixService;
+        private readonly IPhonologyService phonologyService;
 
         private readonly Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>> analyzers;
 
-        public CzechWordStructureResolver(IVerbDataProvider verbDataProvider, CzechPrefixService prefixService)
+        public CzechWordStructureResolver(IVerbDataProvider verbDataProvider, CzechPrefixService prefixService, IPhonologyService phonologyService)
         {
             this.verbDataProvider = verbDataProvider;
             this.prefixService = prefixService;
+            this.phonologyService = phonologyService;
 
             analyzers = new Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>>
             {
@@ -61,7 +63,7 @@ namespace Grammar.Czech.Services
             var lemma = wordRequest.Lemma;
             var pattern = wordRequest.Pattern;
 
-            var root = ExtractNounRoot(lemma);
+            var root = ExtractNounRoot(lemma, wordRequest);
 
             var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern!, wordRequest);
 
@@ -85,16 +87,32 @@ namespace Grammar.Czech.Services
             };
         }
 
-        private string ExtractNounRoot(string lemma)
+        private string ExtractNounRoot(string lemma, CzechWordRequest request)
         {
+            string root;
+
             if (lemma.Length > 1 && !MorphologyHelper.IsConsonant(lemma[^1]))
             {
                 // Feminine and neuter nouns often end with a vowel, so we can try removing it to find the root
-                return lemma[..^1];
+                root = lemma[..^1];
+            }
+            else
+            {
+                // For masculine nouns, the lemma often ends with a consonant, so we can return it as is
+                root = lemma;
             }
 
-            // For masculine nouns, the lemma often ends with a consonant, so we can return it as is
-            return lemma;
+            if (request.Gender == Gender.Masculine &&
+                !(request.Case == Case.Nominative &&
+                request.Number == Number.Singular))
+            {
+                if (phonologyService.HasMobileVowel(root))
+                {
+                    root = phonologyService.RemoveMobileVowel(root);
+                }
+            }
+
+            return root;
         }
 
         private string? DetectNounDerivationSuffix(string lemma, string pattern, CzechWordRequest request)

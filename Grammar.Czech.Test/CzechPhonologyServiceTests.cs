@@ -17,6 +17,7 @@ namespace Grammar.Czech.Test
             service = new CzechPhonologyService();
         }
 
+        #region Softening
         [TestMethod]
         public void ApplySoftening_ShouldSoftened()
         {
@@ -73,5 +74,73 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("koč", service.ApplySoftening("koc"));
             Assert.AreEqual("koš", service.ApplySoftening("koch"));
         }
+        #endregion
+        #region MobileVowel
+        [TestMethod]
+        public void HasMobileVowel_ReturnsTrue_ForPes()
+        {
+            Assert.IsTrue(service.HasMobileVowel("pes"));
+        }
+
+        [TestMethod]
+        public void HasMobileVowel_ReturnsTrue_ForOtec()
+        {
+            Assert.IsTrue(service.HasMobileVowel("otec"));
+        }
+
+        [TestMethod]
+        public void HasMobileVowel_ReturnsTrue_ForDen()
+        {
+            Assert.IsTrue(service.HasMobileVowel("den"));
+        }
+
+        [TestMethod]
+        public void HasMobileVowel_ReturnsFalse_ForHrad()
+        {
+            Assert.IsFalse(service.HasMobileVowel("hrad"));
+        }
+
+        [TestMethod]
+        public void HasMobileVowel_ReturnsFalse_ForZena()
+        {
+            Assert.IsFalse(service.HasMobileVowel("žena"));
+        }
+
+        [TestMethod]
+        public void RemoveMobileVowel_Pes_ReturnsPs()
+        {
+            Assert.AreEqual("ps", service.RemoveMobileVowel("pes"));
+        }
+
+        [TestMethod]
+        public void RemoveMobileVowel_Otec_ReturnsOtc()
+        {
+            Assert.AreEqual("otc", service.RemoveMobileVowel("otec"));
+        }
+
+        [TestMethod]
+        public void RemoveMobileVowel_Den_ReturnsDn()
+        {
+            Assert.AreEqual("dn", service.RemoveMobileVowel("den"));
+        }
+
+        [TestMethod]
+        public void RemoveMobileVowel_NoMobileVowel_ReturnsOriginal()
+        {
+            Assert.AreEqual("hrad", service.RemoveMobileVowel("hrad"));
+        }
+
+        [TestMethod]
+        public void InsertMobileVowel_Ps_ReturnsPes()
+        {
+            Assert.AreEqual("pes", service.InsertMobileVowel("ps", 1));
+        }
+
+        [TestMethod]
+        public void InsertMobileVowel_Dn_ReturnsDen()
+        {
+            Assert.AreEqual("den", service.InsertMobileVowel("dn", 1));
+        }
+        #endregion
     }
 }

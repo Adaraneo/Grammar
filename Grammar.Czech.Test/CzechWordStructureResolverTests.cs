@@ -1,4 +1,5 @@
 ﻿using Grammar.Core.Enums;
+using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 using Grammar.Czech.Providers;
@@ -17,6 +18,7 @@ namespace Grammar.Czech.Test
         private CzechWordStructureResolver resolver;
         private IVerbDataProvider verbDataProvider;
         private CzechPrefixService prefixService;
+        private IPhonologyService phonologyService;
 
         [TestInitialize]
         public void Setup()
@@ -24,7 +26,8 @@ namespace Grammar.Czech.Test
             verbDataProvider = new JsonVerbDataProvider(Path.Combine("Data"));
             var perfixProvider = new JsonPrefixDataProvider(Path.Combine("Data"));
             prefixService = new CzechPrefixService(perfixProvider);
-            resolver = new CzechWordStructureResolver(verbDataProvider, prefixService);
+            phonologyService = new CzechPhonologyService();
+            resolver = new CzechWordStructureResolver(verbDataProvider, prefixService, phonologyService);
         }
 
         #region Nouns
@@ -94,6 +97,60 @@ namespace Grammar.Czech.Test
 
             Assert.AreEqual("student", result.Root);
             Assert.AreEqual(string.Empty, result.DerivationSuffix);
+        }
+
+        [TestMethod]
+        public void AnalyzeNoun_Pes_Nominative_KeepsMobileE()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "pes",
+                Pattern = "pán",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Masculine,
+                Case = Case.Nominative,
+                Number = Number.Singular
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("pes", result.Root);
+        }
+
+        [TestMethod]
+        public void AnalyzeNoun_Pes_Genitive_RemovesMobileE()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "pes",
+                Pattern = "pán",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Masculine,
+                Case = Case.Genitive,
+                Number = Number.Singular
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("ps", result.Root);
+        }
+
+        [TestMethod]
+        public void AnalyzeNoun_Otec_Genitive_RemovesMobileE()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "otec",
+                Pattern = "muž",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Masculine,
+                Case = Case.Genitive,
+                Number = Number.Singular
+            };
+
+            var result = resolver.AnalyzeStructure(request);
+
+            Assert.AreEqual("otc", result.Root);
         }
 
         #endregion
