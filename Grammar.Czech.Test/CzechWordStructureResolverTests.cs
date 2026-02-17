@@ -18,7 +18,7 @@ namespace Grammar.Czech.Test
         private CzechWordStructureResolver resolver;
         private IVerbDataProvider verbDataProvider;
         private CzechPrefixService prefixService;
-        private IPhonologyService phonologyService;
+        private IPhonologyService<CzechWordRequest> phonologyService;
 
         [TestInitialize]
         public void Setup()
@@ -96,7 +96,7 @@ namespace Grammar.Czech.Test
             var result = resolver.AnalyzeStructure(request);
 
             Assert.AreEqual("student", result.Root);
-            Assert.AreEqual(string.Empty, result.DerivationSuffix);
+            Assert.AreEqual("k", result.DerivationSuffix);
         }
 
         [TestMethod]

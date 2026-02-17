@@ -27,7 +27,7 @@ namespace Grammar.Czech
             services.AddSingleton<IPronounDataProvider>(new JsonPronounDataProvider(dataPath));
 
             // Services
-            services.AddSingleton<IPhonologyService, CzechPhonologyService>();
+            services.AddSingleton<IPhonologyService<CzechWordRequest>, CzechPhonologyService>();
             services.AddSingleton<IWordStructureResolver<CzechWordRequest>, CzechWordStructureResolver>();
             services.AddSingleton<ISofteningRuleEvaluator<CzechWordRequest>, CzechSofteningRuleEvaluator>();
             services.AddSingleton<CzechVerbConjugationService>();

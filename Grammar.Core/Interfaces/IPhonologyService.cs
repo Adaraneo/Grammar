@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Grammar.Core.Interfaces
 {
-    public interface IPhonologyService
+    public interface IPhonologyService<TWord> where TWord : IWordRequest
     {
         string ApplySoftening(string word);
         string RevertSoftening(string word);
@@ -14,5 +14,8 @@ namespace Grammar.Core.Interfaces
         bool HasMobileVowel(string stem);
         string RemoveMobileVowel(string stem);
         string InsertMobileVowel(string stem, int position);
+
+        bool NeedsEpenthesis(string stem, string suffix, TWord request);
+        string ApplyEpenthesis(string stem, string suffix, TWord request);
     }
 }

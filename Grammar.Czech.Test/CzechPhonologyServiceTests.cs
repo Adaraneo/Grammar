@@ -1,4 +1,6 @@
-﻿using Grammar.Czech.Services;
+﻿using Grammar.Core.Enums;
+using Grammar.Czech.Models;
+using Grammar.Czech.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -141,6 +143,164 @@ namespace Grammar.Czech.Test
         {
             Assert.AreEqual("den", service.InsertMobileVowel("dn", 1));
         }
+        #endregion
+        #region Epenthesis Tests
+
+        [TestMethod]
+        public void NeedsEpenthesis_StudentkaGenPl_ReturnsTrue()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "studentka",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = service.NeedsEpenthesis("student", "k", request);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ApplyEpenthesis_StudentkaGenPl_ReturnsStudentek()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "studentka",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = service.ApplyEpenthesis("student", "k", request);
+
+            Assert.AreEqual("studentek", result);
+        }
+
+        [TestMethod]
+        public void NeedsEpenthesis_MatkaGenPl_ReturnsTrue()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "matka",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = service.NeedsEpenthesis("mat", "k", request);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ApplyEpenthesis_MatkaGenPl_ReturnsMatek()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "matka",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = service.ApplyEpenthesis("mat", "k", request);
+
+            Assert.AreEqual("matek", result);
+        }
+
+        [TestMethod]
+        public void NeedsEpenthesis_OknoGenPl_ReturnsTrue()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "okno",
+                Pattern = "město",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural,
+                Gender = Gender.Neuter
+            };
+
+            var result = service.NeedsEpenthesis("ok", "n", request);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ApplyEpenthesis_OknoGenPl_ReturnsOken()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "okno",
+                Pattern = "město",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural,
+                Gender = Gender.Neuter
+            };
+
+            var result = service.ApplyEpenthesis("ok", "n", request);
+
+            Assert.AreEqual("oken", result);
+        }
+
+        [TestMethod]
+        public void NeedsEpenthesis_KnihaGenPl_ReturnsFalse()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "kniha",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = service.NeedsEpenthesis("knih", "k", request);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void NeedsEpenthesis_SuffixStartsWithVowel_ReturnsFalse()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "most",
+                Pattern = "hrad",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Instrumental,
+                Number = Number.Singular
+            };
+
+            var result = service.NeedsEpenthesis("most", "em", request);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void NeedsEpenthesis_StemEndsWithVowel_ReturnsFalse()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "auto",
+                Pattern = "město",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = service.NeedsEpenthesis("aut", "k", request);
+
+            Assert.IsFalse(result); // "aut" končí na "t", ale context je jiný
+        }
+
         #endregion
     }
 }

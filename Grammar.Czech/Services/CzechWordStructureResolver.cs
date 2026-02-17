@@ -12,11 +12,11 @@ namespace Grammar.Czech.Services
     {
         private readonly IVerbDataProvider verbDataProvider;
         private readonly CzechPrefixService prefixService;
-        private readonly IPhonologyService phonologyService;
+        private readonly IPhonologyService<CzechWordRequest> phonologyService;
 
         private readonly Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>> analyzers;
 
-        public CzechWordStructureResolver(IVerbDataProvider verbDataProvider, CzechPrefixService prefixService, IPhonologyService phonologyService)
+        public CzechWordStructureResolver(IVerbDataProvider verbDataProvider, CzechPrefixService prefixService, IPhonologyService<CzechWordRequest> phonologyService)
         {
             this.verbDataProvider = verbDataProvider;
             this.prefixService = prefixService;
@@ -67,16 +67,11 @@ namespace Grammar.Czech.Services
 
             var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern!, wordRequest);
 
-            if (derivationSuffix is not null)
+            if (!string.IsNullOrEmpty(derivationSuffix))
             {
                 if (root.EndsWith(derivationSuffix))
                 {
                     root = root[..^derivationSuffix.Length];
-                }
-
-                if (derivationSuffix.Equals(string.Empty))
-                {
-                    root = root[..^1];
                 }
             }
 
@@ -119,18 +114,13 @@ namespace Grammar.Czech.Services
         {
             if (pattern == "žena" && lemma.EndsWith("ka") && lemma.Length > 2)
             {
-                if (request.Case == Case.Genitive && request.Number == Number.Plural)
-                {
-                    return string.Empty;
-                }
-
                 return "k";
             }
 
             return null;
         }
         #endregion
-            #region Verb
+        #region Verb
         private WordStructure AnalyzeVerb(CzechWordRequest wordRequest)
         {
             var prefix = ExtractPrefix(wordRequest.Lemma);

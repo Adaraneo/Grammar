@@ -51,21 +51,6 @@ namespace Grammar.Czech.Test
         }
 
         [TestMethod]
-        public void GetEndingTransformation_ShouldReturnEk_ForHolkaGenitivePlural()
-        {
-            var request = new CzechWordRequest
-            {
-                Lemma = "holka",
-                Pattern = "žena",
-                WordCategory = WordCategory.Noun,
-                Number = Number.Plural,
-                Case = Case.Genitive
-            };
-            var result = softeningRuleEvaluator.GetEndingTransformation(request);
-            Assert.AreEqual("-ek", result);
-        }
-
-        [TestMethod]
         public void ShouldApplySoftening_ShouldReturnFalse_ForHolkaGenitivePlural()
         {
             var request = new CzechWordRequest

@@ -11,10 +11,10 @@ namespace Grammar.Czech.Services
     {
         private readonly INounDataProvider dataProvider;
         private readonly IWordStructureResolver<CzechWordRequest> wordStructureResolver;
-        private readonly IPhonologyService phonologyService;
+        private readonly IPhonologyService<CzechWordRequest> phonologyService;
         private readonly ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator;
 
-        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, IPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator)
+        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, IPhonologyService<CzechWordRequest> phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator)
         {
             this.dataProvider = dataProvider;
             this.wordStructureResolver = wordStructureResolver;
@@ -73,7 +73,12 @@ namespace Grammar.Czech.Services
             }
 
             var wordStructure = wordStructureResolver.AnalyzeStructure(word);
-            var (prefix, stem) = (wordStructure.Prefix, wordStructure.Root + wordStructure.DerivationSuffix);
+            var stem = wordStructure.Root;
+            if (!string.IsNullOrEmpty(wordStructure.DerivationSuffix))
+            {
+                stem = phonologyService.ApplyEpenthesis(stem, wordStructure.DerivationSuffix, word);
+            }
+
             if (!string.IsNullOrEmpty(pattern.Stem) && isBaseWordPattern)
             {
                 stem = pattern.Stem!;
