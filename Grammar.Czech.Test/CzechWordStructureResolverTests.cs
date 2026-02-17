@@ -2,7 +2,7 @@
 using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
-using Grammar.Czech.Providers;
+using Grammar.Czech.Providers.JsonProviders;
 using Grammar.Czech.Services;
 using System;
 using System.Collections.Generic;
