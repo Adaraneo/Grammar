@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Grammar.Core.Helpers;
 using Grammar.Czech.Interfaces;
 
-namespace Grammar.Czech.Providers
+namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonPrefixDataProvider : IPrefixDataProvider
     {

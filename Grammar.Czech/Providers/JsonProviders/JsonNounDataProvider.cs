@@ -7,7 +7,7 @@ using Grammar.Core.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 
-namespace Grammar.Czech.Providers
+namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonNounDataProvider : INounDataProvider
     {
