@@ -12,10 +12,6 @@ namespace Grammar.Core.Interfaces
         Phoneme? Get(string symbol);
         Phoneme? Get(char symbol) => Get(symbol.ToString());
 
-        bool IsVowel(char c);
-        bool IsConsonant(char c);
-        bool IsFrontVowel(char c);
-
         IReadOnlyCollection<Phoneme> AllPhonemes { get; }
     }
 }
