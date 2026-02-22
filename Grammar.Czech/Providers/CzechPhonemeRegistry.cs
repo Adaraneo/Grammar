@@ -64,5 +64,20 @@ namespace Grammar.Czech.Providers
         {
             throw new NotImplementedException();
         }
+
+        public bool IsVowel(char c)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsConsonant(char c)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsFrontVowel(char c)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
