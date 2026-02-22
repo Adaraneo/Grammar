@@ -1,5 +1,6 @@
 ﻿using Grammar.Core.Enums;
 using Grammar.Czech.Models;
+using Grammar.Czech.Providers;
 using Grammar.Czech.Services;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,8 @@ namespace Grammar.Czech.Test
         [TestInitialize]
         public void Setup()
         {
-            service = new CzechPhonologyService();
+            var registry = new CzechPhonemeRegistry();
+            service = new CzechPhonologyService(registry);
         }
 
         #region Softening

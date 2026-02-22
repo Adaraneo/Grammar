@@ -1,6 +1,7 @@
 ﻿using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
+using Grammar.Czech.Providers;
 using Grammar.Czech.Providers.JsonProviders;
 using Grammar.Czech.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ namespace Grammar.Czech
             services.AddSingleton<IPronounDataProvider>(new JsonPronounDataProvider(dataPath));
 
             // Services
+            services.AddSingleton<IPhonemeRegistry, CzechPhonemeRegistry>();
             services.AddSingleton<IPhonologyService<CzechWordRequest>, CzechPhonologyService>();
             services.AddSingleton<IWordStructureResolver<CzechWordRequest>, CzechWordStructureResolver>();
             services.AddSingleton<ISofteningRuleEvaluator<CzechWordRequest>, CzechSofteningRuleEvaluator>();
@@ -48,8 +50,6 @@ namespace Grammar.Czech
             services.AddSingleton<CzechAuxiliaryVerbService>();
             services.AddSingleton<CzechVerbPhraseBuilderService>();
             services.AddSingleton<INegationService<CzechWordRequest>, CzechNegationService>();
-
-            
 
             services.AddSingleton<MorphologyEngine>();
             services.AddSingleton<CzechWordFormComposer>();

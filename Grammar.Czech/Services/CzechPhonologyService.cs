@@ -1,8 +1,11 @@
 ﻿using Grammar.Core.Interfaces;
+using Grammar.Core.Models.Phonology;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Models;
+using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Grammar.Czech.Services
 {
@@ -24,19 +27,16 @@ namespace Grammar.Czech.Services
             "slovíč", // slovíčko → slovíček
         };
 
-        private static readonly Dictionary<string, string> softMap = new()
-        {
-            { "k", "c" },
-            { "h", "z" },
-            { "d", "ď" },
-            { "t", "ť" },
-            { "n", "ň" },
-            { "c", "č" },
-            //{ "ch", "š" } // speciální případ
-        };
+        private readonly IPhonemeRegistry _registry;
+        private readonly IReadOnlyDictionary<string, string> _reverseMap;
 
-        private static readonly Dictionary<string, string> reverseMap =
-            softMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+        public CzechPhonologyService(IPhonemeRegistry registry)
+        {
+            _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+            _reverseMap = _registry.AllPhonemes
+                .Where(p => p.PalatalizeTo is not null)
+                .ToDictionary(p => p.PalatalizeTo!, p => p.Symbol);
+        }
 
         public string ApplySoftening(string stem)
         {
@@ -44,11 +44,15 @@ namespace Grammar.Czech.Services
                 throw new ArgumentNullException(nameof(stem));
 
             if (stem.EndsWith("ch"))
-                return stem[..^2] + "š";
+            {
+                var palatalizedCH = _registry.Get("ch")?.PalatalizeTo ?? throw new InvalidOperationException("Phoneme 'ch' is missing in registry.");
+                return stem[..^2] + palatalizedCH;
+            }
 
             var last = stem[^1..];
-            return softMap.TryGetValue(last, out var softened)
-                ? stem[..^1] + softened
+            var phoneme = _registry.Get(last);
+            return phoneme?.PalatalizeTo is not null
+                ? stem[..^1] + phoneme.PalatalizeTo
                 : stem;
         }
 
@@ -57,11 +61,8 @@ namespace Grammar.Czech.Services
             if (stem is null)
                 throw new ArgumentNullException(nameof(stem));
 
-            if (stem.EndsWith("š"))
-                return stem[..^1] + "ch";
-
             var last = stem[^1..];
-            return reverseMap.TryGetValue(last, out var original)
+            return _reverseMap.TryGetValue(last, out var original)
                 ? stem[..^1] + original
                 : stem;
         }

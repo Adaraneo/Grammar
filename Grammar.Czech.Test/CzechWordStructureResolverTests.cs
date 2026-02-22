@@ -2,6 +2,7 @@
 using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
+using Grammar.Czech.Providers;
 using Grammar.Czech.Providers.JsonProviders;
 using Grammar.Czech.Services;
 using System;
@@ -26,7 +27,8 @@ namespace Grammar.Czech.Test
             verbDataProvider = new JsonVerbDataProvider(Path.Combine("Data"));
             var perfixProvider = new JsonPrefixDataProvider(Path.Combine("Data"));
             prefixService = new CzechPrefixService(perfixProvider);
-            phonologyService = new CzechPhonologyService();
+            var registry = new CzechPhonemeRegistry();
+            phonologyService = new CzechPhonologyService(registry);
             resolver = new CzechWordStructureResolver(verbDataProvider, prefixService, phonologyService);
         }
 
