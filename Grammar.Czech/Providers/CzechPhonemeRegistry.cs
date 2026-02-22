@@ -1,6 +1,7 @@
 ﻿using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Phonology;
 using Grammar.Core.Enums.PhonologicalFeatures;
+using Grammar.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,26 +59,26 @@ namespace Grammar.Czech.Providers
             ["au"] = new Phoneme { Symbol = "au", Backness = VowelBackness.Central }
         };
 
-        public IReadOnlyCollection<Phoneme> AllPhonemes => throw new NotImplementedException();
+        public IReadOnlyCollection<Phoneme> AllPhonemes => _phonemes.Values;
 
         public Phoneme? Get(string symbol)
         {
-            throw new NotImplementedException();
+            return _phonemes.GetValueOrDefault(symbol);
         }
 
         public bool IsVowel(char c)
         {
-            throw new NotImplementedException();
+            return Get(c.ToString())?.IsVowel() ?? false;
         }
 
         public bool IsConsonant(char c)
         {
-            throw new NotImplementedException();
+            return Get(c.ToString())?.IsConsonant() ?? false;
         }
 
         public bool IsFrontVowel(char c)
         {
-            throw new NotImplementedException();
+            return Get(c.ToString())?.Backness == VowelBackness.Front;
         }
     }
 }
