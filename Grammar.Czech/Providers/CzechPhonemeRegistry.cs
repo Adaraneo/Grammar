@@ -38,27 +38,29 @@ namespace Grammar.Czech.Providers
             ["j"] = new Phoneme { Symbol = "j", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Approximant },
             ["ř"] = new Phoneme { Symbol = "ř", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Trill },
             ["r"] = new Phoneme { Symbol = "r", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Trill, PalatalizeTo = "ř" },
-            ["l"] = new Phoneme { Symbol = "l", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.LateralApproximant }
+            ["l"] = new Phoneme { Symbol = "l", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.LateralApproximant },
+            ["a"] = new Phoneme { Symbol = "a", Backness = VowelBackness.Central, Height = VowelHeight.Open, IsRounded = false },
+            ["e"] = new Phoneme { Symbol = "e", Backness = VowelBackness.Front, Height = VowelHeight.Mid, IsRounded = false },
+            ["i"] = new Phoneme { Symbol = "i", Backness = VowelBackness.Front, Height = VowelHeight.Close, IsRounded = false },
+            ["y"] = new Phoneme { Symbol = "y", Backness = VowelBackness.Front, Height = VowelHeight.Close, IsRounded = false },
+            ["o"] = new Phoneme { Symbol = "o", Backness = VowelBackness.Back, Height = VowelHeight.Mid, IsRounded = true },
+            ["u"] = new Phoneme { Symbol = "u", Backness = VowelBackness.Back, Height = VowelHeight.Close, IsRounded = true },
+            ["ě"] = new Phoneme { Symbol = "ě", Backness = VowelBackness.Front, Height = VowelHeight.Mid, IsRounded = false },
+            ["á"] = new Phoneme { Symbol = "á", Backness = VowelBackness.Central, Height = VowelHeight.Open, IsRounded = false },
+            ["é"] = new Phoneme { Symbol = "é", Backness = VowelBackness.Front, Height = VowelHeight.Mid, IsRounded = false },
+            ["í"] = new Phoneme { Symbol = "í", Backness = VowelBackness.Front, Height = VowelHeight.Close, IsRounded = false },
+            ["ý"] = new Phoneme { Symbol = "ý", Backness = VowelBackness.Front, Height = VowelHeight.Close, IsRounded = false },
+            ["ó"] = new Phoneme { Symbol = "ó", Backness = VowelBackness.Back, Height = VowelHeight.Mid, IsRounded = true },
+            ["ú"] = new Phoneme { Symbol = "ú", Backness = VowelBackness.Back, Height = VowelHeight.Close, IsRounded = true },
+            ["ů"] = new Phoneme { Symbol = "ů", Backness = VowelBackness.Back, Height = VowelHeight.Close, IsRounded = true },
+            ["ou"] = new Phoneme { Symbol = "ou", Backness = VowelBackness.Back },
+            ["eu"] = new Phoneme { Symbol = "eu", Backness = VowelBackness.Front },
+            ["au"] = new Phoneme { Symbol = "au", Backness = VowelBackness.Central }
         };
 
         public IReadOnlyCollection<Phoneme> AllPhonemes => throw new NotImplementedException();
 
         public Phoneme? Get(string symbol)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsConsonant(char c)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsFrontVowel(char c)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsVowel(char c)
         {
             throw new NotImplementedException();
         }
