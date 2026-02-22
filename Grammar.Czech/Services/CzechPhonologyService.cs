@@ -1,6 +1,5 @@
 ﻿using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Phonology;
-using Grammar.Czech.Helpers;
 using Grammar.Czech.Models;
 using Microsoft.Win32;
 using System.Collections.Generic;
@@ -83,7 +82,7 @@ namespace Grammar.Czech.Services
                 return false;
             }
 
-            return MorphologyHelper.IsConsonant(consonant);
+            return _registry.IsConsonant(consonant);
         }
 
         public string InsertMobileVowel(string stem, int position)
@@ -113,12 +112,12 @@ namespace Grammar.Czech.Services
                 return false;
             }
 
-            if (!MorphologyHelper.IsConsonant(suffix[0]))
+            if (!_registry.IsConsonant(suffix[0]))
             {
                 return false;
             }
 
-            if (!MorphologyHelper.IsConsonant(stem[^1]))
+            if (!_registry.IsConsonant(stem[^1]))
             {
                 return false;
             }
@@ -169,6 +168,34 @@ namespace Grammar.Czech.Services
             }
 
             return stem + suffix;
+        }
+
+        public string ShortenVowel(string stem)
+        {
+            for (int i = stem.Length - 1; i >= 0; i--)
+            {
+                var phoneme = _registry.Get(stem[i]);
+                if (phoneme?.ShortCounterpart is not null)
+                {
+                    return stem[..i] + phoneme.ShortCounterpart + stem[(i + 1)..];
+                }
+            }
+
+            return stem;
+        }
+
+        public string LengthenVowel(string stem)
+        {
+            for (int i = stem.Length - 1; i >= 0; i--)
+            {
+                var phoneme = _registry.Get(stem[i]);
+                if (phoneme?.LongCounterpart is not null)
+                {
+                    return stem[..i] + phoneme.LongCounterpart + stem[(i + 1)..];
+                }
+            }
+
+            return stem;
         }
     }
 }

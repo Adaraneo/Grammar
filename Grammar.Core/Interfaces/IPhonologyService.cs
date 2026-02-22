@@ -19,6 +19,6 @@ namespace Grammar.Core.Interfaces
         string ApplyEpenthesis(string stem, string suffix, TWord request);
 
         string ShortenVowel(string stem);
-        string LenghtenVowel(string stem);
+        string LengthenVowel(string stem);
     }
 }

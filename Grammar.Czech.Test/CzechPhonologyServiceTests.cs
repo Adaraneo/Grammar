@@ -5,6 +5,7 @@ using Grammar.Czech.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -285,7 +286,55 @@ namespace Grammar.Czech.Test
 
             Assert.IsFalse(result);
         }
-
         #endregion
+        #region Shorten and Lengthen Vowels
+        [TestMethod]
+        [ShortenVowels]
+        public void ShortenVowels(string input, string expected)
+        {
+            var result = service.ShortenVowel(input);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        [LengthenVowel]
+        public void LengthenVowels(string input, string expected)
+        {
+            var result = service.LengthenVowel(input);
+
+            Assert.AreEqual(expected, result);
+        }
+        #endregion
+
+        class ShortenVowelsAttribute : TestAttributeBase
+        {
+            public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
+            {
+                var data = new List<string[]>()
+                {
+                    new[] { "stůl", "stol" },
+                    new[] { "pán", "pan" },
+                    new[] { "kmen", "kmen" }
+                };
+
+                return data;
+            }
+        }
+
+        class LengthenVowelAttribute : TestAttributeBase
+        {
+            public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
+            {
+                var data = new List<string[]>()
+                {
+                    new[] { "stol", "stůl" },
+                    new[] { "pan", "pán" },
+                    new[] { "dub", "dub" }
+                };
+
+                return data;
+            }
+        }
     }
 }
