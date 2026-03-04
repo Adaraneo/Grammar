@@ -14,7 +14,7 @@ namespace Grammar.Core.Interfaces
         string RemoveMobileVowel(string stem, bool hasMobileVowel);
         string InsertMobileVowel(string stem, int position);
 
-        string ApplyEpenthesis(bool needsEpenthesis, string stem, string suffix);
+        string ApplyEpenthesis(bool needsEpenthesis, string stem, string derivationSuffix);
 
         string ShortenVowel(string stem);
         string LengthenVowel(string stem);

@@ -70,14 +70,14 @@ namespace Grammar.Czech.Services
             return stem[..^2] + stem[^1];
         }
 
-        public string ApplyEpenthesis(bool needsEpenthesis, string stem, string suffix)
+        public string ApplyEpenthesis(bool needsEpenthesis, string stem, string derivationSuffix)
         {
             if (needsEpenthesis)
             {
-                return stem + "e" + suffix;
+                return stem + "e" + derivationSuffix;
             }
 
-            return stem + suffix;
+            return stem + derivationSuffix;
         }
 
         public string ShortenVowel(string stem)

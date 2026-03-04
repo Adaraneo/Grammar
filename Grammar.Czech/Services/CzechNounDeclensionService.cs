@@ -13,13 +13,15 @@ namespace Grammar.Czech.Services
         private readonly IWordStructureResolver<CzechWordRequest> wordStructureResolver;
         private readonly IPhonologyService<CzechWordRequest> phonologyService;
         private readonly ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator;
+        private readonly IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator;
 
-        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, IPhonologyService<CzechWordRequest> phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator)
+        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, IPhonologyService<CzechWordRequest> phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator)
         {
             this.dataProvider = dataProvider;
             this.wordStructureResolver = wordStructureResolver;
             this.phonologyService = phonologyService;
             this.softeningRuleEvaluator = softeningRuleEvaluator;
+            this.epenthesisRuleEvaluator = epenthesisRuleEvaluator;
         }
 
         public WordForm GetForm(CzechWordRequest word)
@@ -76,8 +78,7 @@ namespace Grammar.Czech.Services
             var stem = wordStructure.Root;
             if (!string.IsNullOrEmpty(wordStructure.DerivationSuffix))
             {
-                //TODO: Add IEpentheisiRuleValuator.
-                //stem = phonologyService.ApplyEpenthesis(stem, wordStructure.DerivationSuffix, word);
+                stem = phonologyService.ApplyEpenthesis(epenthesisRuleEvaluator.ShouldApplyEpenthesis(stem, wordStructure.DerivationSuffix, word), stem, wordStructure.DerivationSuffix);
             }
 
             if (!string.IsNullOrEmpty(pattern.Stem) && isBaseWordPattern)
