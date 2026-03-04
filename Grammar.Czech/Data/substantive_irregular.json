@@ -16,12 +16,24 @@
             }
         }
     },
-    "chlapec": {
-        "inheritsFrom": "muž",
-        "overrides": {
-            "singular": {
-                "5": "-e"
-            }
-        }
+  "chlapec": {
+    "inheritsFrom": "muž",
+    "overrides": {
+      "singular": {
+        "5": "-e"
+      }
     }
+  },
+  "pes": {
+    "hasMobileVowel": true,
+    "inheritsFrom": "pán"
+  },
+  "den": {
+    "hasMobileVowel": true,
+    "inheritsFrom": "hrad"
+  },
+  "otec": {
+    "hasMobileVowel": true,
+    "inheritsFrom": "muž"
+  }
 }

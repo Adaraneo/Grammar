@@ -26,10 +26,11 @@ namespace Grammar.Czech.Test
         {
             verbDataProvider = new JsonVerbDataProvider(Path.Combine("Data"));
             var perfixProvider = new JsonPrefixDataProvider(Path.Combine("Data"));
+            var nounDataProvider = new JsonNounDataProvider(Path.Combine("Data"));
             prefixService = new CzechPrefixService(perfixProvider);
             var registry = new CzechPhonemeRegistry();
             phonologyService = new CzechPhonologyService(registry);
-            resolver = new CzechWordStructureResolver(verbDataProvider, prefixService, phonologyService);
+            resolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService);
         }
 
         #region Nouns

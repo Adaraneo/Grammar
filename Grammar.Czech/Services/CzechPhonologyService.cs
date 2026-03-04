@@ -50,25 +50,6 @@ namespace Grammar.Czech.Services
                 : stem;
         }
 
-        public bool HasMobileVowel(string stem)
-        {
-            if (string.IsNullOrEmpty(stem) || stem.Length < 2)
-            {
-                return false;
-            }
-
-            var lastTwo = stem[^2..];
-            var vowel = lastTwo[0];
-            var consonant = lastTwo[1];
-
-            if (vowel != 'e' && vowel != 'ě')
-            {
-                return false;
-            }
-
-            return _registry.IsConsonant(consonant);
-        }
-
         public string InsertMobileVowel(string stem, int position)
         {
             if (position < 0 || position > stem.Length)
@@ -79,9 +60,9 @@ namespace Grammar.Czech.Services
             return stem.Insert(position, "e");
         }
 
-        public string RemoveMobileVowel(string stem)
+        public string RemoveMobileVowel(string stem, bool hasMobileVowel)
         {
-            if (!HasMobileVowel(stem))
+            if (!hasMobileVowel)
             {
                 return stem;
             }

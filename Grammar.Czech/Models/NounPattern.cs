@@ -10,5 +10,6 @@
         public string? InheritsFrom { get; init; }
         public bool IsIndeclinable { get; init; } = false;
         public bool IsPluralOnly { get; init; } = false;
+        public bool HasMobileVowel { get; init; } = false;
     }
 }

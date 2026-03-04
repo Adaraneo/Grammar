@@ -11,14 +11,16 @@ namespace Grammar.Czech.Services
     public class CzechWordStructureResolver : IWordStructureResolver<CzechWordRequest>
     {
         private readonly IVerbDataProvider verbDataProvider;
+        private readonly INounDataProvider nounDataProvider;
         private readonly CzechPrefixService prefixService;
         private readonly IPhonologyService<CzechWordRequest> phonologyService;
 
         private readonly Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>> analyzers;
 
-        public CzechWordStructureResolver(IVerbDataProvider verbDataProvider, CzechPrefixService prefixService, IPhonologyService<CzechWordRequest> phonologyService)
+        public CzechWordStructureResolver(IVerbDataProvider verbDataProvider, INounDataProvider nounDataProvider, CzechPrefixService prefixService, IPhonologyService<CzechWordRequest> phonologyService)
         {
             this.verbDataProvider = verbDataProvider;
+            this.nounDataProvider = nounDataProvider;
             this.prefixService = prefixService;
             this.phonologyService = phonologyService;
 
@@ -101,10 +103,8 @@ namespace Grammar.Czech.Services
                 !(request.Case == Case.Nominative &&
                 request.Number == Number.Singular))
             {
-                if (phonologyService.HasMobileVowel(root))
-                {
-                    root = phonologyService.RemoveMobileVowel(root);
-                }
+                var hasMobileVowel = nounDataProvider.GetIrregulars().TryGetValue(request.Lemma.ToLower(), out var irregular) && irregular.HasMobileVowel;
+                root = phonologyService.RemoveMobileVowel(root, hasMobileVowel);
             }
 
             return root;

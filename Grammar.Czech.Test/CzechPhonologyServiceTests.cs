@@ -81,58 +81,29 @@ namespace Grammar.Czech.Test
         }
         #endregion
         #region MobileVowel
-        [TestMethod]
-        public void HasMobileVowel_ReturnsTrue_ForPes()
-        {
-            Assert.IsTrue(service.HasMobileVowel("pes"));
-        }
-
-        [TestMethod]
-        public void HasMobileVowel_ReturnsTrue_ForOtec()
-        {
-            Assert.IsTrue(service.HasMobileVowel("otec"));
-        }
-
-        [TestMethod]
-        public void HasMobileVowel_ReturnsTrue_ForDen()
-        {
-            Assert.IsTrue(service.HasMobileVowel("den"));
-        }
-
-        [TestMethod]
-        public void HasMobileVowel_ReturnsFalse_ForHrad()
-        {
-            Assert.IsFalse(service.HasMobileVowel("hrad"));
-        }
-
-        [TestMethod]
-        public void HasMobileVowel_ReturnsFalse_ForZena()
-        {
-            Assert.IsFalse(service.HasMobileVowel("žena"));
-        }
 
         [TestMethod]
         public void RemoveMobileVowel_Pes_ReturnsPs()
         {
-            Assert.AreEqual("ps", service.RemoveMobileVowel("pes"));
+            Assert.AreEqual("ps", service.RemoveMobileVowel("pes", true));
         }
 
         [TestMethod]
         public void RemoveMobileVowel_Otec_ReturnsOtc()
         {
-            Assert.AreEqual("otc", service.RemoveMobileVowel("otec"));
+            Assert.AreEqual("otc", service.RemoveMobileVowel("otec", true));
         }
 
         [TestMethod]
         public void RemoveMobileVowel_Den_ReturnsDn()
         {
-            Assert.AreEqual("dn", service.RemoveMobileVowel("den"));
+            Assert.AreEqual("dn", service.RemoveMobileVowel("den", true));
         }
 
         [TestMethod]
         public void RemoveMobileVowel_NoMobileVowel_ReturnsOriginal()
         {
-            Assert.AreEqual("hrad", service.RemoveMobileVowel("hrad"));
+            Assert.AreEqual("hrad", service.RemoveMobileVowel("hrad", false));
         }
 
         [TestMethod]

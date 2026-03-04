@@ -11,8 +11,7 @@ namespace Grammar.Core.Interfaces
         string ApplySoftening(string word);
         string RevertSoftening(string word);
 
-        bool HasMobileVowel(string stem);
-        string RemoveMobileVowel(string stem);
+        string RemoveMobileVowel(string stem, bool hasMobileVowel);
         string InsertMobileVowel(string stem, int position);
 
         string ApplyEpenthesis(bool needsEpenthesis, string stem, string suffix);
