@@ -1,13 +1,12 @@
-﻿using System.Text.Json;
-using Grammar.Core.Enums;
+﻿using Grammar.Core.Enums;
 using Grammar.Czech.Interfaces;
-using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
     public class CzechParticleService : ICzechParticleService
     {
         private readonly IParticleDataProvider dataProvider;
+
         public CzechParticleService(IParticleDataProvider dataProvider)
         {
             this.dataProvider = dataProvider;

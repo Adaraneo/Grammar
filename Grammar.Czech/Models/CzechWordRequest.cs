@@ -18,7 +18,9 @@
 
     public struct CzechWordRequest : IWordRequest
     {
-        public CzechWordRequest() { }
+        public CzechWordRequest()
+        { }
+
         public Degree? Degree { get; set; }
         public bool? HasReflexive { get; set; }
         public bool? HasExplicitSubject { get; set; }

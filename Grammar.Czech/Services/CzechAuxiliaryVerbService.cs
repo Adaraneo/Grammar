@@ -6,6 +6,7 @@ namespace Grammar.Czech.Services
     public class CzechAuxiliaryVerbService
     {
         private readonly MorphologyEngine engine;
+
         public CzechAuxiliaryVerbService(MorphologyEngine engine)
         {
             this.engine = engine;

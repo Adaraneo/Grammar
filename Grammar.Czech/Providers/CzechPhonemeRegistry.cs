@@ -1,18 +1,14 @@
-﻿using Grammar.Core.Interfaces;
-using Grammar.Core.Models.Phonology;
-using Grammar.Core.Enums.PhonologicalFeatures;
+﻿using Grammar.Core.Enums.PhonologicalFeatures;
 using Grammar.Core.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Grammar.Core.Interfaces;
+using Grammar.Core.Models.Phonology;
 
 namespace Grammar.Czech.Providers
 {
     public sealed class CzechPhonemeRegistry : IPhonemeRegistry
     {
         private static readonly Dictionary<string, Phoneme> _phonemes = BuildRegistry();
+
         private static Dictionary<string, Phoneme> BuildRegistry() => new()
         {
             ["p"] = new Phoneme { Symbol = "p", Place = ArticulationPlace.Bilabial, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiceless, VoicedCounterpart = "b" },

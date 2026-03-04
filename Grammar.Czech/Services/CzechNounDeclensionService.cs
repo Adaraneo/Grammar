@@ -1,9 +1,9 @@
-﻿using Grammar.Czech.Models;
+﻿using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
-using Grammar.Core.Enums;
+using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
-using Grammar.Core.Models.Word;
+using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {

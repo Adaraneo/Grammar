@@ -15,7 +15,7 @@ namespace Grammar.Czech.Services
             return explicitSubject ? $"{particle} {negation}{verbForm}" : $"{negation}{verbForm} {particle}";
         }
 
-        public CzechVerbPhraseBuilderService(CzechAuxiliaryVerbService auxiliaryService,CzechParticleService particleService, CzechPrefixService prefixService)
+        public CzechVerbPhraseBuilderService(CzechAuxiliaryVerbService auxiliaryService, CzechParticleService particleService, CzechPrefixService prefixService)
         {
             this.auxVerbService = auxiliaryService;
             this.particleService = particleService;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grammar.Core.Helpers;
+﻿using Grammar.Core.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 
@@ -55,5 +50,4 @@ namespace Grammar.Czech.Providers.JsonProviders
             return _properNames;
         }
     }
-
 }

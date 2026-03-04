@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Grammar.Core.Enums;
-using Grammar.Czech.Models;
+﻿using Grammar.Core.Enums;
 
 namespace Grammar.Czech.Interfaces
 {

@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Grammar.Core.Enums;
+﻿using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Grammar.Core.Models.Word
 {
     public struct WordRequest : IWordRequest
     {
-        public WordRequest() { }
+        public WordRequest()
+        { }
 
         [JsonPropertyName("Lemma")]
         public string Lemma { get; set; } = string.Empty;
+
         public Gender? Gender { get; set; }
         public Number? Number { get; set; }
         public Case? Case { get; set; }
@@ -26,6 +23,7 @@ namespace Grammar.Core.Models.Word
 
         [JsonPropertyName("Category")]
         public WordCategory WordCategory { get; set; }
+
         public string? Pattern { get; set; }
         public string? AdditionalData { get; set; }
 

@@ -1,11 +1,9 @@
-﻿using System.Text.Json;
-using Grammar.Core.Enums;
+﻿using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
-using JL = Grammar.Core.Helpers.JsonLoader;
 
 namespace Grammar.Czech.Services
 {

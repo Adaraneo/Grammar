@@ -4,13 +4,22 @@
     "person": "First",
     "number": "Singular",
     "fixedForms": {
-        "nominative": { "default": "já" },
-        "genitive":   { "default": "mě", "rare": "mne" },
-        "dative":     { "default": "mně", "clitic": "mi" },
-        "accusative": { "default": "mě", "rare": "mne" },
-        "vocative":   { "default": "já" },
-        "locative":   { "default": "mně" },
-        "instrumental": { "default": "mnou" }
+      "nominative": { "default": "já" },
+      "genitive": {
+        "default": "mě",
+        "rare": "mne"
+      },
+      "dative": {
+        "default": "mně",
+        "clitic": "mi"
+      },
+      "accusative": {
+        "default": "mě",
+        "rare": "mne"
+      },
+      "vocative": { "default": "já" },
+      "locative": { "default": "mně" },
+      "instrumental": { "default": "mnou" }
     }
   },
   "ty": {
@@ -18,13 +27,22 @@
     "person": "Second",
     "number": "Singular",
     "fixedForms": {
-        "nominative": { "default": "ty" },
-        "genitive":   { "default": "tebe", "clitic": "tě" },
-        "dative":     { "default": "tobě", "clitic": "ti" },
-        "accusative": { "default": "tebe", "clitic": "tě" },
-        "vocative":   { "default": "ty" },
-        "locative":   { "default": "tobě" },
-        "instrumental": { "default": "tebou" }
+      "nominative": { "default": "ty" },
+      "genitive": {
+        "default": "tebe",
+        "clitic": "tě"
+      },
+      "dative": {
+        "default": "tobě",
+        "clitic": "ti"
+      },
+      "accusative": {
+        "default": "tebe",
+        "clitic": "tě"
+      },
+      "vocative": { "default": "ty" },
+      "locative": { "default": "tobě" },
+      "instrumental": { "default": "tebou" }
     }
   },
   "on": {
@@ -33,13 +51,30 @@
     "gender": "Masculine",
     "number": "Singular",
     "fixedForms": {
-        "nominative": { "default": "on" },
-        "genitive":   { "default": "jeho", "afterPreposition": "něho" },
-        "dative":     { "default": "jemu", "clitic": "mu", "afterPreposition": "němu" },
-        "accusative": { "default": "jeho", "clitic": "ho", "afterPreposition": "něj" },
-        "vocative":   { "default": "on" },
-        "locative":   { "default": "něm", "afterPreposition": "něm" },
-        "instrumental": { "default": "jím", "afterPreposition": "ním" }
+      "nominative": { "default": "on" },
+      "genitive": {
+        "default": "jeho",
+        "afterPreposition": "něho"
+      },
+      "dative": {
+        "default": "jemu",
+        "clitic": "mu",
+        "afterPreposition": "němu"
+      },
+      "accusative": {
+        "default": "jeho",
+        "clitic": "ho",
+        "afterPreposition": "něj"
+      },
+      "vocative": { "default": "on" },
+      "locative": {
+        "default": "něm",
+        "afterPreposition": "něm"
+      },
+      "instrumental": {
+        "default": "jím",
+        "afterPreposition": "ním"
+      }
     }
   },
   "ona": {
@@ -155,12 +190,18 @@
   },
   "se": {
     "type": "reflexive",
-      "fixedForms": {
-          "genitive": { "default": "sebe" },
-          "dative":   { "default": "sobě", "clitic": "si" },
-          "accusative": { "default": "sebe", "clitic": "se" },
-          "locative": { "default": "sobě" },
-          "instrumental": { "default": "sebou" }
-      }
+    "fixedForms": {
+      "genitive": { "default": "sebe" },
+      "dative": {
+        "default": "sobě",
+        "clitic": "si"
+      },
+      "accusative": {
+        "default": "sebe",
+        "clitic": "se"
+      },
+      "locative": { "default": "sobě" },
+      "instrumental": { "default": "sebou" }
+    }
   }
 }

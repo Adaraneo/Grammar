@@ -2,12 +2,7 @@
 using Grammar.Czech.Models;
 using Grammar.Czech.Providers;
 using Grammar.Czech.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grammar.Czech.Test
 {
@@ -15,6 +10,7 @@ namespace Grammar.Czech.Test
     public class CzechPhonologyServiceTests
     {
         private CzechPhonologyService service;
+
         [TestInitialize]
         public void Setup()
         {
@@ -23,6 +19,7 @@ namespace Grammar.Czech.Test
         }
 
         #region Softening
+
         [TestMethod]
         public void ApplySoftening_ShouldSoftened()
         {
@@ -79,7 +76,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("koč", service.ApplySoftening("koc"));
             Assert.AreEqual("koš", service.ApplySoftening("koch"));
         }
-        #endregion
+
+        #endregion Softening
+
         #region MobileVowel
 
         [TestMethod]
@@ -117,7 +116,9 @@ namespace Grammar.Czech.Test
         {
             Assert.AreEqual("den", service.InsertMobileVowel("dn", 1));
         }
-        #endregion
+
+        #endregion MobileVowel
+
         #region Epenthesis Tests
 
         [TestMethod]
@@ -172,8 +173,10 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("oken", result);
         }
 
-        #endregion
+        #endregion Epenthesis Tests
+
         #region Shorten and Lengthen Vowels
+
         [TestMethod]
         [ShortenVowels]
         public void ShortenVowels(string input, string expected)
@@ -191,9 +194,10 @@ namespace Grammar.Czech.Test
 
             Assert.AreEqual(expected, result);
         }
-        #endregion
 
-        class ShortenVowelsAttribute : TestAttributeBase
+        #endregion Shorten and Lengthen Vowels
+
+        private class ShortenVowelsAttribute : TestAttributeBase
         {
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
@@ -208,7 +212,7 @@ namespace Grammar.Czech.Test
             }
         }
 
-        class LengthenVowelAttribute : TestAttributeBase
+        private class LengthenVowelAttribute : TestAttributeBase
         {
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {

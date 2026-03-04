@@ -4,7 +4,6 @@ using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
-using Microsoft.Extensions.Logging;
 
 namespace Grammar.Czech.Services
 {
@@ -59,7 +58,9 @@ namespace Grammar.Czech.Services
                 throw new ArgumentException("Pattern cannost be empty.", nameof(wordRequest));
             }
         }
+
         #region Noun
+
         private WordStructure AnalyzeNoun(CzechWordRequest wordRequest)
         {
             var lemma = wordRequest.Lemma;
@@ -119,8 +120,11 @@ namespace Grammar.Czech.Services
 
             return null;
         }
-        #endregion
+
+        #endregion Noun
+
         #region Verb
+
         private WordStructure AnalyzeVerb(CzechWordRequest wordRequest)
         {
             var prefix = ExtractPrefix(wordRequest.Lemma);
@@ -199,8 +203,11 @@ namespace Grammar.Czech.Services
 
             return lemmaWithoutPrefix;
         }
-        #endregion
+
+        #endregion Verb
+
         #region Adjective
+
         private WordStructure AnalyzeAdjective(CzechWordRequest wordRequest)
         {
             var lemma = wordRequest.Lemma;
@@ -226,8 +233,11 @@ namespace Grammar.Czech.Services
 
             return lemma;
         }
-        #endregion
+
+        #endregion Adjective
+
         #region Pronoun
+
         private WordStructure AnalyzePronoun(CzechWordRequest wordRequest)
         {
             return new WordStructure
@@ -235,6 +245,7 @@ namespace Grammar.Czech.Services
                 Root = wordRequest.Lemma
             };
         }
-        #endregion
+
+        #endregion Pronoun
     }
 }

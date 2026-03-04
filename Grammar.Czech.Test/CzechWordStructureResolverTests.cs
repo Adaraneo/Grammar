@@ -5,11 +5,6 @@ using Grammar.Czech.Models;
 using Grammar.Czech.Providers;
 using Grammar.Czech.Providers.JsonProviders;
 using Grammar.Czech.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grammar.Czech.Test
 {
@@ -34,6 +29,7 @@ namespace Grammar.Czech.Test
         }
 
         #region Nouns
+
         [TestMethod]
         public void AnalyzeNoun_SimplePattern_ExtractsRootCorrectly()
         {
@@ -156,10 +152,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("otc", result.Root);
         }
 
-        #endregion
+        #endregion Nouns
 
-        #region Adjectives
-        #endregion
+
 
         #region Verbs
 
@@ -196,7 +191,7 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("js", result.Root); // presentStem z JSON
         }
 
-        #endregion
+        #endregion Verbs
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]

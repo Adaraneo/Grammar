@@ -2,11 +2,6 @@
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 using Grammar.Czech.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grammar.Czech.Test
 {
@@ -14,6 +9,7 @@ namespace Grammar.Czech.Test
     public class CzechSofteningRuleEvaluatorTests
     {
         private ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator;
+
         [TestInitialize]
         public void Setup()
         {

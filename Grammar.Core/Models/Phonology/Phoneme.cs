@@ -1,10 +1,4 @@
 ﻿using Grammar.Core.Enums.PhonologicalFeatures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grammar.Core.Models.Phonology
 {
@@ -13,18 +7,21 @@ namespace Grammar.Core.Models.Phonology
         public required string Symbol { get; init; }
 
         #region Consonants
+
         public ArticulationPlace? Place { get; init; }
         public ArticulationManner? Manner { get; init; }
         public Voicing? Voicing { get; init; }
 
-        #endregion
+        #endregion Consonants
+
         #region Vowels
 
         public VowelBackness? Backness { get; init; }
         public VowelHeight? Height { get; init; }
         public bool? IsRounded { get; init; }
 
-        #endregion
+        #endregion Vowels
+
         #region Palatalization
 
         public string? PalatalizeTo { get; init; }
@@ -32,6 +29,7 @@ namespace Grammar.Core.Models.Phonology
         public string? VoicelessCounterpart { get; init; }
         public string? ShortCounterpart { get; init; }
         public string? LongCounterpart { get; init; }
-        #endregion
+
+        #endregion Palatalization
     }
 }

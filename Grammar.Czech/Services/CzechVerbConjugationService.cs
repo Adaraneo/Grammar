@@ -1,11 +1,9 @@
-﻿using System.Collections.Immutable;
-using Grammar.Core.Enums;
+﻿using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
-using JL = Grammar.Core.Helpers.JsonLoader;
 
 namespace Grammar.Czech.Services
 {
@@ -13,6 +11,7 @@ namespace Grammar.Czech.Services
     {
         private readonly CzechPrefixService prefixService;
         private readonly CzechParticleService particleService;
+
         private readonly Dictionary<VerbClass, string> verbClassMap = new Dictionary<VerbClass, string>()
         {
             { VerbClass.Class1, "trida1" },

@@ -1,9 +1,4 @@
-﻿using Grammar.Core.Models;
-using Grammar.Core.Enums;
-using Grammar.Czech.Models;
-using Grammar.Czech.Services;
-
-namespace Grammar.Czech.Helpers
+﻿namespace Grammar.Czech.Helpers
 {
     public static class MorphologyHelper
     {
