@@ -107,5 +107,25 @@ namespace Grammar.Czech.Services
 
             return stem;
         }
+
+        public string ApplyIotation(string stem)
+        {
+            var last = _registry.Get(stem[^1..]);
+
+            var isLabial = last?.Place == Core.Enums.PhonologicalFeatures.ArticulationPlace.Bilabial
+                || last?.Place == Core.Enums.PhonologicalFeatures.ArticulationPlace.Labiodental;
+
+            if (!isLabial)
+            {
+                return stem + "ě";
+            }
+
+            if (last!.Symbol == "m")
+            {
+                return stem + "ně";
+            }
+
+            return stem + "ě";
+        }
     }
 }
