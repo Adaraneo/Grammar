@@ -7,7 +7,7 @@ using Grammar.Czech.Services;
 namespace Grammar.Czech.Test
 {
     [TestClass]
-    public class CzechEpenthesisRuleEvaulatorTests
+    public class CzechEpenthesisRuleEvaluatorTests
     {
         private IEpenthesisRuleEvaluator<CzechWordRequest> evaluator;
 
