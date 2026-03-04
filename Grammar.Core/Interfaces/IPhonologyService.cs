@@ -18,7 +18,5 @@ namespace Grammar.Core.Interfaces
 
         string ShortenVowel(string stem);
         string LengthenVowel(string stem);
-
-        string ApplyIotation(string stem);
     }
 }
