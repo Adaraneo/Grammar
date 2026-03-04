@@ -76,7 +76,7 @@ namespace Grammar.Czech.Services
             var stem = wordStructure.Root;
             if (!string.IsNullOrEmpty(wordStructure.DerivationSuffix))
             {
-                stem = phonologyService.ApplyEpenthesis(stem, wordStructure.DerivationSuffix, word);
+                //stem = phonologyService.ApplyEpenthesis(stem, wordStructure.DerivationSuffix, word);
             }
 
             if (!string.IsNullOrEmpty(pattern.Stem) && isBaseWordPattern)

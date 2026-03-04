@@ -150,23 +150,6 @@ namespace Grammar.Czech.Test
         #region Epenthesis Tests
 
         [TestMethod]
-        public void NeedsEpenthesis_StudentkaGenPl_ReturnsTrue()
-        {
-            var request = new CzechWordRequest
-            {
-                Lemma = "studentka",
-                Pattern = "žena",
-                WordCategory = WordCategory.Noun,
-                Case = Case.Genitive,
-                Number = Number.Plural
-            };
-
-            var result = service.NeedsEpenthesis("student", "k", request);
-
-            Assert.IsTrue(result);
-        }
-
-        [TestMethod]
         public void ApplyEpenthesis_StudentkaGenPl_ReturnsStudentek()
         {
             var request = new CzechWordRequest
@@ -178,26 +161,9 @@ namespace Grammar.Czech.Test
                 Number = Number.Plural
             };
 
-            var result = service.ApplyEpenthesis("student", "k", request);
+            var result = service.ApplyEpenthesis(true, "student", "k");
 
             Assert.AreEqual("studentek", result);
-        }
-
-        [TestMethod]
-        public void NeedsEpenthesis_MatkaGenPl_ReturnsTrue()
-        {
-            var request = new CzechWordRequest
-            {
-                Lemma = "matka",
-                Pattern = "žena",
-                WordCategory = WordCategory.Noun,
-                Case = Case.Genitive,
-                Number = Number.Plural
-            };
-
-            var result = service.NeedsEpenthesis("mat", "k", request);
-
-            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -212,27 +178,9 @@ namespace Grammar.Czech.Test
                 Number = Number.Plural
             };
 
-            var result = service.ApplyEpenthesis("mat", "k", request);
+            var result = service.ApplyEpenthesis(true, "mat", "k");
 
             Assert.AreEqual("matek", result);
-        }
-
-        [TestMethod]
-        public void NeedsEpenthesis_OknoGenPl_ReturnsTrue()
-        {
-            var request = new CzechWordRequest
-            {
-                Lemma = "okno",
-                Pattern = "město",
-                WordCategory = WordCategory.Noun,
-                Case = Case.Genitive,
-                Number = Number.Plural,
-                Gender = Gender.Neuter
-            };
-
-            var result = service.NeedsEpenthesis("ok", "n", request);
-
-            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -248,44 +196,11 @@ namespace Grammar.Czech.Test
                 Gender = Gender.Neuter
             };
 
-            var result = service.ApplyEpenthesis("ok", "n", request);
+            var result = service.ApplyEpenthesis(true, "ok", "n");
 
             Assert.AreEqual("oken", result);
         }
 
-        [TestMethod]
-        public void NeedsEpenthesis_KnihaGenPl_ReturnsFalse()
-        {
-            var request = new CzechWordRequest
-            {
-                Lemma = "kniha",
-                Pattern = "žena",
-                WordCategory = WordCategory.Noun,
-                Case = Case.Genitive,
-                Number = Number.Plural
-            };
-
-            var result = service.NeedsEpenthesis("knih", "k", request);
-
-            Assert.IsFalse(result);
-        }
-
-        [TestMethod]
-        public void NeedsEpenthesis_SuffixStartsWithVowel_ReturnsFalse()
-        {
-            var request = new CzechWordRequest
-            {
-                Lemma = "most",
-                Pattern = "hrad",
-                WordCategory = WordCategory.Noun,
-                Case = Case.Instrumental,
-                Number = Number.Singular
-            };
-
-            var result = service.NeedsEpenthesis("most", "em", request);
-
-            Assert.IsFalse(result);
-        }
         #endregion
         #region Shorten and Lengthen Vowels
         [TestMethod]

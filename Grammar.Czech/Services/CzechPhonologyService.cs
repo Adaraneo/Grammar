@@ -105,64 +105,9 @@ namespace Grammar.Czech.Services
             return stem[..^2] + stem[^1];
         }
 
-        public bool NeedsEpenthesis(string stem, string suffix, CzechWordRequest request)
+        public string ApplyEpenthesis(bool needsEpenthesis, string stem, string suffix)
         {
-            if (string.IsNullOrEmpty(stem) || string.IsNullOrEmpty(suffix))
-            {
-                return false;
-            }
-
-            if (!_registry.IsConsonant(suffix[0]))
-            {
-                return false;
-            }
-
-            if (!_registry.IsConsonant(stem[^1]))
-            {
-                return false;
-            }
-
-            if (epenthesisWhitelist.Contains(stem))
-            {
-                return true;
-            }
-
-            if (epenthesisBlacklist.Contains(stem))
-            {
-                return false;
-            }
-
-            return EvaluateEpenthesisRules(stem, suffix, request);
-        }
-
-        private bool EvaluateEpenthesisRules(string stem, string suffix, CzechWordRequest request)
-        {
-            if (request.WordCategory == Core.Enums.WordCategory.Noun &&
-                request.Case == Core.Enums.Case.Genitive &&
-                request.Number == Core.Enums.Number.Plural &&
-                (suffix == "k" || suffix == "g"))
-            {
-                if (!stem.EndsWith(suffix))
-                {
-                    return true;
-                }
-            }
-
-            if (request.WordCategory == Core.Enums.WordCategory.Noun &&
-                request.Case == Core.Enums.Case.Genitive &&
-                request.Number == Core.Enums.Number.Plural &&
-                request.Gender == Core.Enums.Gender.Neuter &&
-                suffix == "n")
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public string ApplyEpenthesis(string stem, string suffix, CzechWordRequest request)
-        {
-            if (NeedsEpenthesis(stem, suffix, request))
+            if (needsEpenthesis)
             {
                 return stem + "e" + suffix;
             }

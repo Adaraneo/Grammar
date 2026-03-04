@@ -9,10 +9,7 @@ namespace Grammar.Czech.Test
 {
     internal abstract class TestAttributeBase : Attribute, ITestDataSource
     {
-        public virtual IEnumerable<object?[]> GetData(MethodInfo methodInfo)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IEnumerable<object?[]> GetData(MethodInfo methodInfo);
 
         public virtual string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
         {
