@@ -1,28 +1,43 @@
 # Grammar.Czech
 
-A rule-based Czech morphology engine for .NET. Generates grammatically correct inflected forms of Czech words dynamically from a lemma, grammatical metadata, and linguistic rules — without requiring a pre-computed lookup table for every word form.
+![Status](https://img.shields.io/badge/status-active%20development-blue)
+![.NET](https://img.shields.io/badge/.NET-8.0-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-> **Status:** Active development. Morphology ~65–70% complete. Phonology component functional.
+**A rule-based Czech morphology engine for .NET.**
+
+Most tools that deal with Czech word forms work by looking up pre-computed tables. Grammar.Czech takes a different approach — it *generates* inflected forms dynamically from linguistic rules, a lemma, and grammatical metadata. No pre-computed database required.
+
+This makes the engine well-suited for scenarios where you need to inflect arbitrary words at runtime — such as procedurally generated NPC dialogue in games, or document automation where word forms cannot be pre-enumerated.
 
 ---
 
 ## Features
 
-- **Noun declension** — all 7 cases, singular and plural, masculine/feminine/neuter
-- **Adjective declension** — including degrees (positive, comparative, superlative)
-- **Pronoun inflection** — personal, possessive, demonstrative, and others
+- **Noun declension** — all 7 cases, singular and plural, all genders and patterns
+- **Adjective declension** — hard/soft patterns, degrees (positive, comparative, superlative), possessive adjectives
+- **Pronoun inflection** — personal, possessive, demonstrative, reflexive, relative
 - **Verb conjugation** — present/past/future tenses, conditional, imperative, passive voice, negation, reflexives
-- **Phonological transformations** — vowel alternations, epenthesis, softening
-- **Rule-based generation** — forms generated from rules + overrides, not lookup tables
+- **Phonological transformations** — vowel alternations (quantity), mobile vowel (pohybné e), epenthesis, consonant softening
+- **Rule-based generation** — forms generated from rules + JSON overrides, not lookup tables
+- **Language-agnostic core** — `Grammar.Core` has no Czech-specific logic; adding another language means adding a new project
+
+---
+
+## Use Cases
+
+- **Game development** — grammatically correct NPC dialogue, item descriptions, and quest text in Czech
+- **Language learning tools** — on-demand paradigm generation for any lemma
+- **Document automation** — legal, administrative, or HR documents requiring correct inflection
+- **NLP research** — lightweight morphology component for Czech language pipelines
 
 ---
 
 ## Installation
 
-Add the `Grammar.Czech` project to your solution and reference it from your project.
+Add `Grammar.Czech` to your solution and reference it from your project.
 
-```csharp
-// In your .csproj
+```xml
 <ProjectReference Include="..\Grammar.Czech\Grammar.Czech.csproj" />
 ```
 
@@ -40,24 +55,21 @@ var services = new ServiceCollection();
 services.AddCzechGrammarServices("path/to/data/");
 
 var provider = services.BuildServiceProvider();
+var composer = provider.GetRequiredService<CzechWordFormComposer>();
 ```
-
-The `dataPath` argument points to the folder containing the JSON data files (noun patterns, verb patterns, irregulars, etc.).
 
 ### 2. Decline a noun
 
 ```csharp
-var composer = provider.GetRequiredService<CzechWordFormComposer>();
-
 var request = new CzechWordRequest
 {
-    Lemma      = "student",
+    Lemma        = "student",
     WordCategory = WordCategory.Noun,
-    Gender     = Gender.Masculine,
-    Pattern    = "pán",
-    IsAnimate  = true,
-    Number     = Number.Singular,
-    Case       = Case.Genitive,
+    Gender       = Gender.Masculine,
+    Pattern      = "pán",
+    IsAnimate    = true,
+    Number       = Number.Singular,
+    Case         = Case.Genitive,
 };
 
 var form = composer.GetFullForm(request);
@@ -69,14 +81,14 @@ Console.WriteLine(form.Form); // → "studenta"
 ```csharp
 var request = new CzechWordRequest
 {
-    Lemma      = "dělat",
+    Lemma        = "dělat",
     WordCategory = WordCategory.Verb,
-    Aspect     = VerbAspect.Imperfective,
-    Pattern    = "dělá",
-    Tense      = Tense.Present,
-    Number     = Number.Singular,
-    Person     = Person.First,
-    Modus      = Modus.Conjunctive,
+    Aspect       = VerbAspect.Imperfective,
+    Pattern      = "dělá",
+    Tense        = Tense.Present,
+    Number       = Number.Singular,
+    Person       = Person.First,
+    Modus        = Modus.Indicative,
 };
 
 var form = composer.GetFullForm(request);
@@ -88,12 +100,12 @@ Console.WriteLine(form.Form); // → "dělám"
 ```csharp
 var request = new CzechWordRequest
 {
-    Lemma      = "mladý",
+    Lemma        = "mladý",
     WordCategory = WordCategory.Adjective,
-    Gender     = Gender.Masculine,
-    Number     = Number.Singular,
-    Case       = Case.Dative,
-    Degree     = Degree.Possitive,
+    Gender       = Gender.Masculine,
+    Number       = Number.Singular,
+    Case         = Case.Dative,
+    Degree       = Degree.Possitive,
 };
 
 var form = composer.GetFullForm(request);
@@ -106,170 +118,120 @@ Console.WriteLine(form.Form); // → "mladému"
 
 ### `CzechWordRequest`
 
-The central request struct. All properties are optional unless required for the given `WordCategory`.
+The central request object. Properties are optional unless required for the given `WordCategory`.
 
 | Property | Type | Description |
-|----------|------|-------------|
+|---|---|---|
 | `Lemma` | `string` | Dictionary form of the word (required) |
 | `WordCategory` | `WordCategory` | Noun, Adjective, Pronoun, Verb, Numerale |
 | `Pattern` | `string?` | Declension/conjugation pattern (e.g. `"pán"`, `"žena"`, `"dělá"`) |
 | `Gender` | `Gender?` | Masculine, Feminine, Neuter |
 | `Number` | `Number?` | Singular, Plural |
-| `Case` | `Case?` | Nominative–Instrumental (for nouns, adjectives, pronouns) |
-| `Person` | `Person?` | First, Second, Third (for verbs) |
+| `Case` | `Case?` | Nominative–Instrumental |
+| `Person` | `Person?` | First, Second, Third (verbs) |
 | `Tense` | `Tense?` | Present, Past, Future |
 | `Aspect` | `VerbAspect?` | Perfective, Imperfective |
-| `Modus` | `Modus?` | Conjunctive, Conditional, Imperative, Indicative |
+| `Modus` | `Modus?` | Indicative, Conditional, Imperative |
 | `Voice` | `Voice?` | Active, Passive |
-| `Degree` | `Degree?` | Possitive, Comparative, Superlative (adjectives) |
-| `IsAnimate` | `bool?` | Animacy (masculine nouns — affects accusative) |
-| `IsNegative` | `bool` | Negated form (e.g. `"nedělám"`) |
-| `HasReflexive` | `bool?` | Reflexive particle (`se`/`si`) |
+| `Degree` | `Degree?` | Possitive, Comparative, Superlative |
+| `IsAnimate` | `bool?` | Animacy — affects accusative of masculine nouns |
+| `IsNegative` | `bool` | Produce negated form (e.g. `"nedělám"`) |
+| `HasReflexive` | `bool?` | Append reflexive particle `se`/`si` |
 | `HasExplicitSubject` | `bool?` | Affects word order in conditional phrases |
 | `VerbClass` | `VerbClass?` | Czech verb class 1–5 (optional hint) |
-| `AdditionalData` | `string?` | Reserved for future use |
 
----
-
-### Enums
-
-#### `WordCategory`
-```csharp
-Noun | Adjective | Pronoun | Numerale | Verb
-```
-
-#### `Gender`
-```csharp
-Masculine | Feminine | Neuter
-```
-
-#### `Number`
-```csharp
-Singular | Plural
-```
-
-#### `Case`
-```csharp
-Nominative | Genitive | Dative | Accusative | Vocative | Locative | Instrumental
-```
-
-#### `Person`
-```csharp
-First | Second | Third
-```
-
-#### `Tense`
-```csharp
-Present | Past | Future
-```
-
-#### `Modus`
-```csharp
-Conjunctive | Conditional | Imperative | Indicative
-```
-
-#### `VerbAspect`
-```csharp
-Perfective | Imperfective
-```
-
-#### `Voice`
-```csharp
-Active | Passive
-```
-
-#### `Degree`
-```csharp
-Possitive | Comparative | Superlative
-```
-
-#### `VerbClass`
-```csharp
-Class1 | Class2 | Class3 | Class4 | Class5
-```
-
----
-
-### `CzechWordFormComposer`
-
-The main high-level entry point.
+### `CzechWordFormComposer` — main entry point
 
 | Method | Returns | Description |
-|--------|---------|-------------|
-| `GetFullForm(CzechWordRequest)` | `WordForm` | Returns the complete inflected/conjugated form, including verb phrases (passive, conditional, reflexive) |
+|---|---|---|
+| `GetFullForm(CzechWordRequest)` | `WordForm` | Complete inflected/conjugated form, including verb phrases |
 
-### `MorphologyEngine`
+### `MorphologyEngine` — lower-level access
 
-Lower-level service. Use directly if you need raw morphology without phrase building.
+Use directly when you need raw morphology without phrase assembly (nouns, adjectives, pronouns).
 
 | Method | Returns | Description |
-|--------|---------|-------------|
+|---|---|---|
 | `GetForm(CzechWordRequest)` | `WordForm` | Noun, adjective, or pronoun inflection |
-| `GetBasicForm(CzechWordRequest)` | `WordForm` | Verb infinitive / base form |
-
-> **Prefer `CzechWordFormComposer.GetFullForm()`** for verbs — it assembles the full phrase (auxiliary verbs, particles, negation, reflexives). Use `MorphologyEngine` directly only for nouns, adjectives, and pronouns when you need the raw form.
-
-### `WordForm`
-
-```csharp
-public class WordForm
-{
-    public string Form { get; } // The resulting word form string
-}
-```
+| `GetBasicForm(CzechWordRequest)` | `WordForm` | Verb base form |
 
 ---
 
 ## Supported Patterns
 
-### Noun patterns
+**Noun patterns**
 `pán`, `hrad`, `muž`, `stroj`, `předseda`, `soudce`, `žena`, `růže`, `píseň`, `kost`, `město`, `moře`, `kuře`, `stavení`
 
-### Verb patterns
+**Verb patterns**
 `dělá`, `prosí`, `kupuje`, `maže`, `nese`, `peče`, `tiskne`, `mine`, `kryje`, `být`
 
-### Pronoun lemmas
-`já`, `ty`, `on`, `ona`, `ono`, `my`, `vy`, `oni`, `ona_` (ony/ona), `můj`, `tvůj`, `jeho`, `její`, `náš`, `váš`, `jejich`, `sebe`, `ten`, `kdo`, `co`, `jenž`
+**Pronoun lemmas**
+`já`, `ty`, `on`, `ona`, `ono`, `my`, `vy`, `oni`, `ona_`, `můj`, `tvůj`, `jeho`, `její`, `náš`, `váš`, `jejich`, `sebe`, `ten`, `kdo`, `co`, `jenž`
 
 ---
 
 ## Architecture
 
 ```
-Grammar.Core/          # Language-agnostic models and interfaces
-  Enums/               # Case, Gender, Number, Tense, etc.
-  Interfaces/          # IWordRequest, IInflectionService<T>, IPhonologyService<T>, ...
-  Models/Word/         # WordRequest, WordForm, WordStructure
+Grammar.Core/               # Language-agnostic models and interfaces
+  Enums/                    # Case, Gender, Number, Tense, VerbAspect, ...
+  Interfaces/               # IInflectionService<T>, IPhonologyService<T>, ...
+  Models/                   # WordRequest, WordForm, WordStructure, Phoneme
 
-Grammar.Czech/         # Czech-specific implementation
-  Models/              # CzechWordRequest
+Grammar.Czech/              # Czech-specific implementation
+  Models/                   # CzechWordRequest
   Services/
-    MorphologyEngine           # Routes requests to noun/adjective/pronoun/verb services
-    CzechWordFormComposer      # Full form assembly including verb phrases
-    CzechNounDeclensionService
-    CzechAdjectiveDeclensionService
-    CzechPronounService
-    CzechVerbConjugationService
-    CzechPhonologyService      # Vowel alternations, softening, epenthesis
-    CzechAuxiliaryVerbService  # být forms
-    CzechVerbPhraseBuilderService  # Passive, conditional, reflexive phrase construction
-    CzechNegationService
-    CzechPrefixService
-    CzechParticleService
-    CzechPrepositionService
-  Data/                # JSON files: patterns, irregulars, pronouns, verbs, particles, ...
-  CzechGrammarServiceFactory   # AddCzechGrammarServices() extension method
+    MorphologyEngine                  # Routes requests by WordCategory
+    CzechWordFormComposer             # Top-level entry point; assembles full forms
+    CzechNounDeclensionService        # Noun paradigms
+    CzechAdjectiveDeclensionService   # Adjective paradigms
+    CzechPronounService               # Pronoun paradigms
+    CzechVerbConjugationService       # Verb paradigms
+    CzechPhonologyService             # Vowel alternations, softening, epenthesis
+    CzechAuxiliaryVerbService         # být auxiliary forms
+    CzechVerbPhraseBuilderService     # Passive, conditional, reflexive construction
+    CzechNegationService              # Negation prefix and být negation
+    CzechPrefixService                # Perfective prefixes, negative prefix
+    CzechParticleService              # Conditional particles, reflexives se/si
+    CzechPrepositionService           # Preposition–case validation
+  Data/                     # JSON: patterns, irregulars, verbs, pronouns, particles, ...
+  CzechGrammarServiceFactory          # AddCzechGrammarServices() extension method
 
-Grammar.Czech.Cli/     # Console demo app
+Grammar.Czech.Cli/          # Console demo app
+Grammar.Czech.Test/         # MSTest unit and data-driven tests
 ```
 
 ### Key design principles
 
-- **Rule-based generation** — inflected forms are computed, not looked up. Only metadata, rules, and an overrides layer for irregulars are required.
-- **Lexical data over heuristics** — grammatical facts (animacy, mobile vowels, pattern) are stored explicitly in data files, not inferred at runtime. See `HasMobileVowel` in `NounPattern` and `substantive_irregular.json` as a concrete example.
-- **Separation of concerns** — phonological transformation (how to change a form) is decoupled from the lexical decision (whether to apply it). Evaluator interfaces (`ISofteningRuleEvaluator`, `IEpenthesisRuleEvaluator`) are separate from the phonology service.
-- **Dependency injection throughout** — all services are registered via `AddCzechGrammarServices()` and resolved through `IServiceCollection`.
-- **Language-agnostic core** — `Grammar.Core` contains no Czech-specific logic. Adding support for another language means implementing the interfaces in a new project.
+- **Rule-based generation** — inflected forms are computed from rules + a minimal overrides layer, not looked up from a full database
+- **Lexical data over heuristics** — grammatical facts (animacy, mobile vowels, pattern) are stored explicitly in JSON, not inferred at runtime
+- **Separation of concerns** — phonological *transformation* is decoupled from the *decision* to apply it (`ISofteningRuleEvaluator`, `IEpenthesisRuleEvaluator`)
+- **Dependency injection throughout** — all services registered via `AddCzechGrammarServices()` and resolved through `IServiceCollection`
+- **Language-agnostic core** — `Grammar.Core` contains no Czech-specific logic; new language support means a new project implementing the core interfaces
+
+---
+
+## Known Limitations
+
+- **Iotation not implemented** — consonant+`ě` combinations after labials (`p`, `b`, `m`, `v`) are not yet handled. Affects a small subset of words (e.g. certain forms of `zem`, `krev`). Intentionally deferred.
+- **Guess heuristics not implemented** — `GuessGenderAndPattern()` and `GuessVerbAspect()` are stubbed. Callers must supply pattern and aspect explicitly. This will be superseded by the planned valency dictionary.
+- **No numerals yet** — numeral inflection is planned but not started.
+- **No sentence generation** — the engine produces individual word forms. Full NLG (sentence construction from semantic input) is on the roadmap.
+
+---
+
+## Roadmap
+
+### Next
+- [ ] Complete pronoun data coverage
+- [ ] Numeral inflection
+- [ ] Valency dictionary — explicit per-lemma metadata (gender, pattern, aspect, animacy) — eliminates the need for guess heuristics
+
+### Future
+- [ ] NLG / sentence construction — generate grammatically correct Czech sentences from semantic input
+- [ ] Iotation
+- [ ] Latin language support
+- [ ] NuGet package
 
 ---
 
@@ -279,18 +241,18 @@ Grammar.Czech.Cli/     # Console demo app
 - .NET 8+
 - Visual Studio 2022 or Rider
 
-### Project structure
+### Adding a new language
 
-New language support should be added as a separate project referencing `Grammar.Core` and implementing:
+Add a new project referencing `Grammar.Core` and implement:
 - `IInflectionService<TRequest>`
 - `IPhonologyService<TRequest>`
 - `IWordStructureResolver<TRequest>`
 
-### Data files
+### Adding irregular words
 
-Grammar data lives in `Grammar.Czech/Data/` as JSON. Patterns, irregular forms, verb tables, pronouns, particles, and prepositions are all data-driven. When adding new words with irregular behavior, add overrides there rather than adding code branches.
+Grammar data lives in `Grammar.Czech/Data/` as JSON. When adding a word with irregular behaviour, add an override entry there — do not add code branches.
 
-A key example of this principle is **mobile vowels** — nouns like *pes*, *den*, *otec* drop a vowel in oblique cases (*pes → psa*, *den → dne*). This is modeled as a `bool HasMobileVowel` on `NounPattern` and stored in `substantive_irregular.json`:
+Example — mobile vowels (`pes → psa`, `den → dne`, `otec → otce`):
 
 ```json
 "pes": { "hasMobileVowel": true, "inheritsFrom": "pán" },
@@ -298,24 +260,12 @@ A key example of this principle is **mobile vowels** — nouns like *pes*, *den*
 "otec": { "hasMobileVowel": true, "inheritsFrom": "muž" }
 ```
 
-The phonology service (`RemoveMobileVowel`) only performs the transformation. Whether to apply it is a lexical decision — stored in data, not inferred from the word's shape.
-
 ### Tests
 
-The project uses MSTest with data-driven test patterns. Tests live in `Grammar.Czech.Tests/` (and `Grammar.Core.Tests/`).
-
----
-
-## Roadmap
-
-- [ ] Valency dictionary — explicit lemma metadata store (eliminates remaining heuristics)
-- [ ] NLG / sentence construction — generate grammatically correct Czech sentences from semantic input
-- [ ] Improved GitHub documentation
-- [ ] Latin language support
-- [ ] NuGet package
+MSTest with data-driven test patterns. Tests live in `Grammar.Czech.Test/`.
 
 ---
 
 ## License
 
-See [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE.txt) for details.
