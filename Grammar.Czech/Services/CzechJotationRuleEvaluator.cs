@@ -35,9 +35,8 @@ namespace Grammar.Czech.Services
             var lastConsonant = stem[^1..];
             var phoneme = _registry.Get(lastConsonant);
             
-
             var isLabial = phoneme?.Place == ArticulationPlace.Bilabial || (phoneme?.Place == ArticulationPlace.Labiodental && phoneme.Symbol == "v");
-            return isLabial && normalizedEnding.StartsWith("e");
+            return isLabial && normalizedEnding == "e";
         }
     }
 }

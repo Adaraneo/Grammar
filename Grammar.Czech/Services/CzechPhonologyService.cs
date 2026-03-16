@@ -1,7 +1,9 @@
-﻿using Grammar.Core.Interfaces;
+﻿using Grammar.Core.Enums.PhonologicalFeatures;
+using Grammar.Core.Interfaces;
 using Grammar.Czech.Enums.Phonology;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
+using System.ComponentModel;
 
 namespace Grammar.Czech.Services
 {
@@ -137,15 +139,23 @@ namespace Grammar.Czech.Services
         public string ApplyDTNRule(string stem, string ending)
         {
             var normalizedEnding = ending.TrimStart('-');
-            if(!normalizedEnding.StartsWith("e"))
-                return ending;
-
+            var dashPrefix = ending.Length - normalizedEnding.Length;
             var last = stem[^1..];
             var phoneme = _registry.Get(last);
-            if (phoneme?.PalatalizeTo is not null)
+
+            var isDTN = phoneme?.Place == ArticulationPlace.Alveolar
+                && (phoneme.Manner == ArticulationManner.Nasal || phoneme.Manner == ArticulationManner.Plosive);
+
+            var isLabial = phoneme?.Place == ArticulationPlace.Bilabial;
+
+            if (normalizedEnding.StartsWith("e"))
             {
-                var dashPrefix = ending.Length - normalizedEnding.Length;
-                return ending[..dashPrefix] + 'ě' + normalizedEnding[1..];
+                return isDTN ? ending[..dashPrefix] + 'ě' + normalizedEnding[1..] : ending;
+            }
+
+            if (normalizedEnding.StartsWith("ě"))
+            {
+                return (!isDTN && !isLabial) ? ending[..dashPrefix] + 'e' + normalizedEnding[1..] : ending;
             }
 
             return ending;

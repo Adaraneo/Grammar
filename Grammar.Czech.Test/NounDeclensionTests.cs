@@ -63,7 +63,7 @@ namespace Grammar.Czech.Test
         }
 
         [TestMethod]
-        [PisenPatternNounTest]
+        [PisenPatternNounDataTest]
         public void GetForm_PíseňPatternGenSgFor_Returns(string lemma, string expected)
         {
             var request = new CzechWordRequest
@@ -80,7 +80,32 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
-        private class PisenPatternNounTestAttribute : TestAttributeBase
+        [TestMethod]
+        [PatternsNounDeclensionData]
+        public void GetForm_SgNom_ReturnsExpected(string lemma, string pattern, Gender gender, bool? isAnimate, string[] vals)
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = lemma,
+                WordCategory = WordCategory.Noun,
+                Gender = gender,
+                Pattern = pattern,
+                IsAnimate = isAnimate
+            };
+
+            for (int index = 0; index < vals.Length; index++)
+            {
+                var caseNum = index < 7 ? index : index - 7;
+                request.Case = Enum.GetValues<Case>()[caseNum];
+                request.Number = index < 7 ? Number.Singular : Number.Plural;
+
+                var result = nounDeclensionService.GetForm(request).Form;
+                var expected = vals[index];
+                Assert.AreEqual(expected, result);
+            }
+        }
+
+        private class PisenPatternNounDataTestAttribute : NounDeclensionTestAttribue
         {
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
@@ -92,6 +117,74 @@ namespace Grammar.Czech.Test
                 };
 
                 return list;
+            }
+        }
+
+        private class PatternsNounDeclensionDataAttribute : NounDeclensionTestAttribue
+        {
+            public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
+            {
+                var dict = new Dictionary<string, (string, Gender, bool?, string[])>
+                {
+                    { "student", ("pán", Gender.Masculine, true, new[] {"student", "studenta", "studentovi", "studenta", "studente", "studentovi", "studentem",
+                                            "studenti", "studentů", "studenty", "studenty", "studenti", "studentech", "studenty"}) },
+                    { "studentka", ("žena", Gender.Feminine, null, new[] {"studentka", "studentky", "studentce", "studentku", "studentko", "studentce", "studentkou",
+                                            "studentky", "studentek", "studentkám", "studentky", "studentky", "studentkách", "studentkami"}) },
+                    { "studentík", ("pán", Gender.Masculine, true, new [] {"studentík", "studentíka", "studentíkovi", "studentíka", "studentíku", "studentíkovi", "studentíkem",
+                                            "studentíci", "studentíků", "studentíkům", "studentíky", "studentíci", "studentících", "studentíky" }) },
+                    {"žena", ("žena", Gender.Feminine, null, new [] {"žena", "ženy", "ženě", "ženu", "ženo", "ženě","ženou",
+                                            "ženy", "žen", "ženám", "ženy", "ženy", "ženách", "ženami"}) },
+                    { "pes", ("pán", Gender.Masculine, true, new [] {"pes", "psa", "psovi", "psa", "pse","psovi", "psem",
+                                            "psy", "psů", "psům", "psy", "psi", "psech", "psy"}) }
+                };
+
+                var data = new List<object[]>();
+
+                foreach (var (k,v) in dict)
+                {
+                    var lemma = k;
+                    var pattern = v.Item1;
+                    var gender = v.Item2;
+                    var isAnimate = v.Item3;
+                    var vals = v.Item4;
+                    data.Add(new object[] { lemma, pattern, gender, isAnimate, vals });
+                }
+
+                return data;
+            }
+
+            public override string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
+            {
+                if (data is not null && data.Length >= 2)
+                {
+                    string insert1 = data[0]?.ToString() ?? string.Empty;
+                    if (!string.IsNullOrEmpty(insert1))
+                    {
+                        insert1 = char.ToUpperInvariant(insert1[0]) + insert1[1..];
+                    }
+
+                    var expectedData = data[4] as string[] ?? null;
+                    var expectedDataString = string.Empty;
+                    if (expectedData is not null)
+                    {
+                        expectedDataString = string.Join(',', expectedData);
+                    }
+
+                    var methodParts = methodInfo.Name.Split('_');
+                    methodParts[1] = methodParts[1] += insert1;
+
+                    return $"{string.Join('_', methodParts)}({expectedDataString})";
+                }
+
+                return base.GetDisplayName(methodInfo, data);
+            }
+        }
+
+        private class NounDeclensionTestAttribue : TestAttributeBase
+        {
+            public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
+            {
+                throw new NotImplementedException();
             }
 
             public override string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
@@ -122,5 +215,6 @@ namespace Grammar.Czech.Test
                 return methodInfo.Name;
             }
         }
+
     }
 }
