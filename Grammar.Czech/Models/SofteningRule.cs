@@ -1,4 +1,5 @@
 ﻿using Grammar.Core.Enums;
+using Grammar.Czech.Enums.Phonology;
 
 namespace Grammar.Czech.Models
 {
@@ -9,6 +10,7 @@ namespace Grammar.Czech.Models
         Case? Case = null,
         Func<CzechWordRequest, bool>? CustomPredicate = null,
         bool ApplySoftening = true,
-        string? EndingTransformation = null
+        string? EndingTransformation = null,
+        PalatalizationContext Context = PalatalizationContext.First
     );
 }

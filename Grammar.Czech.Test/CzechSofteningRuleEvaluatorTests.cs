@@ -57,7 +57,7 @@ namespace Grammar.Czech.Test
                 Number = Number.Plural,
                 Case = Case.Genitive
             };
-            var result = softeningRuleEvaluator.ShouldApplySoftening(request);
+            var result = softeningRuleEvaluator.ShouldApplySoftening(request, out _);
             Assert.IsFalse(result);
         }
 
@@ -87,7 +87,7 @@ namespace Grammar.Czech.Test
                 Number = Number.Singular,
                 Case = Case.Nominative
             };
-            var result = softeningRuleEvaluator.ShouldApplySoftening(request);
+            var result = softeningRuleEvaluator.ShouldApplySoftening(request, out _);
             Assert.IsFalse(result);
         }
 
@@ -102,7 +102,7 @@ namespace Grammar.Czech.Test
                 Number = Number.Singular,
                 Case = Case.Dative
             };
-            var result = softeningRuleEvaluator.ShouldApplySoftening(request);
+            var result = softeningRuleEvaluator.ShouldApplySoftening(request, out _);
             Assert.IsTrue(result);
         }
     }

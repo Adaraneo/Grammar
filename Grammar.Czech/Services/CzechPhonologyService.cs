@@ -141,7 +141,7 @@ namespace Grammar.Czech.Services
 
             var last = stem[^1..];
             var phoneme = _registry.Get(last);
-            if (phoneme?.PalatalizeTo is not null)
+            if (phoneme?.PalatalizeTo is not null && last == "n")
                 return ending.Replace("e", "ě");
 
             return ending;

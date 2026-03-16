@@ -38,7 +38,12 @@
   },
   "dům": {
     "inheritsFrom": "hrad",
-    "stem": "dom"
+    "stem": "dom",
+    "overrides": {
+      "singular": {
+        "4": "dům"
+      }
+    }
   },
   "důl": {
     "inheritsFrom": "hrad",

@@ -100,9 +100,9 @@ namespace Grammar.Czech.Services
                 stem = pattern.Stem!;
             }
 
-            if (softeningRuleEvaluator.ShouldApplySoftening(word))
+            if (softeningRuleEvaluator.ShouldApplySoftening(word, out var palatalizationContext))
             {
-                stem = phonologyService.ApplySoftening(stem);
+                stem = phonologyService.ApplySoftening(stem, palatalizationContext);
             }
 
             var hasMobileVowelRemoval = MorphologyHelper.EndsWithVowelConsonantVowelConsonant(word.Lemma);

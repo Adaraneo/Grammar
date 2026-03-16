@@ -1,4 +1,5 @@
 ﻿using Grammar.Core.Enums;
+using Grammar.Czech.Enums.Phonology;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 
@@ -8,8 +9,8 @@ namespace Grammar.Czech.Services
     {
         private readonly List<SofteningRule> rules = new()
         {
-            new("žena", WordCategory.Noun, Number.Singular, Case.Dative, req => req.Lemma.EndsWith("ka"), EndingTransformation: "-e"),
-            new("žena", WordCategory.Noun, Number.Singular, Case.Locative, req => req.Lemma.EndsWith("ka"), EndingTransformation: "-e"),
+            new("žena", WordCategory.Noun, Number.Singular, Case.Dative, req => req.Lemma.EndsWith("ka"), EndingTransformation: "-e", Context: PalatalizationContext.Second),
+            new("žena", WordCategory.Noun, Number.Singular, Case.Locative, req => req.Lemma.EndsWith("ka"), EndingTransformation: "-e",Context: PalatalizationContext.Second),
 
             new("žena", WordCategory.Noun, Number.Singular, Case.Dative, req => !req.Lemma.EndsWith("ka") && req.Lemma != "žena"),
             new("žena", WordCategory.Noun, Number.Singular, Case.Locative, req => !req.Lemma.EndsWith("ka") && req.Lemma != "žena"),
@@ -40,9 +41,10 @@ namespace Grammar.Czech.Services
             );
         }
 
-        public bool ShouldApplySoftening(CzechWordRequest request)
+        public bool ShouldApplySoftening(CzechWordRequest request, out PalatalizationContext context)
         {
             var rule = GetMatchingRule(request);
+            context = rule?.Context ?? PalatalizationContext.First;
             return rule?.ApplySoftening ?? false;
         }
     }

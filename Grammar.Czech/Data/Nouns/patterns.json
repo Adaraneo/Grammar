@@ -86,7 +86,12 @@
             "6": "-ích",
             "7": "-emi"
         }
+    },
+  "overrides": {
+    "singular": {
+      "4": "píseň"
     }
+  }
 },
   "kost": {
     "gender": "feminine",
