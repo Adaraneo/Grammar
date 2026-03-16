@@ -18,8 +18,18 @@ namespace Grammar.Czech.Services
             new(null, WordCategory.Noun, null, Case.Vocative,
                 req => req.Lemma?.EndsWith("ec") == true),
 
-            new("pán", WordCategory.Noun, Number.Plural, Case.Vocative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), Context: PalatalizationContext.Second),
-            new("pán", WordCategory.Noun, Number.Plural, Case.Nominative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), Context: PalatalizationContext.Second),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Nominative, 
+    req => req.Lemma.EndsWith("k"), 
+    Context: PalatalizationContext.Second),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Nominative, 
+    req => req.Lemma.EndsWith("ch"), 
+    Context: PalatalizationContext.First),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Vocative, 
+    req => req.Lemma.EndsWith("k"), 
+    Context: PalatalizationContext.Second),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Vocative, 
+    req => req.Lemma.EndsWith("ch"), 
+    Context: PalatalizationContext.First),
             new("pán", WordCategory.Noun, Number.Plural, Case.Locative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-ích"),
             new("pán", WordCategory.Noun, Number.Singular, Case.Vocative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-u", ApplySoftening: false)
         };
