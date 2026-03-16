@@ -30,7 +30,12 @@ namespace Grammar.Czech.Services
             new("pán", WordCategory.Noun, Number.Plural, Case.Vocative, 
     req => req.Lemma.EndsWith("ch"), 
     Context: PalatalizationContext.First),
-            new("pán", WordCategory.Noun, Number.Plural, Case.Locative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-ích"),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Locative, 
+    req => req.Lemma.EndsWith("k"), 
+    EndingTransformation: "-ích", Context: PalatalizationContext.Second),
+            new("pán", WordCategory.Noun, Number.Plural, Case.Locative, 
+    req => req.Lemma.EndsWith("ch"), 
+    EndingTransformation: "-ích", Context: PalatalizationContext.First),
             new("pán", WordCategory.Noun, Number.Singular, Case.Vocative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-u", ApplySoftening: false)
         };
 
