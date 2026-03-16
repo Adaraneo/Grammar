@@ -7,6 +7,6 @@ namespace Grammar.Czech.Interfaces
     {
         bool ShouldApplySoftening(TWord wordRequest, out PalatalizationContext context);
 
-        string? GetEndingTransformation(TWord wordRequest);
+        string? GetEndingTransformation(TWord wordRequest, out bool applied);
     }
 }

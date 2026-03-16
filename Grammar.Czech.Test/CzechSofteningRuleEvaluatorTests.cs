@@ -27,7 +27,7 @@ namespace Grammar.Czech.Test
                 Number = Number.Singular,
                 Case = Case.Dative
             };
-            var result = softeningRuleEvaluator.GetEndingTransformation(request);
+            var result = softeningRuleEvaluator.GetEndingTransformation(request, out _);
             Assert.AreEqual("-e", result);
         }
 
@@ -42,7 +42,7 @@ namespace Grammar.Czech.Test
                 Number = Number.Singular,
                 Case = Case.Locative
             };
-            var result = softeningRuleEvaluator.GetEndingTransformation(request);
+            var result = softeningRuleEvaluator.GetEndingTransformation(request, out _);
             Assert.AreEqual("-e", result);
         }
 
@@ -72,7 +72,7 @@ namespace Grammar.Czech.Test
                 Number = Number.Singular,
                 Case = Case.Nominative
             };
-            var result = softeningRuleEvaluator.GetEndingTransformation(request);
+            var result = softeningRuleEvaluator.GetEndingTransformation(request, out _);
             Assert.IsNull(result);
         }
 

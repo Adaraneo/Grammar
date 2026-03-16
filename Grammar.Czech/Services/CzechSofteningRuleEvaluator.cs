@@ -24,9 +24,10 @@ namespace Grammar.Czech.Services
             new("pán", WordCategory.Noun, Number.Singular, Case.Vocative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-u", ApplySoftening: false)
         };
 
-        public string? GetEndingTransformation(CzechWordRequest wordRequest)
+        public string? GetEndingTransformation(CzechWordRequest wordRequest, out bool applied)
         {
             var rule = GetMatchingRule(wordRequest);
+            applied = rule?.EndingTransformation is not null;
             return rule?.EndingTransformation;
         }
 

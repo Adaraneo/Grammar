@@ -107,14 +107,14 @@ namespace Grammar.Czech.Services
 
             var hasMobileVowelRemoval = MorphologyHelper.EndsWithVowelConsonantVowelConsonant(word.Lemma);
 
-            var finalEnding = softeningRuleEvaluator.GetEndingTransformation(word) ?? ending;
+            var finalEnding = softeningRuleEvaluator.GetEndingTransformation(word, out var endingTransformationApplied) ?? ending;
             if (jotationRuleEvaluator.ShouldApplyJotation(stem, finalEnding, hasMobileVowelRemoval))
             {
                 finalEnding = phonologyService.ApplyJotation(finalEnding);
             }
             else
             {
-                finalEnding = phonologyService.ApplyDTNRule(stem, finalEnding);
+                finalEnding = !endingTransformationApplied ? phonologyService.ApplyDTNRule(stem, finalEnding) : finalEnding;
             }
 
             return new WordForm(MorphologyHelper.ApplyFormEnding(stem, finalEnding));

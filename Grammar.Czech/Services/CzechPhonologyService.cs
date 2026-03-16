@@ -127,7 +127,7 @@ namespace Grammar.Czech.Services
         public string ApplyJotation(string ending)
         {
             var normalized = ending.TrimStart('-');
-            var dashPrefix = normalized.Length;
+            var dashPrefix = ending.Length - normalized.Length;
             if (!normalized.StartsWith("e"))
                 return ending;
 
@@ -143,7 +143,10 @@ namespace Grammar.Czech.Services
             var last = stem[^1..];
             var phoneme = _registry.Get(last);
             if (phoneme?.PalatalizeTo is not null)
-                return ending.Replace("e", "ě");
+            {
+                var dashPrefix = ending.Length - normalizedEnding.Length;
+                return ending[..dashPrefix] + 'ě' + normalizedEnding[1..];
+            }
 
             return ending;
         }
