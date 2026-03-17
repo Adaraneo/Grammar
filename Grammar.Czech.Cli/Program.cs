@@ -125,39 +125,39 @@
             PrintNounForms(composer, forestRequest);
             PrintNounForms(composer, píseňRequest);
 
-            //var doRequest = new CzechWordRequest
-            //{
-            //    Lemma = "dělat",
-            //    WordCategory = WordCategory.Verb,
-            //    Gender = Gender.Masculine,
-            //    Aspect = VerbAspect.Imperfective,
-            //    Pattern = "dělá",
-            //};
+            var doRequest = new CzechWordRequest
+            {
+                Lemma = "dělat",
+                WordCategory = WordCategory.Verb,
+                Gender = Gender.Masculine,
+                Aspect = VerbAspect.Imperfective,
+                Pattern = "dělá",
+            };
 
-            //var carryRequest = new CzechWordRequest
-            //{
-            //    Lemma = "nést",
-            //    WordCategory = WordCategory.Verb,
-            //    Gender = Gender.Masculine,
-            //    Aspect = VerbAspect.Imperfective,
-            //    Pattern = "nese",
-            //};
+            var carryRequest = new CzechWordRequest
+            {
+                Lemma = "nést",
+                WordCategory = WordCategory.Verb,
+                Gender = Gender.Masculine,
+                Aspect = VerbAspect.Imperfective,
+                Pattern = "nese",
+            };
 
-            //PrintVerbForms(composer, doRequest);
-            //PrintVerbForms(composer, carryRequest);
+            PrintVerbForms(composer, doRequest);
+            PrintVerbForms(composer, carryRequest);
 
-            //var negativeCarryRequest = new CzechWordRequest
-            //{
-            //    Lemma = carryRequest.Lemma,
-            //    WordCategory = carryRequest.WordCategory,
-            //    Gender = carryRequest.Gender,
-            //    Aspect = carryRequest.Aspect,
-            //    Pattern = carryRequest.Pattern,
-            //    IsNegative = true,
-            //};
+            var negativeCarryRequest = new CzechWordRequest
+            {
+                Lemma = carryRequest.Lemma,
+                WordCategory = carryRequest.WordCategory,
+                Gender = carryRequest.Gender,
+                Aspect = carryRequest.Aspect,
+                Pattern = carryRequest.Pattern,
+                IsNegative = true,
+            };
 
-            //PrintVerbForms(composer, negativeCarryRequest);
-            //PrintVerbForms(composer, carryRequest, Modus.Imperative);
+            PrintVerbForms(composer, negativeCarryRequest);
+            PrintVerbForms(composer, carryRequest, Modus.Imperative);
 
             var meRequest = new CzechWordRequest
             {
