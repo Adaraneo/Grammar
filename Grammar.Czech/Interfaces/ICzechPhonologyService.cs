@@ -7,6 +7,5 @@ namespace Grammar.Czech.Interfaces
     public interface ICzechPhonologyService : IPhonologyService<CzechWordRequest>
     {
         string ApplySoftening(string stem, PalatalizationContext context);
-        //string ApplySoftConsonantBeforeE(string stem);
     }
 }

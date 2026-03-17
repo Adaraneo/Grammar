@@ -14,6 +14,6 @@ namespace Grammar.Czech.Interfaces
         /// Vyžaduje celý word request — jotace je morfologické rozhodnutí
         /// závislé na pádu a vzoru, nestačí jen znát hlásky.
         /// </summary>
-        bool ShouldApplyJotation(TWord request, string stem, string ending, bool hasMobileWovelRemoval);
+        bool ShouldApplyJotation(TWord request, string stem, string ending, bool hasMobileVowelRemoval);
     }
 }
