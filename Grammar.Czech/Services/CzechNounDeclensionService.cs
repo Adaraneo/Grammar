@@ -15,8 +15,9 @@ namespace Grammar.Czech.Services
         private readonly ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator;
         private readonly IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator;
         private readonly IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator;
+        private readonly IOrtographyService ortographyService;
 
-        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator, IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator)
+        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator, IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator, IOrtographyService ortographyService)
         {
             this.dataProvider = dataProvider;
             this.wordStructureResolver = wordStructureResolver;
@@ -24,6 +25,7 @@ namespace Grammar.Czech.Services
             this.softeningRuleEvaluator = softeningRuleEvaluator;
             this.epenthesisRuleEvaluator = epenthesisRuleEvaluator;
             this.jotationRuleEvaluator = jotationRuleEvaluator;
+            this.ortographyService = ortographyService;
         }
 
         public WordForm GetForm(CzechWordRequest word)
@@ -114,7 +116,7 @@ namespace Grammar.Czech.Services
             }
             else
             {
-                finalEnding = !endingTransformationApplied ? phonologyService.ApplyDTNRule(stem, finalEnding) : finalEnding;
+                finalEnding = !endingTransformationApplied ? ortographyService.NormalizeEndingOrthography(stem, finalEnding) : finalEnding;
             }
 
             return new WordForm(MorphologyHelper.ApplyFormEnding(stem, finalEnding));

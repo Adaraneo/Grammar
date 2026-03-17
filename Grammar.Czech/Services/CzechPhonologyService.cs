@@ -135,30 +135,5 @@ namespace Grammar.Czech.Services
 
             return ending[..dashPrefix] + 'ě' + normalized[1..];
         }
-
-        public string ApplyDTNRule(string stem, string ending)
-        {
-            var normalizedEnding = ending.TrimStart('-');
-            var dashPrefix = ending.Length - normalizedEnding.Length;
-            var last = stem[^1..];
-            var phoneme = _registry.Get(last);
-
-            var isDTN = phoneme?.Place == ArticulationPlace.Alveolar
-                && (phoneme.Manner == ArticulationManner.Nasal || phoneme.Manner == ArticulationManner.Plosive);
-
-            var isLabial = phoneme?.Place == ArticulationPlace.Bilabial;
-
-            if (normalizedEnding.StartsWith("e"))
-            {
-                return isDTN ? ending[..dashPrefix] + 'ě' + normalizedEnding[1..] : ending;
-            }
-
-            if (normalizedEnding.StartsWith("ě"))
-            {
-                return (!isDTN && !isLabial) ? ending[..dashPrefix] + 'e' + normalizedEnding[1..] : ending;
-            }
-
-            return ending;
-        }
     }
 }

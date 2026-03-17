@@ -101,7 +101,7 @@ namespace Grammar.Czech.Test
 
                 var result = nounDeclensionService.GetForm(request).Form;
                 var expected = vals[index];
-                Assert.AreEqual(expected, result);
+                Assert.AreEqual(expected, result, $"Pro pád {request.Case?.ToString()} se očekávalo: {expected}.");
             }
         }
 
@@ -127,7 +127,7 @@ namespace Grammar.Czech.Test
                 var dict = new Dictionary<string, (string, Gender, bool?, string[])>
                 {
                     { "student", ("pán", Gender.Masculine, true, new[] {"student", "studenta", "studentovi", "studenta", "studente", "studentovi", "studentem",
-                                            "studenti", "studentů", "studenty", "studenty", "studenti", "studentech", "studenty"}) },
+                                            "studenti", "studentů", "studentům", "studenty", "studenti", "studentech", "studenty"}) },
                     { "studentka", ("žena", Gender.Feminine, null, new[] {"studentka", "studentky", "studentce", "studentku", "studentko", "studentce", "studentkou",
                                             "studentky", "studentek", "studentkám", "studentky", "studentky", "studentkách", "studentkami"}) },
                     { "studentík", ("pán", Gender.Masculine, true, new [] {"studentík", "studentíka", "studentíkovi", "studentíka", "studentíku", "studentíkovi", "studentíkem",
@@ -135,7 +135,9 @@ namespace Grammar.Czech.Test
                     {"žena", ("žena", Gender.Feminine, null, new [] {"žena", "ženy", "ženě", "ženu", "ženo", "ženě","ženou",
                                             "ženy", "žen", "ženám", "ženy", "ženy", "ženách", "ženami"}) },
                     { "pes", ("pán", Gender.Masculine, true, new [] {"pes", "psa", "psovi", "psa", "pse","psovi", "psem",
-                                            "psi", "psů", "psům", "psy", "psi", "psech", "psy"}) }
+                                            "psi", "psů", "psům", "psy", "psi", "psech", "psy"}) },
+                    { "dům", ("hrad", Gender.Masculine, false, new [] { "dům", "domu", "domu", "dům", "dome", "domě", "domem",
+                                            "domy", "domů", "domům", "domy", "domy", "domech", "domy"}) },
                 };
 
                 var data = new List<object[]>();
