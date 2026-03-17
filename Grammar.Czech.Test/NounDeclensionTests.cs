@@ -135,7 +135,7 @@ namespace Grammar.Czech.Test
                     {"žena", ("žena", Gender.Feminine, null, new [] {"žena", "ženy", "ženě", "ženu", "ženo", "ženě","ženou",
                                             "ženy", "žen", "ženám", "ženy", "ženy", "ženách", "ženami"}) },
                     { "pes", ("pán", Gender.Masculine, true, new [] {"pes", "psa", "psovi", "psa", "pse","psovi", "psem",
-                                            "psy", "psů", "psům", "psy", "psi", "psech", "psy"}) }
+                                            "psi", "psů", "psům", "psy", "psi", "psech", "psy"}) }
                 };
 
                 var data = new List<object[]>();
