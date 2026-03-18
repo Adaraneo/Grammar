@@ -444,7 +444,7 @@ adjective comparative/superlative.
 
 ## License
 
-MIT — see [LICENSE.txt](LICENSE.txt) for details.
+Copyright © 50PSoftware. All rights reserved.
 
 ---
 
