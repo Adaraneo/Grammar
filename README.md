@@ -445,7 +445,3 @@ adjective comparative/superlative.
 ## License
 
 Copyright © 50PSoftware. All rights reserved.
-
----
-
-*Author: Vojtěch Pchálek · [50PSoftware](https://github.com/50PSoftware) · `v1.0.0-preview.2`*
