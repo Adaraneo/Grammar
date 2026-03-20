@@ -7,7 +7,7 @@ using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
-    public class CzechWordStructureResolver : IWordStructureResolver<CzechWordRequest>
+    public class CzechWordStructureResolver : IWordStructureResolver<CzechWordRequest>, IVerbStructureResolver<CzechWordRequest>
     {
         private readonly IVerbDataProvider verbDataProvider;
         private readonly INounDataProvider nounDataProvider;
@@ -26,7 +26,6 @@ namespace Grammar.Czech.Services
             analyzers = new Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>>
             {
                 { WordCategory.Noun, AnalyzeNoun },
-                { WordCategory.Verb, AnalyzeVerb },
                 { WordCategory.Adjective, AnalyzeAdjective },
                 { WordCategory.Pronoun, AnalyzePronoun }
             };
@@ -135,84 +134,187 @@ namespace Grammar.Czech.Services
 
         #region Verb
 
-        private WordStructure AnalyzeVerb(CzechWordRequest wordRequest)
-        {
-            var prefix = ExtractPrefix(wordRequest.Lemma);
-            var lemmaWithoutPrefix = prefix != null ? wordRequest.Lemma.Substring(prefix.Length) : wordRequest.Lemma;
-
-            var stem = GetVerbStem(wordRequest, lemmaWithoutPrefix);
-
-            return new WordStructure
-            {
-                Prefix = prefix,
-                Root = stem
-            };
-        }
-
         private string? ExtractPrefix(string lemma)
         {
-            return prefixService.FindPerfectivePrefix(lemma);
+            return prefixService.FindVerbalPrefix(lemma);
         }
 
-        private string GetVerbStem(CzechWordRequest wordRequest, string lemmaWithoutPrefix)
+        public VerbStructure AnalyzeVerbStructure(CzechWordRequest request)
         {
-            var pattern = wordRequest.Pattern;
+            var prefix = ExtractPrefix(request.Lemma);
+            var lemmaBase = prefix != null
+                ? request.Lemma[prefix.Length..]
+                : request.Lemma;
 
-            if (verbDataProvider.GetIrregulars().TryGetValue(pattern.ToLower(), out var irregular))
+            // Pojmenované patterny (nese, dělá, být...) — mají explicitní kmeny v JSON
+            if (verbDataProvider.GetIrregulars().TryGetValue(request.Pattern!.ToLower(), out var namedPattern)
+                && namedPattern.Stem != null)
             {
-                return GetStemFromPattern(wordRequest, irregular);
+                return BuildFromExplicitStems(prefix, namedPattern);
             }
 
-            if (verbDataProvider.GetPatterns().TryGetValue(pattern!.ToLower(), out var regularPattern))
+            if (prefix != null
+                && verbDataProvider.GetIrregulars().TryGetValue(lemmaBase.ToLower(), out var basePattern)
+                && basePattern.Stem != null)
             {
-                return GetStemFromPattern(wordRequest, regularPattern);
+                return BuildFromExplicitStems(prefix, basePattern);
             }
 
-            return ExtractVerbStemHeuristic(lemmaWithoutPrefix);
+            // Generické třídy (trida1–trida5) — kmeny derivujeme z infinitivu
+            if (verbDataProvider.GetPatterns().TryGetValue(request.Pattern!.ToLower(), out var classPattern))
+            {
+                return DeriveFromInfinitive(prefix, lemmaBase, request.Pattern!.ToLower(), classPattern.Aspect);
+            }
+
+            // Neznámý pattern — nouzový fallback
+            throw new NotSupportedException(
+                $"Verb pattern '{request.Pattern}' not found in data. " +
+                $"Add it to irregulars.json or use a trida1–trida5 class pattern.");
         }
 
-        private string GetStemFromPattern(CzechWordRequest request, VerbPattern pattern)
-        {
-            return request.Tense switch
+        // --- Privátní pomocné metody ---
+
+        private VerbStructure BuildFromExplicitStems(string? prefix, VerbPattern pattern) =>
+            new()
             {
-                Tense.Present when pattern.Aspect == VerbAspect.Imperfective => pattern.PresentStem ?? pattern.Stem,
-                Tense.Future when pattern.Aspect == VerbAspect.Perfective => pattern.FutureStem ?? pattern.PresentStem ?? pattern.Stem,
-                Tense.Future when pattern.Aspect == VerbAspect.Imperfective && request.Lemma == "být" => pattern.FutureStem ?? throw new InvalidOperationException("Missing Future stem for 'být'"),
-                Tense.Past => pattern.PastStem ?? pattern.Stem,
-                _ => pattern.Stem
+                Prefix = prefix,
+                PresentStem = pattern.PresentStem ?? pattern.Stem!,
+                PastStem = pattern.PastStem ?? pattern.Stem!,
+                PassiveStem = pattern.PassiveStem,
+                ImperativeStem = pattern.ImperativeStem,
+                Aspect = pattern.Aspect
+            };
+
+        private VerbStructure DeriveFromInfinitive(
+            string? prefix, string lemma, string patternKey, VerbAspect aspect)
+        {
+            return patternKey switch
+            {
+                "trida5" => DeriveTrida5(prefix, lemma, aspect),
+                "trida4" => DeriveTrida4(prefix, lemma, aspect),
+                "trida3" => DeriveTrida3(prefix, lemma, aspect),
+                "trida2" => DeriveTrida2(prefix, lemma, aspect),
+                "trida1" => DeriveTrida1(prefix, lemma, aspect),
+                _ => throw new NotSupportedException($"Unknown pattern class: '{patternKey}'")
             };
         }
 
-        private string ExtractVerbStemHeuristic(string lemmaWithoutPrefix)
+        // trida5: dělat → PresentStem: děl, PastStem: děla
+        // Koncovky: -ám, -áš, -á | past: -l
+        // "děl" + "ám" = "dělám" ✓ | "děla" + "l" = "dělal" ✓
+        private VerbStructure DeriveTrida5(string? prefix, string lemma, VerbAspect aspect)
         {
-            // Heruistiky s -t
-            if (lemmaWithoutPrefix.EndsWith("at") || lemmaWithoutPrefix.EndsWith("át"))
-            {
-                return lemmaWithoutPrefix[..^2]; // dělat
-            }
+            if (lemma.EndsWith("at") || lemma.EndsWith("át"))
+                return new()
+                {
+                    Prefix = prefix,
+                    PresentStem = lemma[..^2],   // dělat → děl
+                    PastStem = lemma[..^1],   // dělat → děla
+                    PassiveStem = lemma[..^1],   // děla + -n = dělan
+                    Aspect = aspect
+                };
 
-            if (lemmaWithoutPrefix.EndsWith("it") || lemmaWithoutPrefix.EndsWith("ít"))
-            {
-                return lemmaWithoutPrefix[..^2]; // prosit
-            }
-
-            if (lemmaWithoutPrefix.EndsWith("et") || lemmaWithoutPrefix.EndsWith("ět"))
-            {
-                return lemmaWithoutPrefix[..^2]; // trpět, sázet
-            }
-
-            if (lemmaWithoutPrefix.EndsWith("ovat"))
-            {
-                return lemmaWithoutPrefix[..^4]; // kupovat
-            }
-
-            if (lemmaWithoutPrefix.EndsWith("nout"))
-            {
-                return lemmaWithoutPrefix[..^4]; // tisknout
-            }
-
-            return lemmaWithoutPrefix;
+            return UnknownInfinitiveFallback(prefix, lemma, aspect);
         }
+
+        // trida4: prosit → PresentStem: pros, PastStem: prosi
+        //         trpět → PresentStem: trp,  PastStem: trpě
+        // Koncovky: -ím, -íš, -í | past: -l
+        // "pros" + "ím" = "prosím" ✓ | "prosi" + "l" = "prosil" ✓
+        // "trp"  + "ím" = "trpím"  ✓ | "trpě"  + "l" = "trpěl"  ✓
+        private VerbStructure DeriveTrida4(string? prefix, string lemma, VerbAspect aspect)
+        {
+            if (lemma.EndsWith("it") || lemma.EndsWith("ít") ||
+                lemma.EndsWith("et") || lemma.EndsWith("ět"))
+                return new()
+                {
+                    Prefix = prefix,
+                    PresentStem = lemma[..^2],   // prosit → pros, trpět → trp
+                    PastStem = lemma[..^1],   // prosit → prosi, trpět → trpě
+                    PassiveStem = lemma[..^1],   // prosi + -n = prosiny (dle kontextu)
+                    Aspect = aspect
+                };
+
+            return UnknownInfinitiveFallback(prefix, lemma, aspect);
+        }
+
+        // trida3: kupovat → PresentStem: kupu, PastStem: kupova
+        // Logika: "kupovat"[..^4] = "kup" + "u" = "kupu"
+        //         "kupu" + "-je" = "kupuje" ✓
+        //         "kupova" + "-l" = "kupoval" ✓
+        // Alternace ov→uj je morfologicky systematická pro -ovat; phoneme registry ji nepokrývá.
+        private VerbStructure DeriveTrida3(string? prefix, string lemma, VerbAspect aspect)
+        {
+            if (lemma.EndsWith("ovat"))
+                return new()
+                {
+                    Prefix = prefix,
+                    PresentStem = lemma[..^4] + "u",  // kupovat → kup+u = kupu
+                    PastStem = lemma[..^1],          // kupovat → kupova
+                    PassiveStem = lemma[..^1],          // kupova + -n = kupován
+                    Aspect = aspect
+                };
+
+            return UnknownInfinitiveFallback(prefix, lemma, aspect);
+        }
+
+        // trida2: tisknout → PresentStem: tisk, PastStem: tisk (best-effort)
+        // Koncovky: -nu, -neš, -ne (n je SOUČÁSTÍ KONCOVKY, ne kmene!)
+        // "tisk" + "-ne" = "tiskne" ✓ | "tisk" + "-l" = "tiskl" ✓
+        //
+        // ⚠ KNOWN LIMITATION: PastStem je approximate.
+        //   "minout" → past "minul" ≠ "min" + "l" = "mil"
+        //   Důvod: Dvě podtřídy — momentová (tisk) vs. pohybová (min).
+        //   Správné řešení: přidat pastStem do irregulars.json pro pohybová slovesa.
+        private VerbStructure DeriveTrida2(string? prefix, string lemma, VerbAspect aspect)
+        {
+            if (lemma.EndsWith("nout"))
+            {
+                var presentStem = lemma[..^4];  // tisknout → tisk (odebereme "nout")
+                return new()
+                {
+                    Prefix = prefix,
+                    PresentStem = presentStem,
+                    PastStem = presentStem,  // best-effort; pohybová slovesa potřebují irregulars
+                    Aspect = aspect
+                };
+            }
+
+            return UnknownInfinitiveFallback(prefix, lemma, aspect);
+        }
+
+        // trida1: nést, brát, péct... — kmeny jsou NEPREDIKTABILNÍ z infinitivu.
+        // Všechny praktické trida1 vzory musí být v irregulars.json (nese, bere, peče...).
+        // Tato metoda je jen nouzový fallback pro neznámá slovesa.
+        private VerbStructure DeriveTrida1(string? prefix, string lemma, VerbAspect aspect)
+        {
+            // Zkus aspoň odebrat infinitivní příponu
+            var stem = lemma switch
+            {
+                _ when lemma.EndsWith("st") => lemma[..^2],
+                _ when lemma.EndsWith("zt") => lemma[..^2],
+                _ when lemma.EndsWith("ct") => lemma[..^2],
+                _ when lemma.EndsWith("ít") => lemma[..^2],
+                _ => lemma
+            };
+
+            return new()
+            {
+                Prefix = prefix,
+                PresentStem = stem,
+                PastStem = stem,
+                Aspect = aspect
+            };
+        }
+
+        private VerbStructure UnknownInfinitiveFallback(string? prefix, string lemma, VerbAspect aspect) =>
+            new()
+            {
+                Prefix = prefix,
+                PresentStem = lemma,
+                PastStem = lemma,
+                Aspect = aspect
+            };
 
         #endregion Verb
 

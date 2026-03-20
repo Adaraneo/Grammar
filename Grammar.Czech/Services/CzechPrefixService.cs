@@ -6,6 +6,7 @@ namespace Grammar.Czech.Services
     {
         private readonly List<string> negationPrefixes;
         private readonly List<string> perfectivePrefixes;
+        private readonly List<string> allVerbalPrefixes;
 
         public CzechPrefixService(IPrefixDataProvider dataProvider)
         {
@@ -18,6 +19,11 @@ namespace Grammar.Czech.Services
 
             perfectivePrefixes = prefixesDict["perfective"];
             negationPrefixes = prefixesDict["negation"];
+            allVerbalPrefixes = prefixesDict.Values
+                .SelectMany(p => p)
+                .Distinct()
+                .OrderByDescending(p => p.Length)
+                .ToList();
         }
 
         public string FindPerfectivePrefix(string lemma)
@@ -35,6 +41,11 @@ namespace Grammar.Czech.Services
         public bool HasPerfectivePrefix(string lemma)
         {
             return FindPerfectivePrefix(lemma) != null;
+        }
+
+        public string? FindVerbalPrefix(string lemma)
+        {
+            return allVerbalPrefixes.FirstOrDefault(p => lemma.StartsWith(p) && lemma.Length > p.Length + 1);
         }
     }
 }

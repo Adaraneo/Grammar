@@ -1,6 +1,7 @@
-﻿namespace Grammar.Core.Models.Word
+﻿
+namespace Grammar.Core.Models.Word
 {
-    public class WordStructure
+    public sealed class WordStructure
     {
         public string? Prefix { get; set; }
         public string Root { get; set; } = string.Empty;

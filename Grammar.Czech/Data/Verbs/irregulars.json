@@ -1,8 +1,4 @@
 {
-  "hrát": {
-    "aspect": "imperfective",
-    "stem": "hr"
-  },
   "být": {
     "aspect": "imperfective",
     "stem": "js",
@@ -35,110 +31,226 @@
       }
     },
     "pastParticiple": {
-      "masculine": {
-        "singular": "-l",
-        "plural": "-li"
+      "masculine": { "singular": "-l", "plural": "-li" },
+      "feminine":  { "singular": "-la", "plural": "-ly" },
+      "neuter":    { "singular": "-lo", "plural": "-la" }
+    }
+  },
+
+  "mít": {
+    "inheritsFrom": "trida5",
+    "aspect": "imperfective",
+    "stem": "m",
+    "pastStem": "mě",
+    "imperativeStem": "měj"
+  },
+
+  "chtít": {
+    "inheritsFrom": "trida1",
+    "aspect": "imperfective",
+    "stem": "chc",
+    "pastStem": "chtě",
+    "imperativeStem": "chtěj",
+    "present": {
+      "singular": {
+        "First": "chci",
+        "Second": "-eš",
+        "Third": "-e"
       },
-      "feminine": {
-        "singular": "-la",
-        "plural": "-ly"
-      },
-      "neuter": {
-        "singular": "-lo",
-        "plural": "-la"
+      "plural": {
+        "First": "-eme",
+        "Second": "-ete",
+        "Third": "chtějí"
       }
     }
   },
-  "mít": {
-    "aspect": "imperfective",
-    "stem": "m",
-    "imperativeStem": "měj"
-  },
-  "jít": {
-    "aspect": "imperfective",
-    "stem": "jd"
-  },
-  "chtít": {
-    "aspect": "imperfective",
-    "stem": "chc",
-    "imperativeStem": "chtěj"
-  },
+
   "moci": {
+    "inheritsFrom": "trida1",
     "aspect": "imperfective",
-    "stem": "můž"
+    "stem": "můž",
+    "pastStem": "moh",
+    "present": {
+      "singular": {
+        "First": "mohu",
+        "Second": "-eš",
+        "Third": "-e"
+      },
+      "plural": {
+        "First": "-eme",
+        "Second": "-ete",
+        "Third": "mohou"
+      }
+    }
   },
+
   "vědět": {
     "aspect": "imperfective",
-    "stem": "ví"
+    "stem": "ví",
+    "pastStem": "věd",
+    "present": {
+      "singular": {
+        "First": "vím",
+        "Second": "víš",
+        "Third": "ví"
+      },
+      "plural": {
+        "First": "víme",
+        "Second": "víte",
+        "Third": "vědí"
+      }
+    },
+    "pastParticiple": {
+      "masculine": { "singular": "-ěl", "plural": "-ěli" },
+      "feminine":  { "singular": "-ěla", "plural": "-ěly" },
+      "neuter":    { "singular": "-ělo", "plural": "-ěla" }
+    }
   },
+
   "umět": {
+    "inheritsFrom": "trida4",
     "aspect": "imperfective",
-    "stem": "um"
+    "stem": "um",
+    "pastStem": "umě"
   },
+
   "jíst": {
     "aspect": "imperfective",
-    "stem": "jez"
+    "stem": "jez",
+    "pastStem": "jed",
+    "imperativeStem": "jez",
+    "present": {
+      "singular": {
+        "First": "jím",
+        "Second": "jíš",
+        "Third": "jí"
+      },
+      "plural": {
+        "First": "jíme",
+        "Second": "jíte",
+        "Third": "jedí"
+      }
+    }
   },
-  "dát": {
-    "aspect": "perfective",
-    "stem": "dej"
-  },
-  "vzít": {
-    "aspect": "perfective",
-    "stem": "vez"
-  },
-  "spát": {
+
+  "jít": {
+    "inheritsFrom": "trida1",
     "aspect": "imperfective",
-    "stem": "sp"
+    "stem": "jd",
+    "pastStem": "še"
   },
-  "ležet": {
-    "aspect": "imperfective",
-    "stem": "lež"
-  },
-  "sedět": {
-    "aspect": "imperfective",
-    "stem": "sed"
-  },
-  "běžet": {
-    "aspect": "imperfective",
-    "stem": "běž"
-  },
+
   "jet": {
+    "inheritsFrom": "trida1",
     "aspect": "imperfective",
-    "stem": "jed"
+    "stem": "jed",
+    "pastStem": "je"
   },
-  "říct": {
-    "aspect": "perfective",
-    "stem": "řek"
-  },
-  "vidět": {
+
+  "hrát": {
+    "inheritsFrom": "trida3",
     "aspect": "imperfective",
-    "stem": "vid"
+    "stem": "hra",
+    "pastStem": "hrá"
   },
+
   "zvát": {
+    "inheritsFrom": "trida1",
     "aspect": "imperfective",
-    "stem": "zv"
+    "stem": "zv",
+    "pastStem": "zva"
   },
-  "pomoci": {
-    "aspect": "perfective",
-    "stem": "pom"
-  },
-  "téci": {
+
+  "spát": {
+    "inheritsFrom": "trida4",
     "aspect": "imperfective",
-    "stem": "teč"
+    "stem": "sp",
+    "pastStem": "spa"
   },
-  "řvát": {
+
+  "ležet": {
+    "inheritsFrom": "trida4",
     "aspect": "imperfective",
-    "stem": "řv"
+    "stem": "lež",
+    "pastStem": "leže"
   },
+
+  "sedět": {
+    "inheritsFrom": "trida4",
+    "aspect": "imperfective",
+    "stem": "sed",
+    "pastStem": "sedě"
+  },
+
+  "běžet": {
+    "inheritsFrom": "trida4",
+    "aspect": "imperfective",
+    "stem": "běž",
+    "pastStem": "běže"
+  },
+
+  "vidět": {
+    "inheritsFrom": "trida4",
+    "aspect": "imperfective",
+    "stem": "vid",
+    "pastStem": "vidě"
+  },
+
   "klást": {
+    "inheritsFrom": "trida1",
     "aspect": "imperfective",
     "stem": "klad"
   },
+
   "číst": {
+    "inheritsFrom": "trida1",
     "aspect": "imperfective",
-    "stem": "čt"
+    "stem": "čt",
+    "pastStem": "čet"
   },
+
+  "téci": {
+    "inheritsFrom": "trida1",
+    "aspect": "imperfective",
+    "stem": "teč",
+    "pastStem": "tek"
+  },
+
+  "řvát": {
+    "inheritsFrom": "trida1",
+    "aspect": "imperfective",
+    "stem": "řv",
+    "pastStem": "řva"
+  },
+
+  "říct": {
+    "inheritsFrom": "trida2",
+    "aspect": "perfective",
+    "stem": "řek"
+  },
+
+  "dát": {
+    "inheritsFrom": "trida5",
+    "aspect": "perfective",
+    "stem": "d",
+    "pastStem": "da",
+    "imperativeStem": "dej"
+  },
+
+  "vzít": {
+    "inheritsFrom": "trida1",
+    "aspect": "perfective",
+    "stem": "vezm",
+    "pastStem": "vza"
+  },
+
+  "pomoci": {
+    "inheritsFrom": "trida1",
+    "aspect": "perfective",
+    "stem": "pomůž",
+    "pastStem": "pomoh"
+  },
+
   "psát": {
     "inheritsFrom": "trida1",
     "aspect": "imperfective",
@@ -149,6 +261,7 @@
     "imperativeStem": "piš",
     "passiveStem": "psá"
   },
+
   "nese": {
     "inheritsFrom": "trida1",
     "aspect": "imperfective",
@@ -156,35 +269,109 @@
     "infinitive": "nést",
     "passiveStem": "nese"
   },
+
   "bere": {
     "inheritsFrom": "trida1",
     "aspect": "imperfective",
     "stem": "ber",
+    "pastStem": "bra",
     "infinitive": "brát"
   },
+
   "maže": {
     "inheritsFrom": "trida1",
     "aspect": "imperfective",
     "stem": "maž",
+    "pastStem": "maza",
     "infinitive": "mazat"
   },
+
   "peče": {
     "inheritsFrom": "trida1",
     "aspect": "imperfective",
     "stem": "peč",
+    "pastStem": "pek",
     "infinitive": "péct"
   },
+
   "umře": {
     "inheritsFrom": "trida1",
     "aspect": "perfective",
     "stem": "umř",
+    "pastStem": "umře",
     "infinitive": "umřít"
   },
+
   "dělá": {
     "inheritsFrom": "trida5",
     "aspect": "imperfective",
     "stem": "děl",
     "pastStem": "děla",
     "infinitive": "dělat"
+  },
+
+  "prosí": {
+    "inheritsFrom": "trida4",
+    "aspect": "imperfective",
+    "stem": "pros",
+    "pastStem": "prosi",
+    "passiveStem": "proše"
+  },
+
+  "kupuje": {
+    "inheritsFrom": "trida3",
+    "aspect": "imperfective",
+    "stem": "kupu",
+    "pastStem": "kupova",
+    "passiveStem": "kupova",
+    "infinitive": "kupovat"
+  },
+
+  "tiskne": {
+    "inheritsFrom": "trida2",
+    "aspect": "imperfective",
+    "stem": "tisk",
+    "passiveStem": "tišt",
+    "infinitive": "tisknout",
+    "passiveParticiple": {
+      "masculine": { "singular": "-ěn", "plural": "-ěni" },
+      "feminine":  { "singular": "-ěna", "plural": "-ěny" },
+      "neuter":    { "singular": "-ěno", "plural": "-ěna" }
+    }
+  },
+
+  "mine": {
+    "inheritsFrom": "trida1",
+    "aspect": "perfective",
+    "stem": "min",
+    "pastStem": "minu",
+    "passiveStem": "minu",
+    "infinitive": "minout",
+    "passiveParticiple": {
+      "masculine": { "singular": "-t", "plural": "-ti" },
+      "feminine":  { "singular": "-ta", "plural": "-ty" },
+      "neuter":    { "singular": "-to", "plural": "-ta" }
+    }
+  },
+
+  "kryje": {
+    "inheritsFrom": "trida3",
+    "aspect": "imperfective",
+    "stem": "kry",
+    "pastStem": "kry",
+    "passiveStem": "kry",
+    "infinitive": "krýt",
+    "passiveParticiple": {
+      "masculine": { "singular": "-t", "plural": "-ti" },
+      "feminine":  { "singular": "-ta", "plural": "-ty" },
+      "neuter":    { "singular": "-to", "plural": "-ta" }
+    }
+  },
+
+  "jmout": {
+    "inheritsFrom": "dojme",
+    "aspect": "perfective",
+    "stem": "jm",
+    "pastStem": "ja"
   }
 }

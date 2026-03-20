@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
@@ -7,12 +7,24 @@ using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Konjugační služba pro česká slovesa.
+    /// Zodpovídá výhradně za výběr správných koncovek a sestavení tvaru —
+    /// analýza kmenů je delegována na <see cref="IVerbStructureResolver{TWord}"/>.
+    /// </summary>
     public class CzechVerbConjugationService : IVerbInflectionService<CzechWordRequest>
     {
-        private readonly CzechPrefixService prefixService;
-        private readonly CzechParticleService particleService;
+        private readonly IVerbDataProvider dataProvider;
+        private readonly IVerbStructureResolver<CzechWordRequest> verbStructureResolver;
+        private readonly ICzechParticleService czechParticleService;
+        private readonly ICzechPrefixService czechPrefixService;
 
-        private readonly Dictionary<VerbClass, string> verbClassMap = new Dictionary<VerbClass, string>()
+        /// <summary>
+        /// Mapování <see cref="VerbClass"/> na klíče generických vzorů v patterns.json.
+        /// Používá se pouze pokud volající předá <see cref="CzechWordRequest.VerbClass"/>
+        /// místo explicitního <see cref="CzechWordRequest.Pattern"/>.
+        /// </summary>
+        private readonly Dictionary<VerbClass, string> verbClassMap = new()
         {
             { VerbClass.Class1, "trida1" },
             { VerbClass.Class2, "trida2" },
@@ -21,325 +33,343 @@ namespace Grammar.Czech.Services
             { VerbClass.Class5, "trida5" },
         };
 
-        private readonly IVerbDataProvider dataProvider;
-        private readonly IWordStructureResolver<CzechWordRequest> wordStructureResolver;
-        private readonly ICzechParticleService czechParticleService;
-        private readonly ICzechPrefixService czechPrefixService;
-
-        private VerbPattern Merge(VerbPattern @base, VerbPattern irregular) =>
-        @base with
+        public CzechVerbConjugationService(
+            IVerbDataProvider dataProvider,
+            IVerbStructureResolver<CzechWordRequest> verbStructureResolver,
+            ICzechParticleService czechParticleService,
+            ICzechPrefixService czechPrefixService)
         {
-            Stem = irregular.Stem ?? @base.Stem,
-            FutureStem = irregular.FutureStem ?? @base.FutureStem,
-            PresentStem = irregular.PresentStem ?? @base.PresentStem,
-            PastStem = irregular.PastStem ?? @base.PastStem,
-            PassiveStem = irregular.PassiveStem ?? @base.PassiveStem,
-            Aspect = irregular.Aspect,
-            Present = irregular.Present ?? @base.Present,
-            Future = irregular.Future ?? @base.Future,
-            PastParticiple = irregular.PastParticiple ?? @base.PastParticiple,
-            PassiveParticiple = irregular.PassiveParticiple ?? @base.PassiveParticiple
-        };
-
-        private WordForm GetImperativeForm(CzechWordRequest word)
-        {
-            var lemma = word.Lemma;
-            var wordStructure = wordStructureResolver.AnalyzeStructure(word);
-            var (prefix, stem) = (wordStructure.Prefix, wordStructure.Root + wordStructure.DerivationSuffix);
-
-            var hasIrregular = dataProvider.GetIrregulars().TryGetValue(word.Pattern!.ToLower(), out var irregularPattern);
-            if (hasIrregular && !string.IsNullOrEmpty(irregularPattern!.ImperativeStem))
-            {
-                var baseImperative = irregularPattern.ImperativeStem;
-
-                string result = word.Number switch
-                {
-                    Number.Singular when word.Person == Person.Second => baseImperative,
-                    Number.Plural when word.Person == Person.First => baseImperative + "me",
-                    Number.Plural when word.Person == Person.Second => baseImperative + "te",
-                    _ => throw new InvalidOperationException("Imperative exists only for 2nd person (sg/pl) and 1st person plural.")
-                };
-
-                if (word.HasReflexive.HasValue && word.HasReflexive.Value)
-                {
-                    result += $" {particleService.GetReflexive(word.Case == Case.Dative)}";
-                }
-
-                return new WordForm($"{prefix}{result}");
-            }
-
-            if (hasIrregular)
-            {
-                var baseStem = irregularPattern!.ImperativeStem ?? irregularPattern!.Stem ?? word.Lemma;
-
-                string baseImperative = baseStem;
-                if (word.Number == Number.Singular && word.Person == Person.Second)
-                {
-                    if (MorphologyHelper.EndsWithTwoConsonants(baseStem))
-                    {
-                        baseImperative += "i";
-                    }
-                }
-                else if (word.Number == Number.Plural && word.Person == Person.First)
-                {
-                    baseImperative += "me";
-                }
-                else if (word.Number == Number.Plural && word.Person == Person.Second)
-                {
-                    baseImperative += "te";
-                }
-                else
-                {
-                    throw new InvalidOperationException("Imperative exists only for 2nd person (sg/pl) and 1st person plural.");
-                }
-
-                if (word.HasReflexive.HasValue && word.HasReflexive.Value)
-                {
-                    baseImperative += $" {particleService.GetReflexive(word.Case == Case.Dative)}";
-                }
-
-                return new WordForm($"{prefix}{baseImperative}");
-            }
-
-            // Heuristická pravidla:
-            var imperativeForm = (word.Number, word.Person) switch
-            {
-                (Number.Singular, Person.Second) => $"{stem}",
-                (Number.Plural, Person.First) => $"{stem}me",
-                (Number.Plural, Person.Second) => $"{stem}te",
-                _ => throw new InvalidOperationException("Imperative exists only for 2nd person (sg/pl) and 1st person plural.")
-            };
-
-            if (word.HasReflexive.HasValue && word.HasReflexive.Value)
-            {
-                imperativeForm += $" {particleService.GetReflexive(word.Case == Case.Dative)}";
-            }
-
-            return new WordForm($"{prefix}{imperativeForm}!");
+            this.dataProvider          = dataProvider;
+            this.verbStructureResolver = verbStructureResolver;
+            this.czechParticleService  = czechParticleService;
+            this.czechPrefixService    = czechPrefixService;
         }
 
-        private WordForm GetPassiveForm(CzechWordRequest word, VerbPattern pattern, string genderKey, string numberKey, string stem)
-        {
-            var lemma = word.Lemma;
-            var prefix = wordStructureResolver.AnalyzeStructure(word).Prefix;
+        // ------------------------------------------------------------------ //
+        //  Veřejné API                                                        //
+        // ------------------------------------------------------------------ //
 
-            string ending = string.Empty;
-            if (pattern.PassiveParticiple.TryGetValue(genderKey, out var participleDict) && participleDict.TryGetValue(numberKey, out var participle))
-            {
-                ending = participle;
-            }
-
-            // Heuristická úprava kmene:
-            if (stem.EndsWith("sk"))
-            {
-                stem = stem[..^2] + "ště"; // tisk → tištěn
-            }
-            else if (stem.EndsWith("s"))
-            {
-                stem = stem[..^1] + "š"; // pros → proš
-            }
-            else if (lemma == "kvést")
-            {
-                stem = "květ"; // nepravidelné
-            }
-
-            return new WordForm(prefix + MorphologyHelper.ApplyFormEnding(stem, ending));
-        }
-
-        public CzechVerbConjugationService(IVerbDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechParticleService czechParticleService, ICzechPrefixService czechPrefixService)
-        {
-            this.dataProvider = dataProvider;
-            this.wordStructureResolver = wordStructureResolver;
-            this.czechParticleService = czechParticleService;
-            this.czechPrefixService = czechPrefixService;
-        }
-
+        /// <summary>
+        /// Vrátí základní morfologický tvar slovesa (bez auxiliárních sloves,
+        /// reflexiv a kondicionálních partikulí). Složené fráze sestavuje
+        /// <see cref="CzechVerbPhraseBuilderService"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// Pasivní imperativ, pasivum od "být", nebo chybějící data v paradigmatu.
+        /// </exception>
+        /// <exception cref="NotSupportedException">
+        /// Neznámý vzor, nepodporovaný rod nebo čas.
+        /// </exception>
         public WordForm GetBasicForm(CzechWordRequest word)
         {
             if (word.Modus == Modus.Imperative && word.Voice == Voice.Passive)
+                throw new InvalidOperationException(
+                    "Passive form does not exist in imperative.");
+
+            if (word.Voice == Voice.Passive
+                && word.Lemma.Equals("být", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException(
+                    "Impossible to create passive for verb 'být'.");
+
+            // VerbClass hint → přepiš Pattern na klíč třídy, pokud pattern ještě není znám
+            if (word.VerbClass.HasValue
+                && (word.Pattern == null || !dataProvider.GetPatterns().ContainsKey(word.Pattern.ToLower())))
             {
-                throw new InvalidOperationException("Passive form does not exist in imperative.");
+                if (!verbClassMap.TryGetValue(word.VerbClass.Value, out var mappedKey))
+                    throw new InvalidOperationException(
+                        $"Unknown verb class {word.VerbClass.Value}.");
+                word.Pattern = mappedKey;
             }
 
-            if (word.Voice == Voice.Passive && word.Lemma.Equals("být", StringComparison.OrdinalIgnoreCase))
+            var pattern    = ResolvePattern(word);
+            var verbStruct = verbStructureResolver.AnalyzeVerbStructure(word);
+            var numberKey  = word.Number == Number.Singular ? "singular" : "plural";
+
+            if (word.Tense == null && word.Modus == Modus.Indicative)
+                throw new ArgumentException("Tense must be specified for indicative mood.");
+
+            // Perfektivní sloveso v přítomném čase → tvar je fakticky budoucí
+            var effectiveTense =
+                word.Tense == Tense.Present && pattern.Aspect == VerbAspect.Perfective
+                    ? Tense.Future
+                    : word.Tense!.Value;
+
+            return (word.Voice, word.Modus, effectiveTense) switch
             {
-                throw new InvalidOperationException("Impossible to create passive for verb 'být'.");
-            }
-
-            if (word.VerbClass.HasValue && !dataProvider.GetPatterns().ContainsKey(word.Pattern.ToLower()))
-            {
-                if (!verbClassMap.TryGetValue(word.VerbClass.Value, out var mappedPattern))
-                    throw new InvalidOperationException($"Unknown verb class {word.VerbClass.Value}");
-
-                word.Pattern = mappedPattern;
-            }
-
-            if (!dataProvider.GetPatterns().TryGetValue(word.Pattern.ToLower(), out var pattern))
-            {
-                if (dataProvider.GetIrregulars().TryGetValue(word.Pattern.ToLower(), out var irregularPattern))
-                {
-                    if (!string.IsNullOrEmpty(irregularPattern.InheritsFrom) && dataProvider.GetPatterns().TryGetValue(irregularPattern.InheritsFrom.ToLower(), out var inheritedPattern))
-                    {
-                        pattern = Merge(inheritedPattern, irregularPattern);
-                    }
-                    else
-                    {
-                        pattern = irregularPattern;
-                    }
-                }
-            }
-
-            var wordStructure = wordStructureResolver.AnalyzeStructure(word);
-            var numberKey = word.Number == Number.Singular ? "singular" : "plural";
-            var personKey = word.Person.ToString();
-
-            if (word.Tense == Tense.Present && pattern.Aspect == VerbAspect.Perfective)
-            {
-                word.Tense = Tense.Future;
-            }
-
-            var tenseKey = word.Tense.ToString().ToLower();
-
-            string? GetGenderKey(CzechWordRequest word, out string? genderKey)
-            {
-                genderKey = word.Gender switch
-                {
-                    Gender.Masculine => "masculine",
-                    Gender.Feminine => "feminine",
-                    Gender.Neuter => "neuter",
-                    _ => throw new NotSupportedException("Unsupported gender.")
-                };
-
-                return genderKey;
-            }
-
-            if (word.Voice == Voice.Passive)
-            {
-                GetGenderKey(word, out var genderKey);
-
-                return GetPassiveForm(word, pattern!, genderKey!, numberKey, pattern.PassiveStem ?? pattern.Stem);
-            }
-
-            if (word.Modus == Modus.Conditional)
-            {
-                GetGenderKey(word, out var genderKey);
-                var participle = pattern.PastParticiple[genderKey][numberKey];
-
-                var (prefix, stem) = (wordStructure.Prefix, pattern.PastStem ?? pattern.Stem);
-
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    stem = prefix + stem;
-                }
-
-                return new WordForm(MorphologyHelper.ApplyFormEnding(stem, participle));
-            }
-
-            if (word.Modus == Modus.Imperative)
-            {
-                return GetImperativeForm(word);
-            }
-
-            if (word.Tense == Tense.Past)
-            {
-                if (!pattern.PastParticiple.TryGetValue(GetGenderKey(word, out var genderKey), out var participleDict) ||
-                    !participleDict.TryGetValue(numberKey, out var participle))
-                {
-                    throw new InvalidOperationException($"Past participle not found for {genderKey} {numberKey}.");
-                }
-
-                var (prefix, stem) = (wordStructure.Prefix, wordStructure.Root + wordStructure.DerivationSuffix);
-
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    stem = prefix + stem;
-                }
-
-                return new WordForm(MorphologyHelper.ApplyFormEnding(stem, participle));
-            }
-            else
-            {
-                var tenseForms = word.Tense switch
-                {
-                    Tense.Present => pattern.Present,
-                    Tense.Future => pattern.Future ?? pattern.Present,
-                    _ => throw new InvalidOperationException("Unsuported tense.")
-                };
-
-                // Person dictionary
-                Dictionary<string, string>? pDict = numberKey switch
-                {
-                    "singular" => tenseForms.Singular?.ToDictionary(),
-                    "plural" => tenseForms.Plural?.ToDictionary(),
-                    _ => null
-                };
-
-                if (pDict == null || !pDict.TryGetValue(personKey.ToString(), out var ending))
-                    throw new InvalidOperationException($"Ending not found for {tenseKey} {numberKey} person {personKey}");
-
-                var (prefix, stem) = (wordStructure.Prefix, wordStructure.Root + wordStructure.DerivationSuffix);
-
-                if (!string.IsNullOrEmpty(prefix))
-                {
-                    stem = prefix + stem;
-                }
-
-                if (word.Tense == Tense.Future && word.Lemma != "být")
-                {
-                    if (word.Aspect == VerbAspect.Perfective)
-                    {
-                        return new WordForm(MorphologyHelper.ApplyFormEnding(stem, ending));
-                    }
-                    else
-                    {
-                        return new WordForm(word.Lemma);
-                    }
-                }
-                else
-                {
-                    return new WordForm(MorphologyHelper.ApplyFormEnding(stem, ending));
-                }
-            }
+                (Voice.Passive, _, _)     => BuildPassiveForm(word, pattern, verbStruct, numberKey),
+                (_, Modus.Conditional, _) => BuildConditionalForm(pattern, verbStruct, numberKey, word.Gender),
+                (_, Modus.Imperative, _)  => BuildImperativeForm(word, verbStruct),
+                (_, _, Tense.Past)        => BuildPastForm(pattern, verbStruct, numberKey, word.Gender),
+                _                         => BuildPresentFutureForm(word, pattern, verbStruct, numberKey, effectiveTense),
+            };
         }
 
+        /// <summary>
+        /// Odhadne slovesný vid z lemmatu.
+        /// Není implementováno — čeká na valenční slovník (<see cref="IValencyProvider"/>).
+        /// </summary>
         public VerbAspect GuessVerbAspect(string lemma)
         {
-            throw new NotImplementedException("Guessing aspect is not implemented yet. Consider implementing a heuristic based on prefixes or known patterns.");
-            return prefixService.HasPerfectivePrefix(lemma)
-                ? VerbAspect.Perfective
-                : VerbAspect.Imperfective;
+            throw new NotImplementedException(
+                "GuessVerbAspect is not implemented. Unblocked by valency dictionary.");
         }
 
+        /// <summary>
+        /// Odhadne slovesnou třídu z infinitivní přípony.
+        /// Vrátí <c>null</c> pokud je lemma přímo klíčem v datech (žádný odhad není potřeba),
+        /// nebo pokud jde o trida1 (neprediktabilní kmeny — musí být v irregulars.json).
+        /// </summary>
         public VerbClass? GuessVerbClass(string lemma)
         {
-            if (dataProvider.GetPatterns().ContainsKey(lemma.ToLower()))
-            {
+            // Lemma je přímo pattern v datech — žádný odhad není potřeba
+            if (dataProvider.GetPatterns().ContainsKey(lemma.ToLower())
+                || dataProvider.GetIrregulars().ContainsKey(lemma.ToLower()))
                 return null;
-            }
 
-            if (lemma.EndsWith("ovat"))
-                return VerbClass.Class3;
+            // Pořadí je kritické — "ovat" musí předcházet "at"
+            if (lemma.EndsWith("ovat"))                                              return VerbClass.Class3;
+            if (lemma.EndsWith("it")  || lemma.EndsWith("ít")
+             || lemma.EndsWith("et")  || lemma.EndsWith("ět"))                       return VerbClass.Class4;
+            if (lemma.EndsWith("at")  || lemma.EndsWith("át"))                       return VerbClass.Class5;
+            if (lemma.EndsWith("nout"))                                              return VerbClass.Class2;
 
-            if (lemma.EndsWith("it") || lemma.EndsWith("et") || lemma.EndsWith("ět"))
-                return VerbClass.Class2;
-
-            if (lemma.EndsWith("at") || lemma.EndsWith("át"))
-                return VerbClass.Class1;
-
-            // volitelně další:
-            if (lemma.EndsWith("nout"))
-                return VerbClass.Class4;
-
-            if (lemma.EndsWith("ít"))
-                return VerbClass.Class5;
-
+            // trida1 (nést, brát, péct...) nelze spolehlivě odvodit z infinitivu
             return null;
         }
 
-        public string GuessVerbPattern(string lemma)
+        /// <summary>
+        /// Odhadne vzor slovesa. Fallback: vrátí lemma jako klíč.
+        /// </summary>
+        public string GuessVerbPattern(string lemma) => lemma.ToLower();
+
+        // ------------------------------------------------------------------ //
+        //  Pattern resolution                                                  //
+        // ------------------------------------------------------------------ //
+
+        /// <summary>
+        /// Vrátí <see cref="VerbPattern"/> pro daný request.
+        /// <para>
+        /// Regulars (trida1–trida5) → přímá shoda v patterns.json, žádný Merge.<br/>
+        /// Named patterns (nese, dělá, být...) → irregulars.json,
+        /// případně Merge s bázovým vzorem přes <c>inheritsFrom</c>.
+        /// </para>
+        /// </summary>
+        private VerbPattern ResolvePattern(CzechWordRequest word)
         {
-            // Můžeš to doplnit vlastním seznamem známých vzorů
-            return lemma.ToLower(); // fallback: pattern = infinitiv
+            var key = word.Pattern!.ToLower();
+
+            if (dataProvider.GetPatterns().TryGetValue(key, out var regular))
+                return regular;
+
+            if (dataProvider.GetIrregulars().TryGetValue(key, out var irregular))
+            {
+                if (!string.IsNullOrEmpty(irregular.InheritsFrom)
+                    && dataProvider.GetPatterns().TryGetValue(
+                        irregular.InheritsFrom.ToLower(), out var basePattern))
+                    return Merge(basePattern, irregular);
+
+                return irregular;
+            }
+
+            throw new NotSupportedException($"Verb pattern '{word.Pattern}' not found.");
+        }
+
+        /// <summary>
+        /// Přepíše vlastnosti bázového vzoru hodnotami z nepravidelného vzoru
+        /// (pokud nejsou null). Zachovává InheritsFrom, přepisuje Aspect a vše ostatní.
+        /// </summary>
+        private static VerbPattern Merge(VerbPattern @base, VerbPattern irregular) =>
+            @base with
+            {
+                Stem              = irregular.Stem              ?? @base.Stem,
+                FutureStem        = irregular.FutureStem        ?? @base.FutureStem,
+                PresentStem       = irregular.PresentStem       ?? @base.PresentStem,
+                PastStem          = irregular.PastStem          ?? @base.PastStem,
+                PassiveStem       = irregular.PassiveStem       ?? @base.PassiveStem,
+                ImperativeStem    = irregular.ImperativeStem    ?? @base.ImperativeStem,
+                Aspect            = irregular.Aspect,
+                Present           = irregular.Present           ?? @base.Present,
+                Future            = irregular.Future            ?? @base.Future,
+                PastParticiple    = irregular.PastParticiple    ?? @base.PastParticiple,
+                PassiveParticiple = irregular.PassiveParticiple ?? @base.PassiveParticiple,
+            };
+
+        // ------------------------------------------------------------------ //
+        //  Privátní build metody                                              //
+        // ------------------------------------------------------------------ //
+
+        /// <summary>
+        /// Sestaví tvar pasivního participia (trpný rod).
+        /// Kmen dostane z <see cref="VerbStructure.PassiveStem"/>,
+        /// fallback na <see cref="VerbStructure.PastStem"/>.
+        /// </summary>
+        private WordForm BuildPassiveForm(
+            CzechWordRequest word, VerbPattern pattern,
+            VerbStructure verbStruct, string numberKey)
+        {
+            var genderKey = ResolveGenderKey(word.Gender);
+            var stem      = verbStruct.PassiveStem ?? verbStruct.PastStem;
+
+            // Heuristické úpravy kmene pasiva.
+            // Jde o lexikální výjimky, které nelze pokrýt obecným pravidlem přes phoneme registry.
+            if (stem.EndsWith("sk"))
+                stem = stem[..^2] + "ště";  // tisk  → tišt(ěn)
+            else if (stem.EndsWith("s"))
+                stem = stem[..^1] + "š";    // pros  → proš(en)
+            else if (word.Lemma == "kvést")
+                stem = "květ";              // kvést → květ(en) — nepravidelné
+
+            if (!pattern.PassiveParticiple.TryGetValue(genderKey, out var passiveDict)
+                || !passiveDict.TryGetValue(numberKey, out var ending))
+                throw new InvalidOperationException(
+                    $"Passive participle ending not found for {genderKey} {numberKey}.");
+
+            return new WordForm(PrefixedForm(verbStruct.Prefix, stem, ending));
+        }
+
+        /// <summary>
+        /// Sestaví tvar kondicionálu (podmiňovací způsob).
+        /// Používá minulý kmen a participiální koncovku; auxiliární sloveso
+        /// přidá <see cref="CzechVerbPhraseBuilderService"/>.
+        /// </summary>
+        private static WordForm BuildConditionalForm(
+            VerbPattern pattern, VerbStructure verbStruct,
+            string numberKey, Gender? gender)
+        {
+            var genderKey = ResolveGenderKey(gender);
+
+            if (!pattern.PastParticiple.TryGetValue(genderKey, out var participleDict)
+                || !participleDict.TryGetValue(numberKey, out var ending))
+                throw new InvalidOperationException(
+                    $"Past participle not found for {genderKey} {numberKey}.");
+
+            return new WordForm(PrefixedForm(verbStruct.Prefix, verbStruct.PastStem, ending));
+        }
+
+        /// <summary>
+        /// Sestaví imperativní tvar.
+        /// <para>
+        /// Kmen: <see cref="VerbStructure.ImperativeStem"/> (explicitní z dat: buď, měj, piš...)
+        /// nebo <see cref="VerbStructure.PresentStem"/> jako fallback pro regulární slovesa.
+        /// </para>
+        /// Dvě sousední souhlásky na konci kmene → vloží epentetické <c>-i</c> (2. os. sg).
+        /// </summary>
+        private WordForm BuildImperativeForm(CzechWordRequest word, VerbStructure verbStruct)
+        {
+            var prefix   = verbStruct.Prefix ?? string.Empty;
+            var baseStem = verbStruct.ImperativeStem ?? verbStruct.PresentStem;
+
+            string result = (word.Number, word.Person) switch
+            {
+                (Number.Singular, Person.Second)
+                    when MorphologyHelper.EndsWithTwoConsonants(baseStem)
+                    => baseStem + "i",
+                (Number.Singular, Person.Second)
+                    => baseStem,
+                (Number.Plural, Person.First)
+                    => baseStem + "me",
+                (Number.Plural, Person.Second)
+                    => baseStem + "te",
+                _ => throw new InvalidOperationException(
+                    "Imperative exists only for 2nd person (sg/pl) and 1st person plural.")
+            };
+
+            if (word.HasReflexive.HasValue && word.HasReflexive.Value)
+                result += $" {czechParticleService.GetReflexive(word.Case == Case.Dative)}";
+
+            return new WordForm($"{prefix}{result}!");
+        }
+
+        /// <summary>
+        /// Sestaví tvar minulého času (l-ové participium).
+        /// </summary>
+        private static WordForm BuildPastForm(
+            VerbPattern pattern, VerbStructure verbStruct,
+            string numberKey, Gender? gender)
+        {
+            var genderKey = ResolveGenderKey(gender);
+
+            if (!pattern.PastParticiple.TryGetValue(genderKey, out var participleDict)
+                || !participleDict.TryGetValue(numberKey, out var ending))
+                throw new InvalidOperationException(
+                    $"Past participle not found for {genderKey} {numberKey}.");
+
+            return new WordForm(PrefixedForm(verbStruct.Prefix, verbStruct.PastStem, ending));
+        }
+
+        /// <summary>
+        /// Sestaví tvar přítomného nebo budoucího času (syntetický).
+        /// <para>
+        /// <b>Výběr kmene pro budoucí čas:</b>
+        /// "být" má v JSON explicitní <c>futureStem</c> ("bud") → budu/budeš/bude...
+        /// Čteme ho přímo z <see cref="VerbPattern"/>, kde přirozeně patří.
+        /// Pro všechna ostatní slovesa je <c>pattern.FutureStem</c> null
+        /// → fallback na <see cref="VerbStructure.PresentStem"/>.
+        /// </para>
+        /// </summary>
+        private static WordForm BuildPresentFutureForm(
+            CzechWordRequest word, VerbPattern pattern,
+            VerbStructure verbStruct, string numberKey, Tense effectiveTense)
+        {
+            // Opisné budoucí pro imperfektivní slovesa — vrátíme infinitiv,
+            // frázi "bude dělat" sestaví CzechVerbPhraseBuilderService
+            if (effectiveTense == Tense.Future
+                && word.Aspect == VerbAspect.Imperfective
+                && !word.Lemma.Equals("být", StringComparison.OrdinalIgnoreCase))
+                return new WordForm(word.Lemma);
+
+            var tenseForms = effectiveTense switch
+            {
+                Tense.Present => pattern.Present,
+                Tense.Future  => pattern.Future ?? pattern.Present,
+                _ => throw new InvalidOperationException(
+                    $"Unsupported tense: {effectiveTense}.")
+            };
+
+            var personKey = word.Person.ToString();
+            var pDict = numberKey switch
+            {
+                "singular" => tenseForms.Singular?.ToDictionary(),
+                "plural"   => tenseForms.Plural?.ToDictionary(),
+                _ => null
+            };
+
+            if (pDict == null || !pDict.TryGetValue(personKey, out var ending))
+                throw new InvalidOperationException(
+                    $"Ending not found for {effectiveTense} {numberKey} {personKey}.");
+
+            // FutureStem z patternu (platí pouze pro "být": "bud" → budu/budeš/bude...).
+            // Pro všechna ostatní slovesa je null → fallback na PresentStem.
+            var stem = (effectiveTense == Tense.Future && pattern.FutureStem != null)
+                ? pattern.FutureStem
+                : verbStruct.PresentStem;
+
+            return new WordForm(PrefixedForm(verbStruct.Prefix, stem, ending));
+        }
+
+        // ------------------------------------------------------------------ //
+        //  Statické helpery                                                   //
+        // ------------------------------------------------------------------ //
+
+        /// <summary>
+        /// Převede <see cref="Gender"/> na řetězcový klíč pro indexování do paradigmat.
+        /// </summary>
+        private static string ResolveGenderKey(Gender? gender) => gender switch
+        {
+            Gender.Masculine => "masculine",
+            Gender.Feminine  => "feminine",
+            Gender.Neuter    => "neuter",
+            _ => throw new NotSupportedException($"Unsupported gender: {gender}.")
+        };
+
+        /// <summary>
+        /// Sestaví finální tvar: (prefix +) stem + ending.
+        /// Centralizuje opakující se prefixovou logiku ze všech build metod.
+        /// </summary>
+        private static string PrefixedForm(string? prefix, string stem, string ending)
+        {
+            var full = string.IsNullOrEmpty(prefix) ? stem : prefix + stem;
+            return MorphologyHelper.ApplyFormEnding(full, ending);
         }
     }
 }

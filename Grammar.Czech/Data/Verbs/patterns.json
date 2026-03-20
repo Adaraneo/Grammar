@@ -13,32 +13,14 @@
       }
     },
     "pastParticiple": {
-      "masculine": {
-        "singular": "-l",
-        "plural": "-li"
-      },
-      "feminine": {
-        "singular": "-la",
-        "plural": "-ly"
-      },
-      "neuter": {
-        "singular": "-lo",
-        "plural": "-la"
-      }
+      "masculine": { "singular": "-l", "plural": "-li" },
+      "feminine":  { "singular": "-la", "plural": "-ly" },
+      "neuter":    { "singular": "-lo", "plural": "-la" }
     },
     "passiveParticiple": {
-      "masculine": {
-        "singular": "-n",
-        "plural": "-ni"
-      },
-      "feminine": {
-        "singular": "-na",
-        "plural": "-na"
-      },
-      "neuter": {
-        "singular": "-no",
-        "plural": "-na"
-      }
+      "masculine": { "singular": "-n", "plural": "-ni" },
+      "feminine":  { "singular": "-na", "plural": "-na" },
+      "neuter":    { "singular": "-no", "plural": "-na" }
     }
   },
   "trida2": {
@@ -55,32 +37,14 @@
       }
     },
     "pastParticiple": {
-      "masculine": {
-        "singular": "-l",
-        "plural": "-li"
-      },
-      "feminine": {
-        "singular": "-la",
-        "plural": "-ly"
-      },
-      "neuter": {
-        "singular": "-lo",
-        "plural": "-la"
-      }
+      "masculine": { "singular": "-l", "plural": "-li" },
+      "feminine":  { "singular": "-la", "plural": "-ly" },
+      "neuter":    { "singular": "-lo", "plural": "-la" }
     },
     "passiveParticiple": {
-      "masculine": {
-        "singular": "-n",
-        "plural": "-ni"
-      },
-      "feminine": {
-        "singular": "-na",
-        "plural": "-ny"
-      },
-      "neuter": {
-        "singular": "-no",
-        "plural": "-na"
-      }
+      "masculine": { "singular": "-n", "plural": "-ni" },
+      "feminine":  { "singular": "-na", "plural": "-ny" },
+      "neuter":    { "singular": "-no", "plural": "-na" }
     }
   },
   "trida3": {
@@ -97,32 +61,14 @@
       }
     },
     "pastParticiple": {
-      "masculine": {
-        "singular": "-l",
-        "plural": "-li"
-      },
-      "feminine": {
-        "singular": "-la",
-        "plural": "-ly"
-      },
-      "neuter": {
-        "singular": "-lo",
-        "plural": "-la"
-      }
+      "masculine": { "singular": "-l", "plural": "-li" },
+      "feminine":  { "singular": "-la", "plural": "-ly" },
+      "neuter":    { "singular": "-lo", "plural": "-la" }
     },
     "passiveParticiple": {
-      "masculine": {
-        "singular": "-n",
-        "plural": "-ni"
-      },
-      "feminine": {
-        "singular": "-na",
-        "plural": "-ny"
-      },
-      "neuter": {
-        "singular": "-no",
-        "plural": "-na"
-      }
+      "masculine": { "singular": "-n", "plural": "-ni" },
+      "feminine":  { "singular": "-na", "plural": "-ny" },
+      "neuter":    { "singular": "-no", "plural": "-na" }
     }
   },
   "trida4": {
@@ -139,32 +85,14 @@
       }
     },
     "pastParticiple": {
-      "masculine": {
-        "singular": "-l",
-        "plural": "-li"
-      },
-      "feminine": {
-        "singular": "-la",
-        "plural": "-ly"
-      },
-      "neuter": {
-        "singular": "-lo",
-        "plural": "-la"
-      }
+      "masculine": { "singular": "-l", "plural": "-li" },
+      "feminine":  { "singular": "-la", "plural": "-ly" },
+      "neuter":    { "singular": "-lo", "plural": "-la" }
     },
     "passiveParticiple": {
-      "masculine": {
-        "singular": "-n",
-        "plural": "-ni"
-      },
-      "feminine": {
-        "singular": "-na",
-        "plural": "-ny"
-      },
-      "neuter": {
-        "singular": "-no",
-        "plural": "-na"
-      }
+      "masculine": { "singular": "-n", "plural": "-ni" },
+      "feminine":  { "singular": "-na", "plural": "-ny" },
+      "neuter":    { "singular": "-no", "plural": "-na" }
     }
   },
   "trida5": {
@@ -181,32 +109,38 @@
       }
     },
     "pastParticiple": {
-      "masculine": {
-        "singular": "-l",
-        "plural": "-li"
-      },
-      "feminine": {
-        "singular": "-la",
-        "plural": "-ly"
-      },
-      "neuter": {
-        "singular": "-lo",
-        "plural": "-la"
-      }
+      "masculine": { "singular": "-l", "plural": "-li" },
+      "feminine":  { "singular": "-la", "plural": "-ly" },
+      "neuter":    { "singular": "-lo", "plural": "-la" }
     },
     "passiveParticiple": {
-      "masculine": {
-        "singular": "-n",
-        "plural": "-ni"
+      "masculine": { "singular": "-n", "plural": "-ni" },
+      "feminine":  { "singular": "-na", "plural": "-ny" },
+      "neuter":    { "singular": "-no", "plural": "-na" }
+    }
+  },
+  "dojme": {
+    "present": {
+      "singular": {
+        "First": "-u",
+        "Second": "-eš",
+        "Third": "-e"
       },
-      "feminine": {
-        "singular": "-na",
-        "plural": "-ny"
-      },
-      "neuter": {
-        "singular": "-no",
-        "plural": "-na"
+      "plural": {
+        "First": "-eme",
+        "Second": "-ete",
+        "Third": "-ou"
       }
+    },
+    "pastParticiple": {
+      "masculine": { "singular": "-al", "plural": "-ali" },
+      "feminine":  { "singular": "-ala", "plural": "-aly" },
+      "neuter":    { "singular": "-alo", "plural": "-ala" }
+    },
+    "passiveParticiple": {
+      "masculine": { "singular": "-at", "plural": "-ati" },
+      "feminine":  { "singular": "-ata", "plural": "-aty" },
+      "neuter":    { "singular": "-ato", "plural": "-ata" }
     }
   }
 }
