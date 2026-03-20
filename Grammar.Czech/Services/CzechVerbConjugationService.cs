@@ -92,7 +92,7 @@ namespace Grammar.Czech.Services
             var effectiveTense =
                 word.Tense == Tense.Present && pattern.Aspect == VerbAspect.Perfective
                     ? Tense.Future
-                    : word.Tense!.Value;
+                    : word.Tense;
 
             return (word.Voice, word.Modus, effectiveTense) switch
             {
@@ -309,7 +309,7 @@ namespace Grammar.Czech.Services
         /// </summary>
         private static WordForm BuildPresentFutureForm(
             CzechWordRequest word, VerbPattern pattern,
-            VerbStructure verbStruct, string numberKey, Tense effectiveTense)
+            VerbStructure verbStruct, string numberKey, Tense? effectiveTense)
         {
             // Opisné budoucí pro imperfektivní slovesa — vrátíme infinitiv,
             // frázi "bude dělat" sestaví CzechVerbPhraseBuilderService

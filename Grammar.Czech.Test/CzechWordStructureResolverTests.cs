@@ -11,10 +11,11 @@ namespace Grammar.Czech.Test
     [TestClass]
     public class CzechWordStructureResolverTests
     {
-        private CzechWordStructureResolver resolver;
+        private IWordStructureResolver<CzechWordRequest> resolver;
         private IVerbDataProvider verbDataProvider;
         private CzechPrefixService prefixService;
         private IPhonologyService<CzechWordRequest> phonologyService;
+        private IVerbStructureResolver<CzechWordRequest> verbResolver;
 
         [TestInitialize]
         public void Setup()
@@ -26,6 +27,7 @@ namespace Grammar.Czech.Test
             var registry = new CzechPhonemeRegistry();
             phonologyService = new CzechPhonologyService(registry);
             resolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService);
+            verbResolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService);
         }
 
         #region Nouns
@@ -167,10 +169,10 @@ namespace Grammar.Czech.Test
                 Tense = Tense.Present
             };
 
-            var result = resolver.AnalyzeStructure(request);
+            var result = verbResolver.AnalyzeVerbStructure(request);
 
             Assert.AreEqual("do", result.Prefix);
-            Assert.AreEqual("nes", result.Root);
+            Assert.AreEqual("nes", result.PresentStem);
         }
 
         [TestMethod]
@@ -184,9 +186,9 @@ namespace Grammar.Czech.Test
                 Tense = Tense.Present
             };
 
-            var result = resolver.AnalyzeStructure(request);
+            var result = verbResolver.AnalyzeVerbStructure(request);
 
-            Assert.AreEqual("js", result.Root); // presentStem z JSON
+            Assert.AreEqual("js", result.PresentStem);
         }
 
         #endregion Verbs
