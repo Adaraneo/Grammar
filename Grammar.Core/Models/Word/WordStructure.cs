@@ -1,5 +1,4 @@
-﻿
-namespace Grammar.Core.Models.Word
+﻿namespace Grammar.Core.Models.Word
 {
     public sealed class WordStructure
     {

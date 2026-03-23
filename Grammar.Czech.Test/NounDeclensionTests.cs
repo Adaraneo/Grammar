@@ -169,7 +169,6 @@ namespace Grammar.Czech.Test
                                             "kuřata", "kuřat", "kuřatům", "kuřata", "kuřata", "kuřatech", "kuřaty"}) },
                     { "stavení", ("stavení", Gender.Neuter, null, new [] {"stavení", "stavení", "stavení", "stavení", "stavení", "stavení", "stavením",
                                             "stavení", "stavení", "stavením", "stavení", "stavení", "staveních", "staveními"}) }
-
                 };
 
                 var data = new List<object[]>();

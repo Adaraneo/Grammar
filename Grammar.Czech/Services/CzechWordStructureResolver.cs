@@ -213,12 +213,12 @@ namespace Grammar.Czech.Services
                 var presentStem = lemma[..^2];  // dělat → děl
                 return new()
                 {
-                    Prefix         = prefix,
-                    PresentStem    = presentStem,
-                    PastStem       = lemma[..^1],            // dělat → děla
-                    PassiveStem    = lemma[..^1],            // děla  + -n = dělan
+                    Prefix = prefix,
+                    PresentStem = presentStem,
+                    PastStem = lemma[..^1],            // dělat → děla
+                    PassiveStem = lemma[..^1],            // děla  + -n = dělan
                     ImperativeStem = presentStem + "ej",     // děl   + ej = dělej
-                    Aspect         = aspect
+                    Aspect = aspect
                 };
             }
 
@@ -240,11 +240,11 @@ namespace Grammar.Czech.Services
                 lemma.EndsWith("et") || lemma.EndsWith("ět"))
                 return new()
                 {
-                    Prefix      = prefix,
+                    Prefix = prefix,
                     PresentStem = lemma[..^2],   // prosit → pros, trpět → trp
-                    PastStem    = lemma[..^1],   // prosit → prosi, trpět → trpě
+                    PastStem = lemma[..^1],   // prosit → prosi, trpět → trpě
                     PassiveStem = lemma[..^1],   // prosi + -n = prosin (dle kontextu)
-                    Aspect      = aspect
+                    Aspect = aspect
                 };
 
             return UnknownInfinitiveFallback(prefix, lemma, aspect);
@@ -263,12 +263,12 @@ namespace Grammar.Czech.Services
                 var presentStem = lemma[..^4] + "u";   // kupovat → kupu
                 return new()
                 {
-                    Prefix         = prefix,
-                    PresentStem    = presentStem,
-                    PastStem       = lemma[..^1],       // kupovat → kupova
-                    PassiveStem    = lemma[..^1],       // kupova  + -n = kupován
+                    Prefix = prefix,
+                    PresentStem = presentStem,
+                    PastStem = lemma[..^1],       // kupovat → kupova
+                    PassiveStem = lemma[..^1],       // kupova  + -n = kupován
                     ImperativeStem = presentStem + "j", // kupu    + j  = kupuj
-                    Aspect         = aspect
+                    Aspect = aspect
                 };
             }
 
@@ -294,11 +294,11 @@ namespace Grammar.Czech.Services
                 var presentStem = lemma[..^4];  // tisknout → tisk
                 return new()
                 {
-                    Prefix         = prefix,
-                    PresentStem    = presentStem,
-                    PastStem       = presentStem,           // best-effort
+                    Prefix = prefix,
+                    PresentStem = presentStem,
+                    PastStem = presentStem,           // best-effort
                     ImperativeStem = presentStem + "n",     // tisk + n = tiskn
-                    Aspect         = aspect
+                    Aspect = aspect
                 };
             }
 

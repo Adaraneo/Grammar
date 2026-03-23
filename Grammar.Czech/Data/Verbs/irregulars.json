@@ -31,9 +31,18 @@
       }
     },
     "pastParticiple": {
-      "masculine": { "singular": "-l", "plural": "-li" },
-      "feminine":  { "singular": "-la", "plural": "-ly" },
-      "neuter":    { "singular": "-lo", "plural": "-la" }
+      "masculine": {
+        "singular": "-l",
+        "plural": "-li"
+      },
+      "feminine": {
+        "singular": "-la",
+        "plural": "-ly"
+      },
+      "neuter": {
+        "singular": "-lo",
+        "plural": "-la"
+      }
     }
   },
 
@@ -101,9 +110,18 @@
       }
     },
     "pastParticiple": {
-      "masculine": { "singular": "-ěl", "plural": "-ěli" },
-      "feminine":  { "singular": "-ěla", "plural": "-ěly" },
-      "neuter":    { "singular": "-ělo", "plural": "-ěla" }
+      "masculine": {
+        "singular": "-ěl",
+        "plural": "-ěli"
+      },
+      "feminine": {
+        "singular": "-ěla",
+        "plural": "-ěly"
+      },
+      "neuter": {
+        "singular": "-ělo",
+        "plural": "-ěla"
+      }
     }
   },
 
@@ -335,9 +353,18 @@
     "passiveStem": "tišt",
     "infinitive": "tisknout",
     "passiveParticiple": {
-      "masculine": { "singular": "-ěn", "plural": "-ěni" },
-      "feminine":  { "singular": "-ěna", "plural": "-ěny" },
-      "neuter":    { "singular": "-ěno", "plural": "-ěna" }
+      "masculine": {
+        "singular": "-ěn",
+        "plural": "-ěni"
+      },
+      "feminine": {
+        "singular": "-ěna",
+        "plural": "-ěny"
+      },
+      "neuter": {
+        "singular": "-ěno",
+        "plural": "-ěna"
+      }
     }
   },
 
@@ -349,9 +376,18 @@
     "passiveStem": "minu",
     "infinitive": "minout",
     "passiveParticiple": {
-      "masculine": { "singular": "-t", "plural": "-ti" },
-      "feminine":  { "singular": "-ta", "plural": "-ty" },
-      "neuter":    { "singular": "-to", "plural": "-ta" }
+      "masculine": {
+        "singular": "-t",
+        "plural": "-ti"
+      },
+      "feminine": {
+        "singular": "-ta",
+        "plural": "-ty"
+      },
+      "neuter": {
+        "singular": "-to",
+        "plural": "-ta"
+      }
     }
   },
 
@@ -363,9 +399,18 @@
     "passiveStem": "kry",
     "infinitive": "krýt",
     "passiveParticiple": {
-      "masculine": { "singular": "-t", "plural": "-ti" },
-      "feminine":  { "singular": "-ta", "plural": "-ty" },
-      "neuter":    { "singular": "-to", "plural": "-ta" }
+      "masculine": {
+        "singular": "-t",
+        "plural": "-ti"
+      },
+      "feminine": {
+        "singular": "-ta",
+        "plural": "-ty"
+      },
+      "neuter": {
+        "singular": "-to",
+        "plural": "-ta"
+      }
     }
   },
 

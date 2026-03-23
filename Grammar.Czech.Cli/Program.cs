@@ -5,7 +5,6 @@
     using Grammar.Czech.Models;
     using Grammar.Czech.Services;
     using Microsoft.Extensions.DependencyInjection;
-    using System.ComponentModel.DataAnnotations;
 
     internal class Program
     {

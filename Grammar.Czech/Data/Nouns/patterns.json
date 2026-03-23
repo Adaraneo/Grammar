@@ -69,30 +69,30 @@
     "gender": "feminine",
     "stem": "písn",
     "endings": {
-        "singular": {
-            "Genitive": "-ě",
-            "Dative": "-i",
-            "Accusative": "-",
-            "Vocative": "-i",
-            "Locative": "-i",
-            "Instrumental": "-í"
-        },
-        "plural": {
-            "Nominative": "-ě",
-            "Genitive": "-í",
-            "Dative": "-ím",
-            "Accusative": "-ě",
-            "Vocative": "-ě",
-            "Locative": "-ích",
-            "Instrumental": "-ěmi"
-        }
+      "singular": {
+        "Genitive": "-ě",
+        "Dative": "-i",
+        "Accusative": "-",
+        "Vocative": "-i",
+        "Locative": "-i",
+        "Instrumental": "-í"
+      },
+      "plural": {
+        "Nominative": "-ě",
+        "Genitive": "-í",
+        "Dative": "-ím",
+        "Accusative": "-ě",
+        "Vocative": "-ě",
+        "Locative": "-ích",
+        "Instrumental": "-ěmi"
+      }
     },
-  "overrides": {
-    "singular": {
-      "Accusative": "píseň"
+    "overrides": {
+      "singular": {
+        "Accusative": "píseň"
+      }
     }
-  }
-},
+  },
   "kost": {
     "gender": "feminine",
     "stem": "kost",

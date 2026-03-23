@@ -6,7 +6,6 @@ namespace Grammar.Czech.Services
 {
     public class CzechOrtographyService : ICzechOrtographyService
     {
-
         private readonly IPhonemeRegistry _registry;
 
         public CzechOrtographyService(IPhonemeRegistry registry)
