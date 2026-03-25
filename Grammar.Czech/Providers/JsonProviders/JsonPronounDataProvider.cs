@@ -9,8 +9,8 @@ namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonPronounDataProvider : IPronounDataProvider
     {
-        private readonly string _pronounPath = "Data.Pronouns.patterns";
-        private readonly string _paradigmsPath = "Data.Pronouns.paradigms";
+        private readonly string _pronounPath = "Data.Rules.Pronouns.patterns";
+        private readonly string _paradigmsPath = "Data.Rules.Pronouns.paradigms";
         private readonly Lazy<Dictionary<string, PronounData>> _pronouns;
         private readonly Lazy<Dictionary<string, PronounParadigm>> _paradigms;
 

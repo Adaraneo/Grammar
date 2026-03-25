@@ -8,8 +8,8 @@ namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonVerbDataProvider : IVerbDataProvider
     {
-        private readonly string _patternPath = "Data.Verbs.patterns";
-        private readonly string _irregularPath = "Data.Verbs.irregulars";
+        private readonly string _patternPath = "Data.Rules.Verbs.patterns";
+        private readonly string _irregularPath = "Data.Rules.Verbs.irregulars";
         private readonly Lazy<Dictionary<string, VerbPattern>> _patterns;
         private readonly Lazy<Dictionary<string, VerbPattern>> _irregulars;
 

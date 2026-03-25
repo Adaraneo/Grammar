@@ -8,7 +8,7 @@ namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonAdjectiveDataProvider : IAdjectiveDataProvider
     {
-        private readonly string _patternPath = "Data.Adjectives.patterns";
+        private readonly string _patternPath = "Data.Rules.Adjectives.patterns";
         private readonly Lazy<Dictionary<string, AdjectivePattern>> _patterns;
 
         public JsonAdjectiveDataProvider()

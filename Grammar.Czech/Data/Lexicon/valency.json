@@ -1,0 +1,105 @@
+{
+  "dát": [
+    {
+      "verbLemma": "dát",
+      "frameLabel": "transfer",
+      "slots": [
+        {
+          "role": "Actor",
+          "realization": { "case": "Nominative", "preposition": null },
+          "isObligatory": true
+        },
+        {
+          "role": "Patient",
+          "realization": { "case": "Accusative", "preposition": null },
+          "isObligatory": true
+        },
+        {
+          "role": "Addressee",
+          "realization": { "case": "Dative", "preposition": null },
+          "isObligatory": false
+        },
+        {
+          "role": "Direction",
+          "realization": { "case": "Accusative", "preposition": "na" },
+          "isObligatory": false
+        }
+      ]
+    }
+  ],
+  "dávat": [
+    {
+      "verbLemma": "dávat",
+      "frameLabel": "transfer",
+      "slots": [
+        {
+          "role": "Actor",
+          "realization": { "case": "Nominative", "preposition": null },
+          "isObligatory": true
+        },
+        {
+          "role": "Patient",
+          "realization": { "case": "Accusative", "preposition": null },
+          "isObligatory": true
+        },
+        {
+          "role": "Addressee",
+          "realization": { "case": "Dative", "preposition": null },
+          "isObligatory": false
+        }
+      ]
+    }
+  ],
+  "jít": [
+    {
+      "verbLemma": "jít",
+      "frameLabel": "motion",
+      "slots": [
+        {
+          "role": "Actor",
+          "realization": { "case": "Nominative", "preposition": null },
+          "isObligatory": true
+        },
+        {
+          "role": "Direction",
+          "realization": { "case": "Accusative", "preposition": "do" },
+          "isObligatory": false
+        },
+        {
+          "role": "Origin",
+          "realization": { "case": "Genitive", "preposition": "z" },
+          "isObligatory": false
+        }
+      ]
+    },
+    {
+      "verbLemma": "jít",
+      "frameLabel": "process",
+      "slots": [
+        {
+          "role": "Actor",
+          "realization": { "case": "Nominative", "preposition": null },
+          "isObligatory": true
+        }
+      ]
+    }
+  ],
+  "vidět": [
+    {
+      "verbLemma": "vidět",
+      "frameLabel": "perception",
+      "slots": [
+        {
+          "role": "Actor",
+          "realization": { "case": "Nominative", "preposition": null },
+          "isObligatory": true
+        },
+        {
+          "role": "Patient",
+          "realization": { "case": "Accusative", "preposition": null },
+          "isObligatory": true
+        }
+      ]
+    }
+  ]
+}

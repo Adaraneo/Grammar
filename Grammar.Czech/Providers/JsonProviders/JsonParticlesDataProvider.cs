@@ -7,7 +7,7 @@ namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonParticlesDataProvider : IParticleDataProvider
     {
-        private readonly string _particlePath = "Data.particles";
+        private readonly string _particlePath = "Data.Rules.particles";
         private readonly Lazy<ParticlesData> _data;
 
         public JsonParticlesDataProvider()

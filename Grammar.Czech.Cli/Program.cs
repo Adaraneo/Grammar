@@ -125,39 +125,39 @@
             //PrintNounForms(composer, forestRequest);
             //PrintNounForms(composer, píseňRequest);
 
-            var doRequest = new CzechWordRequest
-            {
-                Lemma = "dělat",
-                WordCategory = WordCategory.Verb,
-                Gender = Gender.Masculine,
-                Aspect = VerbAspect.Imperfective,
-                Pattern = "dělá",
-            };
+            //var doRequest = new CzechWordRequest
+            //{
+            //    Lemma = "dělat",
+            //    WordCategory = WordCategory.Verb,
+            //    Gender = Gender.Masculine,
+            //    Aspect = VerbAspect.Imperfective,
+            //    Pattern = "dělá",
+            //};
 
-            var carryRequest = new CzechWordRequest
-            {
-                Lemma = "nést",
-                WordCategory = WordCategory.Verb,
-                Gender = Gender.Masculine,
-                Aspect = VerbAspect.Imperfective,
-                Pattern = "nese",
-            };
+            //var carryRequest = new CzechWordRequest
+            //{
+            //    Lemma = "nést",
+            //    WordCategory = WordCategory.Verb,
+            //    Gender = Gender.Masculine,
+            //    Aspect = VerbAspect.Imperfective,
+            //    Pattern = "nese",
+            //};
 
-            PrintVerbForms(composer, doRequest);
-            PrintVerbForms(composer, carryRequest);
+            //PrintVerbForms(composer, doRequest);
+            //PrintVerbForms(composer, carryRequest);
 
-            var negativeCarryRequest = new CzechWordRequest
-            {
-                Lemma = carryRequest.Lemma,
-                WordCategory = carryRequest.WordCategory,
-                Gender = carryRequest.Gender,
-                Aspect = carryRequest.Aspect,
-                Pattern = carryRequest.Pattern,
-                IsNegative = true,
-            };
+            //var negativeCarryRequest = new CzechWordRequest
+            //{
+            //    Lemma = carryRequest.Lemma,
+            //    WordCategory = carryRequest.WordCategory,
+            //    Gender = carryRequest.Gender,
+            //    Aspect = carryRequest.Aspect,
+            //    Pattern = carryRequest.Pattern,
+            //    IsNegative = true,
+            //};
 
-            PrintVerbForms(composer, negativeCarryRequest);
-            PrintVerbForms(composer, carryRequest, Modus.Imperative);
+            //PrintVerbForms(composer, negativeCarryRequest);
+            //PrintVerbForms(composer, carryRequest, Modus.Imperative);
 
             //var meRequest = new CzechWordRequest
             //{
@@ -220,26 +220,49 @@
             //Console.WriteLine("{0} -> {1}", mujRequest.Lemma, engine.GetForm(mujRequest).Form);
             //Console.WriteLine("{0} -> {1}", someoneRequest.Lemma, engine.GetForm(someoneRequest).Form);
 
-            var přijmoutRequest = new CzechWordRequest
+            //var přijmoutRequest = new CzechWordRequest
+            //{
+            //    Lemma = "přijmout",
+            //    WordCategory = WordCategory.Verb,
+            //    Gender = Gender.Masculine,
+            //    Aspect = VerbAspect.Perfective,
+            //    VerbClass = VerbClass.Class2
+            //};
+
+            //var odmíntouRequest = new CzechWordRequest
+            //{
+            //    Lemma = "odmítnout",
+            //    WordCategory = WordCategory.Verb,
+            //    Gender = Gender.Masculine,
+            //    Aspect = VerbAspect.Perfective,
+            //    VerbClass = VerbClass.Class2
+            //};
+
+            //PrintVerbForms(composer, přijmoutRequest);
+            //PrintVerbForms(composer, odmíntouRequest);
+
+            //var projevitRequest = new CzechWordRequest
+            //{
+            //    Lemma = "projevit",
+            //    WordCategory = WordCategory.Verb,
+            //    Gender = Gender.Feminine,
+            //    Aspect = VerbAspect.Perfective,
+            //    VerbClass = VerbClass.Class4
+            //};
+
+            //PrintVerbForms(composer, projevitRequest);
+
+            var appleREquest = new CzechWordRequest
             {
-                Lemma = "přijmout",
-                WordCategory = WordCategory.Verb,
-                Gender = Gender.Masculine,
-                Aspect = VerbAspect.Perfective,
-                VerbClass = VerbClass.Class2
+                Lemma = "jablko",
+                WordCategory = WordCategory.Noun,
+                Gender = Gender.Neuter,
+                Case = Case.Genitive,
+                Number = Number.Plural,
+                Pattern = "město"
             };
 
-            var odmíntouRequest = new CzechWordRequest
-            {
-                Lemma = "odmítnout",
-                WordCategory = WordCategory.Verb,
-                Gender = Gender.Masculine,
-                Aspect = VerbAspect.Perfective,
-                VerbClass = VerbClass.Class2
-            };
-
-            PrintVerbForms(composer, přijmoutRequest);
-            PrintVerbForms(composer, odmíntouRequest);
+            Console.WriteLine(composer.GetFullForm(appleREquest).Form);
         }
 
         private static void PrintWordInfo(CzechWordRequest request)

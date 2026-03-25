@@ -8,7 +8,7 @@ namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonPrepositionsDataProvider : IPrepositionDataProvider
     {
-        private readonly string _prepositionsPath = "Data.prepositions";
+        private readonly string _prepositionsPath = "Data.Rules.prepositions";
         private readonly Lazy<Dictionary<string, PrepositionData>> _data;
 
         public JsonPrepositionsDataProvider()

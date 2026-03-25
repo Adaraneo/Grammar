@@ -1,0 +1,92 @@
+{
+  "student": {
+    "lemma": "student",
+    "category": "Noun",
+    "gender": "Masculine",
+    "pattern": "pán",
+    "isAnimate": true,
+    "hasMobileVowel": false,
+    "aspect": null,
+    "aspectCounterpart": null
+  },
+  "studentka": {
+    "lemma": "studentka",
+    "category": "Noun",
+    "gender": "Feminine",
+    "pattern": "žena",
+    "isAnimate": true,
+    "hasMobileVowel": false,
+    "aspect": null,
+    "aspectCounterpart": null
+  },
+  "pes": {
+    "lemma": "pes",
+    "category": "Noun",
+    "gender": "Masculine",
+    "pattern": "pán",
+    "isAnimate": true,
+    "hasMobileVowel": true,
+    "aspect": null,
+    "aspectCounterpart": null
+  },
+  "město": {
+    "lemma": "město",
+    "category": "Noun",
+    "gender": "Neuter",
+    "pattern": "město",
+    "isAnimate": false,
+    "hasMobileVowel": false,
+    "aspect": null,
+    "aspectCounterpart": null
+  },
+  "dát": {
+    "lemma": "dát",
+    "category": "Verb",
+    "gender": null,
+    "pattern": "trida5",
+    "isAnimate": null,
+    "hasMobileVowel": null,
+    "aspect": "Perfective",
+    "aspectCounterpart": "dávat"
+  },
+  "dávat": {
+    "lemma": "dávat",
+    "category": "Verb",
+    "gender": null,
+    "pattern": "trida5",
+    "isAnimate": null,
+    "hasMobileVowel": null,
+    "aspect": "Imperfective",
+    "aspectCounterpart": "dát"
+  },
+  "jít": {
+    "lemma": "jít",
+    "category": "Verb",
+    "gender": null,
+    "pattern": "jít",
+    "isAnimate": null,
+    "hasMobileVowel": null,
+    "aspect": "Imperfective",
+    "aspectCounterpart": "zajít"
+  },
+  "vidět": {
+    "lemma": "vidět",
+    "category": "Verb",
+    "gender": null,
+    "pattern": "trida4",
+    "isAnimate": null,
+    "hasMobileVowel": null,
+    "aspect": "Imperfective",
+    "aspectCounterpart": "uvidět"
+  },
+  "mladý": {
+    "lemma": "mladý",
+    "category": "Adjective",
+    "gender": null,
+    "pattern": "mladý",
+    "isAnimate": null,
+    "hasMobileVowel": null,
+    "aspect": null,
+    "aspectCounterpart": null
+  }
+}

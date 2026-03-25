@@ -8,9 +8,9 @@ namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonNounDataProvider : INounDataProvider
     {
-        private readonly string _patternPath = "Data.Nouns.patterns";
-        private readonly string _irregularPath = "Data.Nouns.irregulars";
-        private readonly string _properNamesPath = "Data.Nouns.propers";
+        private readonly string _patternPath = "Data.Rules.Nouns.patterns";
+        private readonly string _irregularPath = "Data.Rules.Nouns.irregulars";
+        private readonly string _properNamesPath = "Data.Rules.Nouns.propers";
         private readonly Lazy<Dictionary<string, NounPattern>> _patterns;
         private readonly Lazy<Dictionary<string, NounPattern>> _irregulars;
         private readonly Lazy<Dictionary<string, NounPattern>> _properNames;

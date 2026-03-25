@@ -27,7 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\**\*.json"/>
+    <EmbeddedResource Include="Data\**\*.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Lexicon\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

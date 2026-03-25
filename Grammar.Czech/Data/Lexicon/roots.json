@@ -1,0 +1,57 @@
+{
+  "mlad": {
+    "root": "mlad",
+    "derivations": [
+      {
+        "lemma": "mladý",
+        "suffix": "ý",
+        "partOfSpeech": "Adjective",
+        "type": "Primary",
+        "pattern": "mladý",
+        "gender": null,
+        "isAnimate": null,
+        "alternations": []
+      },
+      {
+        "lemma": "mládí",
+        "suffix": "í",
+        "partOfSpeech": "Noun",
+        "type": "Nominalisation",
+        "pattern": "stavení",
+        "gender": "Neuter",
+        "isAnimate": false,
+        "alternations": [ "LengthenRoot" ]
+      },
+      {
+        "lemma": "mladík",
+        "suffix": "ík",
+        "partOfSpeech": "Noun",
+        "type": "Agentive",
+        "pattern": "pán",
+        "gender": "Masculine",
+        "isAnimate": true,
+        "alternations": []
+      },
+      {
+        "lemma": "mladost",
+        "suffix": "ost",
+        "partOfSpeech": "Noun",
+        "type": "Nominalisation",
+        "pattern": "kost",
+        "gender": "Feminine",
+        "isAnimate": false,
+        "alternations": []
+      },
+      {
+        "lemma": "mladší",
+        "suffix": "ší",
+        "partOfSpeech": "Adjective",
+        "type": "Primary",
+        "pattern": "jarní",
+        "gender": null,
+        "isAnimate": null,
+        "alternations": []
+      }
+    ]
+  }
+}

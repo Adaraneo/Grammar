@@ -7,7 +7,7 @@ namespace Grammar.Czech.Providers.JsonProviders
 {
     public class JsonPrefixDataProvider : IPrefixDataProvider
     {
-        private readonly string _prefixPath = "Data.prefixes";
+        private readonly string _prefixPath = "Data.Rules.prefixes";
         private readonly Lazy<Dictionary<string, List<string>>> _prefixes;
 
         public JsonPrefixDataProvider()

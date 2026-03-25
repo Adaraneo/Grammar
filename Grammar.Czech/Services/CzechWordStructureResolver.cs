@@ -4,6 +4,7 @@ using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
+using System.Runtime.CompilerServices;
 
 namespace Grammar.Czech.Services
 {
@@ -67,11 +68,11 @@ namespace Grammar.Czech.Services
         private WordStructure AnalyzeNoun(CzechWordRequest wordRequest)
         {
             var lemma = wordRequest.Lemma;
-            var pattern = wordRequest.Pattern;
+            var pattern = wordRequest.Pattern!;
 
             var root = ExtractNounRoot(lemma, wordRequest);
 
-            var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern!, wordRequest);
+            var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern);
 
             if (!string.IsNullOrEmpty(derivationSuffix))
             {
@@ -98,12 +99,10 @@ namespace Grammar.Czech.Services
 
             if (lemma.Length > 1 && !MorphologyHelper.IsConsonant(lemma[^1]))
             {
-                // Feminine and neuter nouns often end with a vowel, so we can try removing it to find the root
                 root = lemma[..^1];
             }
             else
             {
-                // For masculine nouns, the lemma often ends with a consonant, so we can return it as is
                 root = lemma;
             }
 
@@ -124,7 +123,7 @@ namespace Grammar.Czech.Services
             return root;
         }
 
-        private string? DetectNounDerivationSuffix(string lemma, string pattern, CzechWordRequest request)
+        private string? DetectNounDerivationSuffix(string lemma, string pattern)
         {
             if (pattern == "žena" && lemma.EndsWith("ka") && lemma.Length > 2)
             {
