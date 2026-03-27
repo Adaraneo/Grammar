@@ -31,14 +31,6 @@ namespace Grammar.Czech
             services.AddSingleton<IPrepositionDataProvider>(new JsonPrepositionsDataProvider());
             services.AddSingleton<IPronounDataProvider>(new JsonPronounDataProvider());
 
-            // ── Root lexicon ─────────────────────────────────────────────────────────
-            // ICzechRootProvider is the typed interface used within Grammar.Czech.
-            // IRootProvider is the language-agnostic alias used by Grammar.Core consumers.
-            // Both resolve to the same singleton instance.
-            services.AddSingleton<ICzechRootProvider, JsonRootProvider>();
-            services.AddSingleton<IRootProvider>(sp =>
-                sp.GetRequiredService<ICzechRootProvider>());
-
             // ── Valency & lexical dictionary ─────────────────────────────────────────
             services.AddSingleton<IValencyProvider, JsonValencyProvider>();
 

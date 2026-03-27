@@ -252,7 +252,7 @@
 
             //PrintVerbForms(composer, projevitRequest);
 
-            var appleREquest = new CzechWordRequest
+            var appleRequest = new CzechWordRequest
             {
                 Lemma = "jablko",
                 WordCategory = WordCategory.Noun,
@@ -262,9 +262,7 @@
                 Pattern = "město"
             };
 
-            Console.WriteLine(composer.GetFullForm(appleREquest).Form);
-
-
+            Console.WriteLine(composer.GetFullForm(appleRequest).Form);
         }
 
         private static void PrintWordInfo(CzechWordRequest request)

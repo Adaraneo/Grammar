@@ -17,7 +17,6 @@ namespace Grammar.Czech.Services
         private readonly INounDataProvider nounDataProvider;
         private readonly CzechPrefixService prefixService;
         private readonly IPhonologyService<CzechWordRequest> phonologyService;
-        private readonly ICzechRootProvider rootProvider;
 
         private readonly Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>> analyzers;
 
@@ -28,14 +27,12 @@ namespace Grammar.Czech.Services
             IVerbDataProvider verbDataProvider,
             INounDataProvider nounDataProvider,
             CzechPrefixService prefixService,
-            IPhonologyService<CzechWordRequest> phonologyService,
-            ICzechRootProvider rootProvider)
+            IPhonologyService<CzechWordRequest> phonologyService)
         {
             this.verbDataProvider = verbDataProvider;
             this.nounDataProvider = nounDataProvider;
             this.prefixService = prefixService;
             this.phonologyService = phonologyService;
-            this.rootProvider = rootProvider;
 
             analyzers = new Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>>
             {
@@ -81,64 +78,22 @@ namespace Grammar.Czech.Services
         private WordStructure AnalyzeNoun(CzechWordRequest wordRequest)
         {
             var lemma = wordRequest.Lemma;
+            var pattern = wordRequest.Pattern;
 
-            // PRIMARY PATH: roots.json lookup.
-            // When a lemma has a phonologically active DerivationSuffix registered,
-            // the derivational root IS the correct inflectional root base, because:
-            //   stem (in DeclensionService) = Root + DerivationSuffix
-            //   e.g. "student" + "k" = "studentk" → epenthesis → "studentek" ✓
-            var rootEntry = rootProvider.GetCzechByLemma(lemma);
-            if (rootEntry is not null)
+            var root = ExtractNounRoot(lemma, wordRequest);
+
+            var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern!);
+
+            if (!string.IsNullOrEmpty(derivationSuffix) && root.EndsWith(derivationSuffix))
             {
-                rootEntry.Derivations.TryGetValue(lemma, out var link);
-
-                if (link?.DerivationSuffix is not null)
-                {
-                    var rootFromLexicon = ApplyMobileVowelToRoot(rootEntry.Root, wordRequest);
-                    return new WordStructure
-                    {
-                        Root             = rootFromLexicon,
-                        DerivationSuffix = link.DerivationSuffix
-                    };
-                }
+                root = root[..^derivationSuffix.Length];
             }
 
-            // FALLBACK PATH: heuristic root extraction for lemmata without a roots.json entry,
-            // or lemmata in roots.json that have no active DerivationSuffix (e.g. "mládí").
-            var root = ExtractNounRoot(lemma, wordRequest);
             return new WordStructure
             {
-                Root = root
+                Root             = root,
+                DerivationSuffix = derivationSuffix
             };
-        }
-
-        /// <summary>
-        /// Applies mobile vowel removal to a root string read from the root lexicon,
-        /// using the same rules as <see cref="ExtractNounRoot"/>.
-        /// </summary>
-        private string ApplyMobileVowelToRoot(string root, CzechWordRequest request)
-        {
-            if (request.Case == Case.Nominative && request.Number == Number.Singular)
-            {
-                return root;
-            }
-
-            var hasMobileVowel = MorphologyHelper.EndsWithVowelConsonantVowelConsonant(root);
-            if (hasMobileVowel)
-            {
-                return phonologyService.RemoveMobileVowel(root, true);
-            }
-
-            if (request.Gender == Gender.Masculine)
-            {
-                var hasMobileVowelIrregular =
-                    nounDataProvider.GetIrregulars().TryGetValue(request.Lemma.ToLower(), out var irregular)
-                    && irregular.HasMobileVowel;
-
-                return phonologyService.RemoveMobileVowel(root, hasMobileVowelIrregular);
-            }
-
-            return root;
         }
 
         private string ExtractNounRoot(string lemma, CzechWordRequest request)
@@ -179,6 +134,16 @@ namespace Grammar.Czech.Services
             }
 
             return root;
+        }
+
+        private static string? DetectNounDerivationSuffix(string lemma, string pattern)
+        {
+            if (pattern == "žena" && lemma.EndsWith("ka") && lemma.Length > 2)
+            {
+                return "k";
+            }
+
+            return null;
         }
 
         #endregion Noun

@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
@@ -26,9 +26,8 @@ namespace Grammar.Czech.Test
             prefixService = new CzechPrefixService(perfixProvider);
             var registry = new CzechPhonemeRegistry();
             phonologyService = new CzechPhonologyService(registry);
-            var rootProvider = new JsonRootProvider();
-            resolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService, rootProvider);
-            verbResolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService, rootProvider);
+            resolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService);
+            verbResolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService);
         }
 
         #region Nouns
