@@ -263,6 +263,8 @@
             };
 
             Console.WriteLine(composer.GetFullForm(appleREquest).Form);
+
+
         }
 
         private static void PrintWordInfo(CzechWordRequest request)

@@ -27,12 +27,15 @@ namespace Grammar.Czech.Test
             var verbStructureResolver = new CzechWordStructureResolver(
                 verbDataProvider, nounDataProvider, prefixService, phonologyService);
 
+            var valencyProvider = new JsonValencyProvider();
+
             service = new CzechVerbConjugationService(
                 verbDataProvider,
                 verbStructureResolver,
                 particleService,
                 prefixService,
-                registry);
+                registry,
+                valencyProvider);
         }
 
         #region Present Tense

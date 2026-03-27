@@ -1,4 +1,5 @@
 ﻿using Grammar.Core.Enums;
+using Grammar.Core.Exceptions;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
@@ -9,33 +10,35 @@ namespace Grammar.Czech.Services
 {
     public class CzechNounDeclensionService : IInflectionService<CzechWordRequest>
     {
-        private readonly INounDataProvider dataProvider;
-        private readonly IWordStructureResolver<CzechWordRequest> wordStructureResolver;
-        private readonly ICzechPhonologyService phonologyService;
-        private readonly ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator;
-        private readonly IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator;
-        private readonly IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator;
-        private readonly ICzechOrtographyService ortographyService;
+        private readonly INounDataProvider _dataProvider;
+        private readonly IWordStructureResolver<CzechWordRequest> _wordStructureResolver;
+        private readonly ICzechPhonologyService _phonologyService;
+        private readonly ISofteningRuleEvaluator<CzechWordRequest> _softeningRuleEvaluator;
+        private readonly IEpenthesisRuleEvaluator<CzechWordRequest> _epenthesisRuleEvaluator;
+        private readonly IJotationRuleEvaluator<CzechWordRequest> _jotationRuleEvaluator;
+        private readonly ICzechOrtographyService _ortographyService;
+        private readonly IValencyProvider _valencyProvider;
 
-        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator, IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator, ICzechOrtographyService ortographyService)
+        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator, IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator, ICzechOrtographyService ortographyService, IValencyProvider valencyProvider)
         {
-            this.dataProvider = dataProvider;
-            this.wordStructureResolver = wordStructureResolver;
-            this.phonologyService = phonologyService;
-            this.softeningRuleEvaluator = softeningRuleEvaluator;
-            this.epenthesisRuleEvaluator = epenthesisRuleEvaluator;
-            this.jotationRuleEvaluator = jotationRuleEvaluator;
-            this.ortographyService = ortographyService;
+            this._dataProvider = dataProvider;
+            this._wordStructureResolver = wordStructureResolver;
+            this._phonologyService = phonologyService;
+            this._softeningRuleEvaluator = softeningRuleEvaluator;
+            this._epenthesisRuleEvaluator = epenthesisRuleEvaluator;
+            this._jotationRuleEvaluator = jotationRuleEvaluator;
+            this._ortographyService = ortographyService;
+            this._valencyProvider = valencyProvider;
         }
 
         public WordForm GetForm(CzechWordRequest word)
         {
-            if (dataProvider.GetPropers().TryGetValue(word.Lemma, out var propers) && propers.IsIndeclinable)
+            if (_dataProvider.GetPropers().TryGetValue(word.Lemma, out var propers) && propers.IsIndeclinable)
             {
                 return new WordForm(word.Lemma);
             }
 
-            if (!dataProvider.GetPatterns().TryGetValue(word.Pattern.ToLower(), out var pattern))
+            if (!_dataProvider.GetPatterns().TryGetValue(word.Pattern.ToLower(), out var pattern))
             {
                 throw new NotSupportedException($"Noun pattern '{word.Pattern}' not found.");
             }
@@ -57,7 +60,7 @@ namespace Grammar.Czech.Services
 
             NounPattern? irregular = null;
 
-            if (dataProvider.GetIrregulars().TryGetValue(word.Lemma.ToLower(), out irregular))
+            if (_dataProvider.GetIrregulars().TryGetValue(word.Lemma.ToLower(), out irregular))
             {
                 if (irregular.Overrides != null &&
                     irregular.Overrides.TryGetValue(numberKey, out var cases) &&
@@ -85,11 +88,11 @@ namespace Grammar.Czech.Services
                 return new WordForm(overrideForm);
             }
 
-            var wordStructure = wordStructureResolver.AnalyzeStructure(word);
+            var wordStructure = _wordStructureResolver.AnalyzeStructure(word);
             var stem = wordStructure.Root;
             if (!string.IsNullOrEmpty(wordStructure.DerivationSuffix))
             {
-                stem = phonologyService.ApplyEpenthesis(epenthesisRuleEvaluator.ShouldApplyEpenthesis(stem, wordStructure.DerivationSuffix, word), stem, wordStructure.DerivationSuffix);
+                stem = _phonologyService.ApplyEpenthesis(_epenthesisRuleEvaluator.ShouldApplyEpenthesis(stem, wordStructure.DerivationSuffix, word), stem, wordStructure.DerivationSuffix);
             }
 
             if (!string.IsNullOrEmpty(irregular?.Stem))
@@ -102,56 +105,55 @@ namespace Grammar.Czech.Services
                 stem = pattern.Stem!;
             }
 
-            if (softeningRuleEvaluator.ShouldApplySoftening(word, out var palatalizationContext))
+            if (_softeningRuleEvaluator.ShouldApplySoftening(word, out var palatalizationContext))
             {
-                stem = phonologyService.ApplySoftening(stem, palatalizationContext);
+                stem = _phonologyService.ApplySoftening(stem, palatalizationContext);
             }
 
             var hasMobileVowelRemoval = MorphologyHelper.EndsWithVowelConsonantVowelConsonant(word.Lemma);
 
-            var finalEnding = softeningRuleEvaluator.GetEndingTransformation(word, out var endingTransformationApplied) ?? ending;
+            var finalEnding = _softeningRuleEvaluator.GetEndingTransformation(word, out var endingTransformationApplied) ?? ending;
 
-            if (jotationRuleEvaluator.ShouldApplyJotation(word, stem, finalEnding, hasMobileVowelRemoval))
+            if (_jotationRuleEvaluator.ShouldApplyJotation(word, stem, finalEnding, hasMobileVowelRemoval))
             {
-                finalEnding = ortographyService.ApplyJotationOrthography(finalEnding);
+                finalEnding = _ortographyService.ApplyJotationOrthography(finalEnding);
             }
             else if (!endingTransformationApplied)
             {
-                finalEnding = ortographyService.NormalizeEndingOrthography(stem, finalEnding);
+                finalEnding = _ortographyService.NormalizeEndingOrthography(stem, finalEnding);
             }
 
             return new WordForm(MorphologyHelper.ApplyFormEnding(stem, finalEnding));
         }
 
-        public (Gender, string, Number, bool) GuessGenderAndPattern(string lemma)
+        /// <summary>
+        /// Resolves the gender, inflectional pattern, grammatical number, and animacy
+        /// for the given lemma by looking it up in the lexical dictionary.
+        /// </summary>
+        /// <param name="lemma">The dictionary form of the noun.</param>
+        /// <returns>
+        /// A tuple of (Gender, pattern key, Number, isAnimate) read from <c>lexicon.json</c>.
+        /// </returns>
+        /// <exception cref="LemmaNotFoundException">
+        /// Thrown when the lemma is not registered in the lexicon.
+        /// Add a <c>LexicalEntry</c> for it in <c>lexicon.json</c>.
+        /// </exception>
+        public (Gender, string, Number, bool) ResolveGenderAndPattern(string lemma)
         {
-            throw new NotImplementedException();
-            var lower = lemma.ToLowerInvariant();
+            var entry = _valencyProvider.GetEntry(lemma)
+                ?? throw new LemmaNotFoundException(lemma);
 
-            if (lower.EndsWith("a"))
-                return (Gender.Feminine, "žena", Number.Singular, false);
+            var gender = entry.Gender
+                ?? throw new LemmaNotFoundException(lemma,
+                    $"Lemma '{lemma}' found in lexicon but Gender is null. " +
+                    $"Set the 'gender' field in lexicon.json.");
 
-            if (lower.EndsWith("o"))
-                return (Gender.Neuter, "město", Number.Singular, false);
+            var pattern = entry.Pattern
+                ?? throw new LemmaNotFoundException(lemma,
+                    $"Lemma '{lemma}' found in lexicon but Pattern is null. " +
+                    $"Set the 'pattern' field in lexicon.json.");
 
-            if (lower.EndsWith("í"))
-                return (Gender.Neuter, "stavení", Number.Singular, false);
-
-            if (lower.EndsWith("e") || lower.EndsWith("ě"))
-                return (Gender.Neuter, "moře", Number.Singular, false);
-
-            if (lower.EndsWith("us") || lower.EndsWith("ec") || lower.EndsWith("tel"))
-                return (Gender.Masculine, "muž", Number.Singular, true);
-
-            if (lower.EndsWith("y") || lower.EndsWith("i") || lower.EndsWith("é"))
-                return (Gender.Feminine, "žena", Number.Plural, false); // fallback plurál
-
-            // fallback pro souhláskové zakončení
-            if ("bcčdďfghjklmnprstvwxyzž".Contains(lower[^1]))
-                return (Gender.Masculine, "hrad", Number.Singular, false);
-
-            // default fallback
-            return (Gender.Masculine, "muž", Number.Singular, true);
+            return (gender, pattern, Number.Singular, entry.IsAnimate ?? false);
         }
     }
 }

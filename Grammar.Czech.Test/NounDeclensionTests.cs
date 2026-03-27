@@ -25,8 +25,9 @@ namespace Grammar.Czech.Test
             var epenthesisEvaluator = new CzechEpenthesisRuleEvaluator(registry);
             var jotationEvaluator = new CzechJotationRuleEvaluator(registry, wordStructureResolver);
             var ortographyService = new CzechOrtographyService(registry);
+            var valencyProvider = new JsonValencyProvider();
 
-            nounDeclensionService = new CzechNounDeclensionService(nounDataPrvider, wordStructureResolver, phonologyService, softeningEvaluator, epenthesisEvaluator, jotationEvaluator, ortographyService);
+            nounDeclensionService = new CzechNounDeclensionService(nounDataPrvider, wordStructureResolver, phonologyService, softeningEvaluator, epenthesisEvaluator, jotationEvaluator, ortographyService, valencyProvider);
         }
 
         [TestMethod]

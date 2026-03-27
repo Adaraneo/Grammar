@@ -1,5 +1,6 @@
 using Grammar.Core.Enums;
 using Grammar.Core.Enums.PhonologicalFeatures;
+using Grammar.Core.Exceptions;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Helpers;
@@ -15,11 +16,12 @@ namespace Grammar.Czech.Services
     /// </summary>
     public class CzechVerbConjugationService : IVerbInflectionService<CzechWordRequest>
     {
-        private readonly IVerbDataProvider dataProvider;
-        private readonly IVerbStructureResolver<CzechWordRequest> verbStructureResolver;
-        private readonly ICzechParticleService czechParticleService;
-        private readonly ICzechPrefixService czechPrefixService;
-        private readonly IPhonemeRegistry phonemeRegistry;
+        private readonly IVerbDataProvider _dataProvider;
+        private readonly IVerbStructureResolver<CzechWordRequest> _verbStructureResolver;
+        private readonly ICzechParticleService _czechParticleService;
+        private readonly ICzechPrefixService _czechPrefixService;
+        private readonly IPhonemeRegistry _phonemeRegistry;
+        private readonly IValencyProvider _valencyProvider;
 
         /// <summary>
         /// Mapování <see cref="VerbClass"/> na klíče generických vzorů v patterns.json.
@@ -40,13 +42,15 @@ namespace Grammar.Czech.Services
             IVerbStructureResolver<CzechWordRequest> verbStructureResolver,
             ICzechParticleService czechParticleService,
             ICzechPrefixService czechPrefixService,
-            IPhonemeRegistry phonemeRegistry)
+            IPhonemeRegistry phonemeRegistry,
+            IValencyProvider valencyProvider)
         {
-            this.dataProvider = dataProvider;
-            this.verbStructureResolver = verbStructureResolver;
-            this.czechParticleService = czechParticleService;
-            this.czechPrefixService = czechPrefixService;
-            this.phonemeRegistry = phonemeRegistry;
+            this._dataProvider = dataProvider;
+            this._verbStructureResolver = verbStructureResolver;
+            this._czechParticleService = czechParticleService;
+            this._czechPrefixService = czechPrefixService;
+            this._phonemeRegistry = phonemeRegistry;
+            this._valencyProvider = valencyProvider;
         }
 
         #region Public API
@@ -75,7 +79,7 @@ namespace Grammar.Czech.Services
 
             // VerbClass hint → přepiš Pattern na klíč třídy, pokud pattern ještě není znám
             if (word.VerbClass.HasValue
-                && (word.Pattern == null || !dataProvider.GetPatterns().ContainsKey(word.Pattern.ToLower())))
+                && (word.Pattern == null || !_dataProvider.GetPatterns().ContainsKey(word.Pattern.ToLower())))
             {
                 if (!verbClassMap.TryGetValue(word.VerbClass.Value, out var mappedKey))
                     throw new InvalidOperationException(
@@ -84,7 +88,7 @@ namespace Grammar.Czech.Services
             }
 
             var pattern = ResolvePattern(word);
-            var verbStruct = verbStructureResolver.AnalyzeVerbStructure(word);
+            var verbStruct = _verbStructureResolver.AnalyzeVerbStructure(word);
             var numberKey = word.Number == Number.Singular ? "singular" : "plural";
 
             if (word.Tense == null && word.Modus == Modus.Indicative)
@@ -107,13 +111,23 @@ namespace Grammar.Czech.Services
         }
 
         /// <summary>
-        /// Odhadne slovesný vid z lemmatu.
-        /// Není implementováno — čeká na valenční slovník (<see cref="IValencyProvider"/>).
+        /// Returns the verbal aspect of the given lemma from the lexical dictionary.
         /// </summary>
-        public VerbAspect GuessVerbAspect(string lemma)
+        /// <param name="lemma">The infinitive form of the verb.</param>
+        /// <returns>The <see cref="VerbAspect"/> registered for this lemma.</returns>
+        /// <exception cref="LemmaNotFoundException">
+        /// Thrown when the lemma is not registered in the lexicon, or when its
+        /// <c>aspect</c> field is null. Add or complete the entry in <c>lexicon.json</c>.
+        /// </exception>
+        public VerbAspect ResolveVerbAspect(string lemma)
         {
-            throw new NotImplementedException(
-                "GuessVerbAspect is not implemented. Unblocked by valency dictionary.");
+            var entry = _valencyProvider.GetEntry(lemma)
+                ?? throw new LemmaNotFoundException(lemma);
+
+            return entry.Aspect
+                ?? throw new LemmaNotFoundException(lemma,
+                    $"Lemma '{lemma}' found in lexicon but Aspect is null. " +
+                    $"Set the 'aspect' field in lexicon.json.");
         }
 
         /// <summary>
@@ -124,8 +138,8 @@ namespace Grammar.Czech.Services
         public VerbClass? GuessVerbClass(string lemma)
         {
             // Lemma je přímo pattern v datech — žádný odhad není potřeba
-            if (dataProvider.GetPatterns().ContainsKey(lemma.ToLower())
-                || dataProvider.GetIrregulars().ContainsKey(lemma.ToLower()))
+            if (_dataProvider.GetPatterns().ContainsKey(lemma.ToLower())
+                || _dataProvider.GetIrregulars().ContainsKey(lemma.ToLower()))
                 return null;
 
             // Pořadí je kritické — "ovat" musí předcházet "at"
@@ -160,13 +174,13 @@ namespace Grammar.Czech.Services
         {
             var key = word.Pattern!.ToLower();
 
-            if (dataProvider.GetPatterns().TryGetValue(key, out var regular))
+            if (_dataProvider.GetPatterns().TryGetValue(key, out var regular))
                 return regular;
 
-            if (dataProvider.GetIrregulars().TryGetValue(key, out var irregular))
+            if (_dataProvider.GetIrregulars().TryGetValue(key, out var irregular))
             {
                 if (!string.IsNullOrEmpty(irregular.InheritsFrom)
-                    && dataProvider.GetPatterns().TryGetValue(
+                    && _dataProvider.GetPatterns().TryGetValue(
                         irregular.InheritsFrom.ToLower(), out var basePattern))
                     return Merge(basePattern, irregular);
 
@@ -283,7 +297,7 @@ namespace Grammar.Czech.Services
             };
 
             if (word.HasReflexive.HasValue && word.HasReflexive.Value)
-                result += $" {czechParticleService.GetReflexive(word.Case == Case.Dative)}";
+                result += $" {_czechParticleService.GetReflexive(word.Case == Case.Dative)}";
 
             return new WordForm($"{prefix}{result}!");
         }
@@ -366,7 +380,7 @@ namespace Grammar.Czech.Services
         /// </summary>
         private bool IsDtn(char c)
         {
-            var phoneme = phonemeRegistry.Get(c);
+            var phoneme = _phonemeRegistry.Get(c);
             return phoneme is { Place: ArticulationPlace.Alveolar }
                 && phoneme.Manner is ArticulationManner.Nasal or ArticulationManner.Plosive;
         }
