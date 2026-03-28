@@ -22,7 +22,7 @@ namespace Grammar.Czech.Providers
             ["d"] = new Phoneme { Symbol = "d", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiced, VoicelessCounterpart = "t", PalatalizeTo = "ď" },
             ["s"] = new Phoneme { Symbol = "s", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiceless, VoicedCounterpart = "z" },
             ["z"] = new Phoneme { Symbol = "z", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiced, VoicelessCounterpart = "s" },
-            ["n"] = new Phoneme { Symbol = "n", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Nasal, PalatalizeTo = "ň" },
+            ["n"] = new Phoneme { Symbol = "n", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Nasal, PalatalizeTo = "ň", AssimilatesPlaceBefore = ArticulationPlace.Velar },
             ["c"] = new Phoneme { Symbol = "c", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Affricate, Voicing = Voicing.Voiceless, PalatalizeTo = "č" },
             ["č"] = new Phoneme { Symbol = "č", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Affricate, Voicing = Voicing.Voiceless },
             ["ť"] = new Phoneme { Symbol = "ť", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiceless },

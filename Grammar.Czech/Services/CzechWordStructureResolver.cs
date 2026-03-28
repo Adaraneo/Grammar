@@ -17,6 +17,7 @@ namespace Grammar.Czech.Services
         private readonly INounDataProvider nounDataProvider;
         private readonly CzechPrefixService prefixService;
         private readonly IPhonologyService<CzechWordRequest> phonologyService;
+        private readonly IPhonemeRegistry _registry;
 
         private readonly Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>> analyzers;
 
@@ -27,12 +28,14 @@ namespace Grammar.Czech.Services
             IVerbDataProvider verbDataProvider,
             INounDataProvider nounDataProvider,
             CzechPrefixService prefixService,
-            IPhonologyService<CzechWordRequest> phonologyService)
+            IPhonologyService<CzechWordRequest> phonologyService,
+            IPhonemeRegistry registry)
         {
             this.verbDataProvider = verbDataProvider;
             this.nounDataProvider = nounDataProvider;
             this.prefixService = prefixService;
             this.phonologyService = phonologyService;
+            _registry = registry;
 
             analyzers = new Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>>
             {
@@ -136,11 +139,18 @@ namespace Grammar.Czech.Services
             return root;
         }
 
-        private static string? DetectNounDerivationSuffix(string lemma, string pattern)
+        private string? DetectNounDerivationSuffix(string lemma, string pattern)
         {
             if (pattern == "žena" && lemma.EndsWith("ka") && lemma.Length > 2)
             {
                 return "k";
+            }
+
+            if (pattern == "město" && lemma.EndsWith("o") && lemma.Length > 2)
+            {
+                var beforeO = lemma[..^1];
+                if (_registry.IsConsonant(beforeO[^1]))
+                    return beforeO[^1].ToString();
             }
 
             return null;

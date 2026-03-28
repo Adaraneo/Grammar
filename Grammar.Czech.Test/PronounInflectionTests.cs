@@ -19,7 +19,7 @@ namespace Grammar.Czech.Test
             var nounDataProvider = new JsonNounDataProvider();
             var verbDataProvider = new JsonVerbDataProvider();
             var prefixService = new CzechPrefixService(new JsonPrefixDataProvider());
-            var wordStructureResolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService);
+            var wordStructureResolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService, registry);
             var ortographyService = new CzechOrtographyService(registry);
             var adjectiveDataProvider = new JsonAdjectiveDataProvider();
             var adjectiveService = new CzechAdjectiveDeclensionService(adjectiveDataProvider, wordStructureResolver, phonologyService, ortographyService);

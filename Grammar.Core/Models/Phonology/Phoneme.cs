@@ -12,6 +12,16 @@ namespace Grammar.Core.Models.Phonology
         public ArticulationManner? Manner { get; init; }
         public Voicing? Voicing { get; init; }
 
+        /// <summary>
+        /// When set, indicates that this consonant obligatorily assimilates its place
+        /// of articulation to match an immediately following consonant at the specified place.
+        /// </summary>
+        /// <remarks>
+        /// Example: Czech /n/ assimilates to [ŋ] before velar consonants (k, g),
+        /// making the cluster phonetically homorganic and thus not requiring epenthesis.
+        /// </remarks>
+        public ArticulationPlace? AssimilatesPlaceBefore { get; init; }
+
         #endregion Consonants
 
         #region Vowels
@@ -22,7 +32,7 @@ namespace Grammar.Core.Models.Phonology
 
         #endregion Vowels
 
-        #region Palatalization
+        #region Alternartions
 
         public string? PalatalizeTo { get; init; }
         public string? VoicedCounterpart { get; init; }
@@ -30,6 +40,6 @@ namespace Grammar.Core.Models.Phonology
         public string? ShortCounterpart { get; init; }
         public string? LongCounterpart { get; init; }
 
-        #endregion Palatalization
+        #endregion Alternations
     }
 }

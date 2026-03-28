@@ -24,7 +24,7 @@ namespace Grammar.Czech.Test
             var prefixService = new CzechPrefixService(prefixDataProvider);
             var particleService = new CzechParticleService(particleDataProvider);
             
-            var verbStructureResolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService);
+            var verbStructureResolver = new CzechWordStructureResolver(verbDataProvider, nounDataProvider, prefixService, phonologyService, registry);
 
             var valencyProvider = new JsonValencyProvider();
 
