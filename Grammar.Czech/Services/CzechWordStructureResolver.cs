@@ -130,20 +130,13 @@ namespace Grammar.Czech.Services
                 root = lemma;
             }
 
-            var hasMobileVowel = MorphologyHelper.EndsWithVowelConsonantVowelConsonant(lemma);
+            // Lexikon má přednost před heuristikou
+            bool hasMobileVowel = request.HasMobileVowel
+                ?? MorphologyHelper.EndsWithVowelConsonantVowelConsonant(lemma); // fallback
 
             if (hasMobileVowel && !(request.Case == Case.Nominative && request.Number == Number.Singular))
             {
                 root = phonologyService.RemoveMobileVowel(root, true);
-            }
-            else if (request.Gender == Gender.Masculine &&
-                     !(request.Case == Case.Nominative && request.Number == Number.Singular))
-            {
-                var hasMobileVowelIrregular =
-                    nounDataProvider.GetIrregulars().TryGetValue(request.Lemma.ToLower(), out var irregular)
-                    && request.HasMobileVowel.HasValue && request.HasMobileVowel.Value;
-
-                root = phonologyService.RemoveMobileVowel(root, hasMobileVowelIrregular);
             }
 
             return root;

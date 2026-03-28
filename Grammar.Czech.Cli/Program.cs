@@ -53,6 +53,7 @@
                 Number = Number.Singular,
                 Pattern = "pán",
                 IsAnimate = true,
+                HasMobileVowel = true
             };
 
             var studentikRequest = new CzechWordRequest

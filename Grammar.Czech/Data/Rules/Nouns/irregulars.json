@@ -16,18 +16,6 @@
       }
     }
   },
-  "pes": {
-    "hasMobileVowel": true,
-    "inheritsFrom": "pán"
-  },
-  "den": {
-    "hasMobileVowel": true,
-    "inheritsFrom": "hrad"
-  },
-  "otec": {
-    "hasMobileVowel": true,
-    "inheritsFrom": "muž"
-  },
   "dům": {
     "inheritsFrom": "hrad",
     "stem": "dom",

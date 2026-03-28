@@ -29,6 +29,22 @@
     "aspect": null,
     "aspectCounterpart": null
   },
+  "den": {
+    "lemma": "den",
+    "category": "Noun",
+    "gender": "Masculine",
+    "pattern": "hrad",
+    "isAnimate": false,
+    "hasMobileVowel": true
+  },
+  "otec":{
+    "lemma": "otec",
+    "category": "Noun",
+    "gender": "Masculine",
+    "pattern": "muž",
+    "isAnimate": true,
+    "hasMobileVowel": true
+  },
   "město": {
     "lemma": "město",
     "category": "Noun",

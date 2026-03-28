@@ -132,28 +132,26 @@ namespace Grammar.Czech.Services
         /// </summary>
         /// <param name="lemma">The dictionary form of the noun.</param>
         /// <returns>
-        /// A tuple of (Gender, pattern key, Number, isAnimate) read from <c>lexicon.json</c>.
+        /// Tuple (Gender, pattern, Number, isAnimate, hasMobileVowel) z lexicon.json.
         /// </returns>
         /// <exception cref="LemmaNotFoundException">
         /// Thrown when the lemma is not registered in the lexicon.
         /// Add a <c>LexicalEntry</c> for it in <c>lexicon.json</c>.
         /// </exception>
-        public (Gender, string, Number, bool) ResolveGenderAndPattern(string lemma)
+        public (Gender gender, string pattern, Number number, bool isAnimate, bool? hasMobileVowel) ResolveGenderAndPattern(string lemma)
         {
             var entry = _valencyProvider.GetEntry(lemma)
                 ?? throw new LemmaNotFoundException(lemma);
 
             var gender = entry.Gender
                 ?? throw new LemmaNotFoundException(lemma,
-                    $"Lemma '{lemma}' found in lexicon but Gender is null. " +
-                    $"Set the 'gender' field in lexicon.json.");
+                    $"Lemma '{lemma}' found in lexicon but Gender is null.");
 
             var pattern = entry.Pattern
                 ?? throw new LemmaNotFoundException(lemma,
-                    $"Lemma '{lemma}' found in lexicon but Pattern is null. " +
-                    $"Set the 'pattern' field in lexicon.json.");
+                    $"Lemma '{lemma}' found in lexicon but Pattern is null.");
 
-            return (gender, pattern, Number.Singular, entry.IsAnimate ?? false);
+            return (gender, pattern, Number.Singular, entry.IsAnimate ?? false, entry.HasMobileVowel);
         }
     }
 }

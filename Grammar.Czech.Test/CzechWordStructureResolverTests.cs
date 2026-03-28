@@ -152,7 +152,7 @@ namespace Grammar.Czech.Test
         public void AnalyzeNoun_Pes_GenSg_RemovesMobileVowel()
         {
             // Arrange
-            var request = BuildNounRequest("pes", "pán", Gender.Masculine, Case.Genitive, Number.Singular);
+            var request = BuildNounRequest("pes", "pán", Gender.Masculine, Case.Genitive, Number.Singular, true);
 
             // Act
             var result = _resolver.AnalyzeStructure(request);
@@ -165,7 +165,7 @@ namespace Grammar.Czech.Test
         public void AnalyzeNoun_Otec_GenSg_RemovesMobileVowel()
         {
             // Arrange
-            var request = BuildNounRequest("otec", "muž", Gender.Masculine, Case.Genitive, Number.Singular);
+            var request = BuildNounRequest("otec", "muž", Gender.Masculine, Case.Genitive, Number.Singular, true);
 
             // Act
             var result = _resolver.AnalyzeStructure(request);
@@ -245,7 +245,7 @@ namespace Grammar.Czech.Test
         #region Helpers
 
         private static CzechWordRequest BuildNounRequest(
-            string lemma, string pattern, Gender gender, Case @case, Number number) =>
+            string lemma, string pattern, Gender gender, Case @case, Number number, bool? hasMobileVowel = null) =>
             new()
             {
                 Lemma        = lemma,
@@ -253,7 +253,8 @@ namespace Grammar.Czech.Test
                 WordCategory = WordCategory.Noun,
                 Gender       = gender,
                 Case         = @case,
-                Number       = number
+                Number       = number,
+                HasMobileVowel = hasMobileVowel
             };
 
         #endregion

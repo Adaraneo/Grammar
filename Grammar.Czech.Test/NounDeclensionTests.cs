@@ -85,7 +85,7 @@ namespace Grammar.Czech.Test
 
         [TestMethod]
         [PatternsNounDeclensionData]
-        public void GetForm_SgNom_ReturnsExpected(string lemma, string pattern, Gender gender, bool? isAnimate, string[] vals)
+        public void GetForm_SgNom_ReturnsExpected(string lemma, string pattern, Gender gender, bool? isAnimate, bool? hasMobileVowel, string[] vals)
         {
             var request = new CzechWordRequest
             {
@@ -93,7 +93,8 @@ namespace Grammar.Czech.Test
                 WordCategory = WordCategory.Noun,
                 Gender = gender,
                 Pattern = pattern,
-                IsAnimate = isAnimate
+                IsAnimate = isAnimate,
+                HasMobileVowel = hasMobileVowel
             };
 
             for (int index = 0; index < vals.Length; index++)
@@ -127,49 +128,49 @@ namespace Grammar.Czech.Test
         {
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
-                var dict = new Dictionary<string, (string, Gender, bool?, string[])>
+                var dict = new Dictionary<string, (string, Gender, bool?, bool?, string[])>
                 {
-                    { "student", ("pán", Gender.Masculine, true, new[] {"student", "studenta", "studentovi", "studenta", "studente", "studentovi", "studentem",
+                    { "student", ("pán", Gender.Masculine, true, null, new[] {"student", "studenta", "studentovi", "studenta", "studente", "studentovi", "studentem",
                                             "studenti", "studentů", "studentům", "studenty", "studenti", "studentech", "studenty"}) },
-                    { "studentka", ("žena", Gender.Feminine, null, new[] {"studentka", "studentky", "studentce", "studentku", "studentko", "studentce", "studentkou",
+                    { "studentka", ("žena", Gender.Feminine, null, null, new[] {"studentka", "studentky", "studentce", "studentku", "studentko", "studentce", "studentkou",
                                             "studentky", "studentek", "studentkám", "studentky", "studentky", "studentkách", "studentkami"}) },
-                    { "studentík", ("pán", Gender.Masculine, true, new [] {"studentík", "studentíka", "studentíkovi", "studentíka", "studentíku", "studentíkovi", "studentíkem",
+                    { "studentík", ("pán", Gender.Masculine, true, null, new [] {"studentík", "studentíka", "studentíkovi", "studentíka", "studentíku", "studentíkovi", "studentíkem",
                                             "studentíci", "studentíků", "studentíkům", "studentíky", "studentíci", "studentících", "studentíky" }) },
-                    { "pes", ("pán", Gender.Masculine, true, new [] {"pes", "psa", "psovi", "psa", "pse","psovi", "psem",
+                    { "pes", ("pán", Gender.Masculine, true, true, new [] {"pes", "psa", "psovi", "psa", "pse","psovi", "psem",
                                             "psi", "psů", "psům", "psy", "psi", "psech", "psy"}) },
-                    { "dům", ("hrad", Gender.Masculine, false, new [] { "dům", "domu", "domu", "dům", "dome", "domě", "domem",
+                    { "dům", ("hrad", Gender.Masculine, false, null, new [] { "dům", "domu", "domu", "dům", "dome", "domě", "domem",
                                             "domy", "domů", "domům", "domy", "domy", "domech", "domy"}) },
-                    { "kůň", ("muž", Gender.Masculine, true, new [] { "kůň", "koně", "koni", "koně", "koni", "koni", "koněm",
+                    { "kůň", ("muž", Gender.Masculine, true, null, new [] { "kůň", "koně", "koni", "koně", "koni", "koni", "koněm",
                                             "koně", "koní", "koním", "koně", "koně", "koních", "koňmi"}) },
-                    { "chlapec", ("muž", Gender.Masculine, true, new [] {"chlapec", "chlapce", "chlapci", "chlapce", "chlapče", "chlapci", "chlapcem",
+                    { "chlapec", ("muž", Gender.Masculine, true, null, new [] {"chlapec", "chlapce", "chlapci", "chlapce", "chlapče", "chlapci", "chlapcem",
                                             "chlapci", "chlapců", "chlapcům", "chlapce", "chlapci", "chlapcích", "chlapci"}) },
-                    { "pán", ("pán", Gender.Masculine, true, new [] { "pán", "pána", "pánovi", "pána", "pane", "pánovi", "pánem",
+                    { "pán", ("pán", Gender.Masculine, true, null, new [] { "pán", "pána", "pánovi", "pána", "pane", "pánovi", "pánem",
                                             "páni", "pánů", "pánům", "pány", "páni", "pánech", "pány"}) },
-                    { "hrad", ("hrad", Gender.Masculine, false, new [] {"hrad", "hradu", "hradu", "hrad", "hrade", "hradě", "hradem",
+                    { "hrad", ("hrad", Gender.Masculine, false, null, new [] {"hrad", "hradu", "hradu", "hrad", "hrade", "hradě", "hradem",
                                             "hrady", "hradů", "hradům", "hrady", "hrady", "hradech", "hrady"}) },
-                    { "muž", ("muž", Gender.Masculine, true, new [] { "muž", "muže", "muži", "muže", "muži", "muži", "mužem",
+                    { "muž", ("muž", Gender.Masculine, true, null, new [] { "muž", "muže", "muži", "muže", "muži", "muži", "mužem",
                                             "muži", "mužů" ,"mužům", "muže", "muži", "mužích", "muži" })},
-                    { "stroj", ("stroj", Gender.Masculine, false, new [] { "stroj", "stroje", "stroji", "stroj", "stroji", "stroji", "strojem",
+                    { "stroj", ("stroj", Gender.Masculine, false, null, new [] { "stroj", "stroje", "stroji", "stroj", "stroji", "stroji", "strojem",
                                             "stroje", "strojů", "strojům", "stroje", "stroje", "strojích", "stroji"}) },
-                    { "předseda", ("předseda", Gender.Masculine, true, new[] {"předseda", "předsedy", "předsedovi", "předsedu", "předsedo", "předsedovi", "předsedou",
+                    { "předseda", ("předseda", Gender.Masculine, true, null, new[] {"předseda", "předsedy", "předsedovi", "předsedu", "předsedo", "předsedovi", "předsedou",
                                             "předsedové", "předsedů", "předsedům", "předsedy", "předsedové", "předsedech", "předsedy"}) },
-                    { "soudce", ("soudce", Gender.Masculine, true, new[] { "soudce", "soudce", "soudci", "soudce", "soudče", "soudci", "soudcem",
+                    { "soudce", ("soudce", Gender.Masculine, true, null, new[] { "soudce", "soudce", "soudci", "soudce", "soudče", "soudci", "soudcem",
                                             "soudci", "soudců", "soudcům", "soudce", "soudci", "soudcích", "soudci"}) },
-                    { "žena", ("žena", Gender.Feminine, null, new [] {"žena", "ženy", "ženě", "ženu", "ženo", "ženě", "ženou",
+                    { "žena", ("žena", Gender.Feminine, null, null, new [] {"žena", "ženy", "ženě", "ženu", "ženo", "ženě", "ženou",
                                             "ženy", "žen", "ženám", "ženy", "ženy", "ženách", "ženami"}) },
-                    { "růže", ("růže", Gender.Feminine, null, new [] { "růže", "růže", "růži", "růži", "růže", "růži", "růží",
+                    { "růže", ("růže", Gender.Feminine, null, null, new [] { "růže", "růže", "růži", "růži", "růže", "růži", "růží",
                                             "růže", "růží", "růžím", "růže", "růže", "růžích", "růžemi"}) },
-                    { "píseň", ("píseň", Gender.Feminine, null, new [] {"píseň", "písně", "písni", "píseň", "písni", "písni", "písní",
+                    { "píseň", ("píseň", Gender.Feminine, null, null, new [] {"píseň", "písně", "písni", "píseň", "písni", "písni", "písní",
                                             "písně", "písní", "písním", "písně", "písně", "písních", "písněmi"}) },
-                    { "kost",("kost", Gender.Feminine, null, new [] { "kost", "kosti", "kosti", "kost", "kosti", "kosti", "kostí",
+                    { "kost",("kost", Gender.Feminine, null, null, new [] { "kost", "kosti", "kosti", "kost", "kosti", "kosti", "kostí",
                                             "kosti", "kostí", "kostem", "kosti", "kosti", "kostech" ,"kostmi"}) },
-                    { "město", ("město", Gender.Neuter, null, new [] {"město", "města", "městu", "město", "město", "městě", "městem",
+                    { "město", ("město", Gender.Neuter, null, null, new [] {"město", "města", "městu", "město", "město", "městě", "městem",
                                             "města", "měst", "městům", "města", "města", "městech", "městy" }) },
-                    { "moře", ("moře", Gender.Neuter, null, new [] { "moře", "moře", "moři", "moře", "moře", "moři", "mořem",
+                    { "moře", ("moře", Gender.Neuter, null, null, new [] { "moře", "moře", "moři", "moře", "moře", "moři", "mořem",
                                             "moře", "moří", "mořím", "moře", "moře", "mořích", "moři"}) },
-                    { "kuře", ("kuře", Gender.Neuter, null, new [] {"kuře", "kuřete", "kuřeti", "kuře", "kuře", "kuřeti", "kuřetem",
+                    { "kuře", ("kuře", Gender.Neuter, null, null, new [] {"kuře", "kuřete", "kuřeti", "kuře", "kuře", "kuřeti", "kuřetem",
                                             "kuřata", "kuřat", "kuřatům", "kuřata", "kuřata", "kuřatech", "kuřaty"}) },
-                    { "stavení", ("stavení", Gender.Neuter, null, new [] {"stavení", "stavení", "stavení", "stavení", "stavení", "stavení", "stavením",
+                    { "stavení", ("stavení", Gender.Neuter, null, null, new [] {"stavení", "stavení", "stavení", "stavení", "stavení", "stavení", "stavením",
                                             "stavení", "stavení", "stavením", "stavení", "stavení", "staveních", "staveními"}) }
                 };
 
@@ -181,8 +182,9 @@ namespace Grammar.Czech.Test
                     var pattern = v.Item1;
                     var gender = v.Item2;
                     var isAnimate = v.Item3;
-                    var vals = v.Item4;
-                    data.Add(new object[] { lemma, pattern, gender, isAnimate, vals });
+                    var hasMobileVowel = v.Item4;
+                    var vals = v.Item5;
+                    data.Add(new object[] { lemma, pattern, gender, isAnimate, hasMobileVowel, vals });
                 }
 
                 return data;

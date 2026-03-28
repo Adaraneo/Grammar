@@ -32,7 +32,5 @@ namespace Grammar.Core.Models.Word
         public bool? IsIndeclinable { get; set; }
 
         public bool? IsPluralOnly { get; set; }
-
-        public bool? HasMobileVowel { get; set; }
     }
 }

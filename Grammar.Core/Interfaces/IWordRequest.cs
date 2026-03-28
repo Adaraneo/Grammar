@@ -23,6 +23,5 @@ namespace Grammar.Core.Interfaces
         public bool IsNegative { get; }
         public bool? IsIndeclinable { get; }
         public bool? IsPluralOnly { get; }
-        public bool? HasMobileVowel { get; }
     }
 }
