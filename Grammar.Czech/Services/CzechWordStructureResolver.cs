@@ -18,6 +18,7 @@ namespace Grammar.Czech.Services
         private readonly CzechPrefixService prefixService;
         private readonly IPhonologyService<CzechWordRequest> phonologyService;
         private readonly IPhonemeRegistry _registry;
+        private readonly IEpenthesisRuleEvaluator<CzechWordRequest> _epenthesisRuleEvaluator;
 
         private readonly Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>> analyzers;
 
@@ -29,13 +30,15 @@ namespace Grammar.Czech.Services
             INounDataProvider nounDataProvider,
             CzechPrefixService prefixService,
             IPhonologyService<CzechWordRequest> phonologyService,
-            IPhonemeRegistry registry)
+            IPhonemeRegistry registry,
+            IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator)
         {
             this.verbDataProvider = verbDataProvider;
             this.nounDataProvider = nounDataProvider;
             this.prefixService = prefixService;
             this.phonologyService = phonologyService;
             _registry = registry;
+            _epenthesisRuleEvaluator = epenthesisRuleEvaluator;
 
             analyzers = new Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>>
             {
@@ -81,20 +84,27 @@ namespace Grammar.Czech.Services
         private WordStructure AnalyzeNoun(CzechWordRequest wordRequest)
         {
             var lemma = wordRequest.Lemma;
-            var pattern = wordRequest.Pattern;
+            var pattern = wordRequest.Pattern!;
 
             var root = ExtractNounRoot(lemma, wordRequest);
 
-            var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern!);
+            var derivationSuffix = DetectNounDerivationSuffix(lemma, pattern);
 
             if (!string.IsNullOrEmpty(derivationSuffix) && root.EndsWith(derivationSuffix))
             {
-                root = root[..^derivationSuffix.Length];
+                if (_epenthesisRuleEvaluator.ShouldApplyEpenthesis(root[..^derivationSuffix.Length], derivationSuffix, wordRequest))
+                {
+                    root = root[..^derivationSuffix.Length];
+                }
+                else
+                {
+                    derivationSuffix = null;
+                }
             }
 
             return new WordStructure
             {
-                Root             = root,
+                Root = root,
                 DerivationSuffix = derivationSuffix
             };
         }
