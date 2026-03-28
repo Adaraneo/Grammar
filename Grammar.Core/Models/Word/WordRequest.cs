@@ -28,5 +28,11 @@ namespace Grammar.Core.Models.Word
         public string? AdditionalData { get; set; }
 
         public bool IsNegative { get; set; } = false;
+
+        public bool? IsIndeclinable { get; set; }
+
+        public bool? IsPluralOnly { get; set; }
+
+        public bool? HasMobileVowel { get; set; }
     }
 }

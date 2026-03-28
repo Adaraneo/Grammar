@@ -21,5 +21,8 @@ namespace Grammar.Core.Interfaces
         public string? Pattern { get; }
         public string? AdditionalData { get; }
         public bool IsNegative { get; }
+        public bool? IsIndeclinable { get; }
+        public bool? IsPluralOnly { get; }
+        public bool? HasMobileVowel { get; }
     }
 }

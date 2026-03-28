@@ -141,7 +141,7 @@ namespace Grammar.Czech.Services
             {
                 var hasMobileVowelIrregular =
                     nounDataProvider.GetIrregulars().TryGetValue(request.Lemma.ToLower(), out var irregular)
-                    && irregular.HasMobileVowel;
+                    && request.HasMobileVowel.HasValue && request.HasMobileVowel.Value;
 
                 root = phonologyService.RemoveMobileVowel(root, hasMobileVowelIrregular);
             }

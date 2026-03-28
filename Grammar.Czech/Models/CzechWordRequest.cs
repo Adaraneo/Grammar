@@ -40,5 +40,11 @@ namespace Grammar.Czech.Models
         public bool IsNegative { get; set; } = false;
         public bool? IsAnimate { get; set; }
         public bool IsAfterPreposition { get; set; } = false;
+
+        public bool? IsIndeclinable { get; set; }
+
+        public bool? IsPluralOnly { get; set; }
+
+        public bool? HasMobileVowel { get; set; }
     }
 }

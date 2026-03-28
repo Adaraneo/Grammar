@@ -33,7 +33,7 @@ namespace Grammar.Czech.Services
 
         public WordForm GetForm(CzechWordRequest word)
         {
-            if (_dataProvider.GetPropers().TryGetValue(word.Lemma, out var propers) && propers.IsIndeclinable)
+            if (_dataProvider.GetPropers().TryGetValue(word.Lemma, out var propers) && word.IsIndeclinable.HasValue && word.IsIndeclinable.Value)
             {
                 return new WordForm(word.Lemma);
             }
@@ -43,12 +43,12 @@ namespace Grammar.Czech.Services
                 throw new NotSupportedException($"Noun pattern '{word.Pattern}' not found.");
             }
 
-            if (pattern.IsPluralOnly && word.Number == Number.Singular)
+            if (word.IsPluralOnly.HasValue && word.IsPluralOnly.Value && word.Number == Number.Singular)
             {
                 throw new InvalidOperationException($"{word.Lemma} se nevyskytuje v jednotném čísle.");
             }
 
-            if (word.Case == Case.Nominative && (word.Number == Number.Singular || (pattern.IsPluralOnly && word.Number == Number.Plural)))
+            if (word.Case == Case.Nominative && (word.Number == Number.Singular || (word.IsPluralOnly.HasValue && word.IsPluralOnly.Value && word.Number == Number.Plural)))
             {
                 return new WordForm(word.Lemma);
             }
