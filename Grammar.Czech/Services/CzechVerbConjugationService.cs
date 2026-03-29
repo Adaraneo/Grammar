@@ -21,7 +21,7 @@ namespace Grammar.Czech.Services
         private readonly ICzechParticleService _czechParticleService;
         private readonly ICzechPrefixService _czechPrefixService;
         private readonly IPhonemeRegistry _phonemeRegistry;
-        private readonly IValencyProvider _valencyProvider;
+        private readonly IValencyProvider<CzechLexicalEntry> _valencyProvider;
 
         /// <summary>
         /// Mapování <see cref="VerbClass"/> na klíče generických vzorů v patterns.json.
@@ -43,7 +43,7 @@ namespace Grammar.Czech.Services
             ICzechParticleService czechParticleService,
             ICzechPrefixService czechPrefixService,
             IPhonemeRegistry phonemeRegistry,
-            IValencyProvider valencyProvider)
+            IValencyProvider<CzechLexicalEntry> valencyProvider)
         {
             this._dataProvider = dataProvider;
             this._verbStructureResolver = verbStructureResolver;

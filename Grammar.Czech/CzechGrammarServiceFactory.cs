@@ -32,7 +32,7 @@ namespace Grammar.Czech
             services.AddSingleton<IPronounDataProvider>(new JsonPronounDataProvider());
 
             // ── Valency & lexical dictionary ─────────────────────────────────────────
-            services.AddSingleton<IValencyProvider, JsonValencyProvider>();
+            services.AddSingleton<IValencyProvider<CzechLexicalEntry>, JsonValencyProvider>();
 
             // ── Phonology ────────────────────────────────────────────────────────────
             services.AddSingleton<IPhonemeRegistry, CzechPhonemeRegistry>();

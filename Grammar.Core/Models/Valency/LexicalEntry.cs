@@ -7,10 +7,10 @@ namespace Grammar.Core.Models.Valency
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <c>LexicalEntry</c> is the per-lemma metadata layer that eliminates the need for
-    /// guess heuristics (<c>GuessGenderAndPattern</c>, <c>GuessVerbAspect</c>).
-    /// When an entry exists, the inflection services use its data directly.
-    /// Guess heuristics serve only as a fallback for lemmata without a registered entry.
+    /// <c>LexicalEntry</c> is the language-agnostic per-lemma metadata layer.
+    /// It contains only properties applicable to any natural language.
+    /// Language-specific properties (e.g. verbal aspect, animacy, mobile vowel)
+    /// belong in a language-specific subtype such as <c>CzechLexicalEntry</c>.
     /// </para>
     /// <para>
     /// One lemma has exactly one <c>LexicalEntry</c>; one lemma may have
@@ -18,7 +18,7 @@ namespace Grammar.Core.Models.Valency
     /// Do not merge these two concerns into a single record.
     /// </para>
     /// </remarks>
-    public sealed record LexicalEntry
+    public record LexicalEntry
     {
         /// <summary>Gets the lemma (dictionary form) of the word.</summary>
         public string Lemma { get; init; } = string.Empty;
@@ -30,26 +30,9 @@ namespace Grammar.Core.Models.Valency
         public Gender? Gender { get; init; }
 
         /// <summary>
-        /// Gets the inflectional pattern key (e.g., "pán", "žena", "trida5"),
+        /// Gets the inflectional pattern key (e.g., <c>"pán"</c>, <c>"žena"</c>, <c>"trida5"</c>),
         /// or <c>null</c> if the pattern must be guessed.
         /// </summary>
         public string? Pattern { get; init; }
-
-        /// <summary>Gets a value indicating whether the lemma is animate, or <c>null</c> if not applicable.</summary>
-        public bool? IsAnimate { get; init; }
-
-        /// <summary>Gets a value indicating whether the lemma has a mobile vowel (e.g., "pes").</summary>
-        public bool? HasMobileVowel { get; init; }
-
-        /// <summary>Gets the verbal aspect, or <c>null</c> for non-verbs.</summary>
-        public VerbAspect? Aspect { get; init; }
-
-        /// <summary>
-        /// Gets the lemma of the aspect counterpart, or <c>null</c> if none exists or is unknown.
-        /// Required for correct future-tense generation:
-        /// imperfective future uses the periphrastic form ("budu dělat"),
-        /// perfective future uses the simple present form ("udělám").
-        /// </summary>
-        public string? AspectCounterpart { get; init; }
     }
 }

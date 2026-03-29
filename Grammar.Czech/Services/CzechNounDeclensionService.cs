@@ -17,9 +17,9 @@ namespace Grammar.Czech.Services
         private readonly IEpenthesisRuleEvaluator<CzechWordRequest> _epenthesisRuleEvaluator;
         private readonly IJotationRuleEvaluator<CzechWordRequest> _jotationRuleEvaluator;
         private readonly ICzechOrtographyService _ortographyService;
-        private readonly IValencyProvider _valencyProvider;
+        private readonly IValencyProvider<CzechLexicalEntry> _valencyProvider;
 
-        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator, IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator, ICzechOrtographyService ortographyService, IValencyProvider valencyProvider)
+        public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator, IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator, ICzechOrtographyService ortographyService, IValencyProvider<CzechLexicalEntry> valencyProvider)
         {
             this._dataProvider = dataProvider;
             this._wordStructureResolver = wordStructureResolver;
@@ -110,7 +110,7 @@ namespace Grammar.Czech.Services
                 stem = _phonologyService.ApplySoftening(stem, palatalizationContext);
             }
 
-            var hasMobileVowelRemoval = MorphologyHelper.EndsWithVowelConsonantVowelConsonant(word.Lemma);
+            var hasMobileVowelRemoval = word.HasMobileVowel ?? MorphologyHelper.EndsWithVowelConsonantVowelConsonant(word.Lemma);
 
             var finalEnding = _softeningRuleEvaluator.GetEndingTransformation(word, out var endingTransformationApplied) ?? ending;
 

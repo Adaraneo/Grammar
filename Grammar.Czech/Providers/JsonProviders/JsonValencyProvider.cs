@@ -2,6 +2,7 @@ using Grammar.Core.Helpers;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Valency;
 using Grammar.Czech.Helpers;
+using Grammar.Czech.Models;
 using System.Reflection;
 
 namespace Grammar.Czech.Providers.JsonProviders
@@ -24,12 +25,12 @@ namespace Grammar.Czech.Providers.JsonProviders
     /// <c>SqliteValencyProvider</c> and update only the DI registration.
     /// </para>
     /// </remarks>
-    public sealed class JsonValencyProvider : IValencyProvider
+    public sealed class JsonValencyProvider : IValencyProvider<CzechLexicalEntry>
     {
         private readonly string _lexiconPath = "Data.Valency.lexicon";
         private readonly string _valencyPath = "Data.Valency.valency";
 
-        private readonly Lazy<Dictionary<string, LexicalEntry>> _lexicon;
+        private readonly Lazy<Dictionary<string, CzechLexicalEntry>> _lexicon;
         private readonly Lazy<Dictionary<string, List<ValencyFrame>>> _frames;
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace Grammar.Czech.Providers.JsonProviders
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            _lexicon = new Lazy<Dictionary<string, LexicalEntry>>(
+            _lexicon = new Lazy<Dictionary<string, CzechLexicalEntry>>(
                 () => LoadLexicon(assembly),
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
@@ -50,7 +51,7 @@ namespace Grammar.Czech.Providers.JsonProviders
         }
 
         /// <inheritdoc/>
-        public LexicalEntry? GetEntry(string lemma)
+        public CzechLexicalEntry? GetEntry(string lemma)
             => _lexicon.Value.TryGetValue(lemma.ToLowerInvariant(), out var entry)
                 ? entry
                 : null;
@@ -65,8 +66,8 @@ namespace Grammar.Czech.Providers.JsonProviders
         public bool HasEntry(string lemma)
             => _lexicon.Value.ContainsKey(lemma.ToLowerInvariant());
 
-        private static Dictionary<string, LexicalEntry> LoadLexicon(Assembly assembly)
-            => JsonLoader.LoadDictionaryFromFile<LexicalEntry>(
+        private static Dictionary<string, CzechLexicalEntry> LoadLexicon(Assembly assembly)
+            => JsonLoader.LoadDictionaryFromFile<CzechLexicalEntry>(
                 assembly, "Data.Valency.lexicon", JsonHelpers.SerializerOptions)
                ?? [];
 

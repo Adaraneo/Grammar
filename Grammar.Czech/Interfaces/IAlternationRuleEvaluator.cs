@@ -1,7 +1,9 @@
-﻿namespace Grammar.Czech.Interfaces
+﻿using Grammar.Czech.Models;
+
+namespace Grammar.Czech.Interfaces
 {
     public interface IAlternationRuleEvaluator
     {
-        bool ShouldShortenVowel(string stem);
+        bool ShouldShortenGenitivePlural(CzechWordRequest request, NounPattern pattern);
     }
 }

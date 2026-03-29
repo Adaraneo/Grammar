@@ -1,24 +1,25 @@
 ﻿using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
+using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
     public class CzechAlternationRuleEvaluator : IAlternationRuleEvaluator
     {
         private readonly IPhonemeRegistry _registry;
+        private readonly IValencyProvider<CzechLexicalEntry> _valencyProvider;
 
-        public CzechAlternationRuleEvaluator(IPhonemeRegistry registry)
+        public CzechAlternationRuleEvaluator(IPhonemeRegistry registry, IValencyProvider<CzechLexicalEntry> valencyProvider)
         {
             this._registry = registry;
+            _valencyProvider = valencyProvider;
         }
 
-        public bool ShouldShortenVowel(string stem)
+        public bool ShouldShortenGenitivePlural(CzechWordRequest request, NounPattern pattern)
         {
-            // TODO: If there is
-            var last = stem[^1..];
-            var penultimate = stem[^2..]; //second to last
-
-            throw new NotImplementedException();
+            return request.HasGenitivePluralShortening
+                ?? _valencyProvider.GetEntry(request.Lemma)?.HasGenitivePluralShortening
+                ?? false;
         }
     }
 }

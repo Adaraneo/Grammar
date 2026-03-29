@@ -46,5 +46,6 @@ namespace Grammar.Czech.Models
         public bool? IsPluralOnly { get; set; }
 
         public bool? HasMobileVowel { get; set; }
+        public bool? HasGenitivePluralShortening { get; set; }
     }
 }

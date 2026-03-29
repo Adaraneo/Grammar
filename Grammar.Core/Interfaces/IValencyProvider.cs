@@ -10,13 +10,13 @@ namespace Grammar.Core.Interfaces
     /// The architecture allows a future swap to an SQLite or API-backed provider
     /// without changing any call sites — only the DI registration changes.
     /// </remarks>
-    public interface IValencyProvider
+    public interface IValencyProvider<T> where T : class
     {
         /// <summary>
         /// Returns the lexical entry for the given lemma, or <c>null</c> if not registered.
         /// </summary>
         /// <param name="lemma">The dictionary form of the word (case-insensitive).</param>
-        LexicalEntry? GetEntry(string lemma);
+        T? GetEntry(string lemma);
 
         /// <summary>
         /// Returns all valency frames registered for the given verb lemma.
