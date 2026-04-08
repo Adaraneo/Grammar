@@ -2,157 +2,206 @@
 
 ![Status](https://img.shields.io/badge/status-active%20development-orange)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple)
-![Version](https://img.shields.io/badge/version-1.0.0--preview.6-blue)
+![Version](https://img.shields.io/badge/version-1.0.0--preview.9-blue)
 ![License](https://img.shields.io/badge/license-Proprietary-red)
 
-**A rule-based Czech morphology engine for .NET 8.**
+**Generativní morfologická knihovna pro češtinu na platformě .NET 8.**
 
-Most tools that deal with Czech word forms work by looking up pre-computed tables.
-Grammar.Czech takes a different approach — it *generates* inflected forms dynamically
-from linguistic rules, a lemma, and explicit grammatical metadata. No pre-computed
-full-form database required.
+Většina nástrojů pro práci s českými slovními tvary funguje jako slovník — předem uložené tabulky pro každé slovo. Grammar.Czech jde opačnou cestou: **tvary generuje za běhu z pravidel**, lemmatu a explicitních gramatických metadat. Žádná předpočítaná databáze celých paradigmat.
 
-This makes the engine well-suited for scenarios where you need to inflect arbitrary
-words at runtime — such as procedurally generated NPC dialogue in games, document
-automation, or language-learning tools where word forms cannot be pre-enumerated.
+Primárně navrženo pro procedurálně generované dialogy NPC ve hrách, dokumentovou automatizaci a jazykově-vzdělávací nástroje, kde nelze tvary slov předem vypsat.
 
 ---
 
-## Features
+## Co projekt v současnosti reálně umí
 
-| Category | What's covered |
+### Skloňování podstatných jmen
+
+Všech 7 pádů × jednotné/množné číslo pro všechny standardní české vzory:
+
+| Mužský životný | Mužský neživotný | Ženský | Střední |
+|---|---|---|---|
+| `pán` | `hrad` | `žena` | `město` |
+| `muž` | `les` *(dědí z hrad)* | `růže` | `moře` |
+| `předseda` | `stroj` | `píseň` | `kuře` |
+| `soudce` | | `kost` | `stavení` |
+
+Vzory dědí koncovky přes `inheritsFrom` v JSON — `les` přepisuje jen ty tvary, kde se od `hrad` liší.
+
+Nepravidelná slova (pohybné e, vlastní jména) se řeší příznakem v `irregulars.json`, nikoli větvením kódu.
+
+### Stupňování a skloňování přídavných jmen
+
+- Tvrdý vzor `mladý`, měkký vzor `jarní` — všechny rody, čísla, pády
+- Komparativ a superlativ generovány algoritmicky z kmene
+- Supletivní komparativy jako uzavřená množina:
+
+  | Základní | Komparativ |
+  |---|---|
+  | `dobrý` | `lepší` |
+  | `malý` | `menší` |
+  | `velký` | `větší` |
+  | `zlý` / `špatný` | `horší` |
+  | `dlouhý` | `delší` |
+
+### Skloňování zájmen
+
+Pokryta tato lemmata:
+
+| Typ | Lemmata |
 |---|---|
-| **Noun declension** | All 7 cases × singular/plural, all genders and patterns |
-| **Adjective declension** | Hard/soft patterns, positive/comparative/superlative, possessives |
-| **Pronoun inflection** | Personal, possessive, demonstrative, reflexive, interrogative, negative, indefinite |
-| **Verb conjugation** | Present/past/future, conditional, imperative, passive, negation, reflexives (`se`/`si`) |
-| **Phonological transformations** | Vowel quantity, mobile vowel (*pohybné e*), epenthesis, consonant softening (1st & 2nd palatalization), DTN orthography |
-| **Rule-based generation** | Forms computed from rules + a minimal JSON override layer |
-| **Language-agnostic core** | `Grammar.Core` carries no Czech-specific logic |
+| Osobní | `já`, `ty`, `on`, `ona`, `ono`, `my`, `vy`, `oni`, `ony`, `ona_` |
+| Přivlastňovací | `můj`, `tvůj`, `jeho`, `její`, `náš`, `váš`, `jejich` |
+| Zvratné | `sebe` |
+| Ukazovací | `ten` |
+| Tázací | `kdo`, `co`, `jenž` |
+
+Skloňovací třídy: `Substantive` (fixní tabulka), `PronounHard/Soft` (vzorová tabulka), `AdjectiveHard/Soft` (deleguje na `CzechAdjectiveDeclensionService`), `Indeclinable` (vrací lemma beze změny).
+
+Kde jazykově existují, pokrývá i varianty `afterPreposition` (po předložce).
+
+### Časování sloves
+
+Vzory: `dělá`, `prosí`, `kupuje`, `maže`, `nese`, `peče`, `tiskne`, `mine`, `kryje`, `být`
+
+Pokryté gramatické kategorie:
+
+| Kategorie | Hodnoty |
+|---|---|
+| Čas | Přítomný, minulý, budoucí |
+| Způsob | Indikativ, kondicionál, imperativ |
+| Rod | Aktivum, pasivum |
+| Číslo | Singulár, plurál |
+| Osoba | 1., 2., 3. |
+| Negace | `ne-` prefixem |
+| Reflexivita | `se` / `si` |
+
+Složené slovesné fráze (kondicionál, pasivum s auxiliárem `být`, reflexiva) sestavuje `CzechVerbPhraseBuilderService`.
+
+### Fonologické transformace
+
+Všechna fonologická rozhodnutí jdou přes `IPhonemeRegistry` — žádné hardcoded porovnávání znaků v servisní vrstvě.
+
+| Metoda / proces | Popis |
+|---|---|
+| `ApplySoftening(stem, context)` | 1. a 2. palatalizace velár (`k→č`, `h→ž`, `k→c`, ...) |
+| `RevertSoftening(stem)` | Zpětná palatalizace |
+| `RemoveMobileVowel(stem)` | `pes → ps-` (genitivní kmen) |
+| `InsertMobileVowel(stem, pos)` | `ps- → pes` |
+| `ApplyEpenthesis(stem, suffix)` | Vkládání `e` před derivační sufix |
+| `ShortenVowel(stem)` | Kvantitativní krácení přes registry |
+| `LengthenVowel(stem)` | Kvantitativní dloužení přes registry |
+
+Ortografická vrstva je v `CzechOrtographyService` (registrováno jako `ICzechOrtographyService`):
+
+| Metoda | Popis |
+|---|---|
+| `NormalizeEndingOrthography(stem, ending)` | `ě→e` reverze pro non-DTN, non-labiální kmeny |
+| `ApplyJotationOrthography(ending)` | `e→ě` po labiálách (ortografický zápis jotace) |
+
+### Valenční slovník
+
+`JsonValencyProvider` načítá z embedded JSON (v `Data/Valency/`):
+
+- `lexicon.json` — morfologická metadata lemmatu (rod, vzor, vid, animátnost, `hasMobileVowel`, `hasGenitivePluralShortening`, ...)
+- `valency.json` — valenční rámce pro slovesa
+
+Provider implementuje `IValencyProvider<CzechLexicalEntry>`. Architektura umožňuje záměnu za SQLite backend pouhou změnou DI registrace.
+
+### Alternace v genitiv plurálu
+
+`CzechAlternationRuleEvaluator` implementuje `ShouldShortenGenitivePlural` — čte příznak `hasGenitivePluralShortening` z valenčního slovníku nebo přímo z requestu. Data pro lemmata `kráva`, `síla`, `lípa`, `houba`, `žíla` jsou v `lexicon.json`.
+
+> ⚠️ Třída existuje a je implementovaná, ale **není zaregistrovaná v DI** (`CzechGrammarServiceFactory` ji neobsahuje). Krácení gen. pl. tedy zatím aktivně neprobíhá.
 
 ---
 
-## Repository Layout
+## Architektura solution
 
 ```
 Grammar.sln
-
-Grammar.Core/               # Language-agnostic models and interfaces (.NET 8 library)
-  Enums/                    # Case, Gender, Number, Tense, VerbAspect, WordCategory, …
-  Enums/PhonologicalFeatures/  # ArticulationPlace, ArticulationManner, Voicing, …
-  Interfaces/               # IInflectionService<T>, IPhonologyService<T>,
-  │                         # IPhonemeRegistry, IWordRequest, …
-  Models/
-    Phonology/              # Phoneme record (Symbol, Place, Manner, Voicing,
-                            #   PalatalizeTo, Short/LongCounterpart, …)
-    Word/                   # WordForm, WordStructure
-
-Grammar.Czech/              # Czech-specific implementation (.NET 8 library, NuGet-ready)
-  Models/                   # CzechWordRequest, CzechPhoneme, NounPattern, …
-  Enums/                    # PalatalizationContext, PronounType, InflectionClass, …
-  Interfaces/               # ICzechPhonologyService, ICzechPronounService,
-  │                         # ICzechOrtographyService, …
-  Services/
-  │  MorphologyEngine                  # Routes by WordCategory to the correct service
-  │  CzechWordFormComposer             # Top-level entry point; assembles full word forms
-  │  CzechNounDeclensionService        # Noun paradigm resolution
-  │  CzechAdjectiveDeclensionService   # Adjective paradigm + degree construction
-  │  CzechPronounService               # Pronoun lookup + adjective delegation
-  │  CzechVerbConjugationService       # Verb paradigm resolution
-  │  CzechPhonologyService             # Vowel alternations, softening, epenthesis
-  │  CzechOrtographyService            # DTN orthography, jotation orthography
-  │  CzechAuxiliaryVerbService         # `být` auxiliary forms
-  │  CzechVerbPhraseBuilderService     # Passive, conditional, reflexive construction
-  │  CzechNegationService              # Negation prefix + `být` negation
-  │  CzechPrefixService                # Perfective/negative prefixes
-  │  CzechParticleService              # Conditional particles, reflexives `se`/`si`
-  │  CzechPrepositionService           # Preposition–case validation
-  Providers/JsonProviders/  # Thread-safe Lazy<T> JSON providers for all data categories
-  Data/                     # Embedded JSON: noun patterns, irregulars, proper names,
-  │                         # adjective paradigms, verb paradigms, pronouns,
-  │                         # phonemes registry, particles, prepositions, …
-  CzechGrammarServiceFactory.cs  # AddCzechGrammarServices() DI extension method
-
-Grammar.Czech.Cli/          # Console demo / scratch runner (net8.0 executable)
-Grammar.Czech.Test/         # MSTest data-driven unit tests (MSTest.Sdk 3.6.4)
+│
+├── Grammar.Core/               # Jazyk-agnostický základ (.NET 8 library)
+│     Enums/                    # Case, Gender, Number, Tense, VerbAspect, WordCategory, …
+│     Enums/PhonologicalFeatures/  # ArticulationPlace, ArticulationManner, Voicing, …
+│     Interfaces/               # IInflectionService<T>, IPhonologyService<T>,
+│                               # IPhonemeRegistry, IValencyProvider<T>, …
+│     Models/Phonology/         # Phoneme record (Symbol, Place, Manner, Voicing,
+│                               #   PalatalizeTo, Short/LongCounterpart, …)
+│     Models/Word/              # WordForm, WordStructure
+│     Models/Valency/           # ValencyFrame, ValencySlot
+│
+├── Grammar.Czech/              # Česká implementace (.NET 8 library, NuGet-ready)
+│     Models/                   # CzechWordRequest, CzechLexicalEntry, NounPattern, …
+│     Enums/                    # PalatalizationContext, PronounType, InflectionClass, …
+│     Interfaces/               # ICzechPhonologyService, ICzechPronounService, …
+│     Services/
+│       MorphologyEngine                 # Routing dle WordCategory
+│       CzechWordFormComposer            # Hlavní vstupní bod; sestavuje kompletní tvar
+│       CzechNounDeclensionService       # Skloňování substantiv
+│       CzechAdjectiveDeclensionService  # Skloňování adjektiv + stupňování
+│       CzechPronounService             # Zájmena (lookup + delegace na adjektivní vzory)
+│       CzechVerbConjugationService     # Konjugace sloves
+│       CzechPhonologyService           # Hláskové alternace
+│       CzechOrtographyService          # DTN ortografie, iotace
+│       CzechAlternationRuleEvaluator   # ShouldShortenGenitivePlural
+│       CzechAuxiliaryVerbService       # Tvary auxiliáru být
+│       CzechVerbPhraseBuilderService   # Pasivum, kondicionál, reflexiva
+│       CzechNegationService            # Negační prefix + negace být
+│       CzechPrefixService              # Perfektivní / negační prefixy
+│       CzechParticleService            # Kondicionální partikule, reflexiva se/si
+│       CzechPrepositionService         # Validace prepozice–pád
+│     Providers/JsonProviders/  # Thread-safe Lazy<T> JSON providery
+│     Data/                     # Embedded JSON: vzory, nepravidelná slova, vlastní jména,
+│                               # adjektivní paradigmata, slovesná paradigmata, zájmena,
+│                               # foném registry, partikule, předložky, valenční slovník
+│     CzechGrammarServiceFactory.cs    # AddCzechGrammarServices() DI extension
+│
+├── Grammar.Czech.Cli/          # Konzolová demo aplikace (net8.0)
+└── Grammar.Czech.Test/         # MSTest data-driven testy (MSTest.Sdk 3.6.4)
 ```
 
 ---
 
-## Design Principles
+## Design principy
 
-### 1 — Rule-based, not table-based
-Inflected forms are computed. The JSON data layer holds paradigm *endings* and a
-minimal *overrides* layer for irregular words. The code layer holds *rules* (softening,
-epenthesis, mobile vowel removal, DTN orthography). No single file maps every lemma to
-every form.
+### 1 — Generativní morfologie, ne tabulkový slovník
+Tvary vznikají výpočtem. JSON vrstva drží paradigmatické **koncovky** a minimální **přepisovou** vrstvu pro nepravidelná slova. V kódu jsou **pravidla** (změkčení, epenteze, pohybné e, DTN ortografie). Žádný soubor nemapuje každé lemma na každý tvar.
 
-### 2 — Phoneme registry as the single source of truth
-Every phonological decision — whether to soften a consonant, how to shorten a vowel,
-whether a stem ends in a DTN consonant — is resolved by querying the `IPhonemeRegistry`.
-The `Phoneme` record encodes articulation properties (`Place`, `Manner`, `Voicing`) and
-derived mappings (`PalatalizeTo`, `ShortCounterpart`, `LongCounterpart`,
-`VoicedCounterpart`). New alternation rules should read from the registry, never from
-hard-coded character comparisons.
+### 2 — Foném registry jako jediný zdroj pravdy
+Každé fonologické rozhodnutí — zda změkčit konsonant, jak zkrátit vokál, zda je kmen DTN — se vyřeší dotazem na `IPhonemeRegistry`. `Phoneme` record nese artikulaci (`ArticulationPlace`, `ArticulationManner`, `Voicing`), cíle palatalizace, kvantitativní páry i znělostní páry.
 
-### 3 — Data vs. code separation
-Directional phonological changes (e.g. `e→ě` after a labial) belong in JSON paradigm
-data. Code handles only *reversals* and *guards* (e.g. `ě→e` normalization for non-DTN,
-non-labial stems). Violations of this principle have historically caused bugs.
+### 3 — Oddělení rozhodnutí od transformace
+Evaluatory (`ISofteningRuleEvaluator`, `IEpenthesisRuleEvaluator`, `IJotationRuleEvaluator`, `IAlternationRuleEvaluator`) vlastní *rozhodovací* logiku; `CzechPhonologyService` vlastní *transformaci*. Servisy jsou orchestrátoři, kteří volají oboje.
 
-### 4 — Evaluator pattern for phonology
-Decisions about *whether* to apply a phonological rule are separated from the act of
-*applying* it. Evaluator interfaces (`ISofteningRuleEvaluator`, `IEpenthesisRuleEvaluator`,
-`IJotationRuleEvaluator`, …) own the decision logic; `CzechPhonologyService` owns the
-transformation. Inflection and conjugation services act as orchestrators that call both.
+### 4 — Dependency injection
+Vše registrováno přes `AddCzechGrammarServices()` a resolvováno přes `IServiceCollection`. Žádný service neinstancuje závislosti přímo.
 
-### 5 — Dependency injection throughout
-All services are registered via `AddCzechGrammarServices()` and resolved through
-`IServiceCollection`. No service instantiates its collaborators directly.
+### 5 — Thread-safe data providery
+Všechny JSON providery používají `Lazy<T>` s `LazyThreadSafetyMode.ExecutionAndPublication`. Dědičnost vzorů (např. `pán → student`) se resolvuje jednou při načtení, ne při každém requestu.
 
-### 6 — Thread-safe data providers
-All JSON providers use `Lazy<T>` with `LazyThreadSafetyMode.ExecutionAndPublication`.
-Pattern inheritance (e.g. `pán` → `student`) is resolved once at load time, not at
-request time.
-
-### 7 — Language-agnostic core
-`Grammar.Core` contains no Czech-specific code. Adding a new language means adding a new
-project that references `Grammar.Core` and implements its interfaces.
+### 6 — Jazyk-agnostické jádro
+`Grammar.Core` neobsahuje žádný kód specifický pro češtinu. Přidání nového jazyka = nový projekt referencující `Grammar.Core` implementující jeho interface.
 
 ---
 
-## Getting Started
+## Rychlý start
 
-### Prerequisites
-
-- .NET 8 SDK
-- Visual Studio 2022 / JetBrains Rider (any recent version)
-
-### Add the reference
-
-```xml
-<!-- in your .csproj -->
-<ProjectReference Include="..\Grammar.Czech\Grammar.Czech.csproj" />
-```
-
-### Register services
+### Registrace services
 
 ```csharp
 using Grammar.Czech;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
-services.AddCzechGrammarServices();   // data is embedded — no path argument needed
+services.AddCzechGrammarServices();
 
-var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true });
+var provider = services.BuildServiceProvider(
+    new ServiceProviderOptions { ValidateOnBuild = true });
 var composer = provider.GetRequiredService<CzechWordFormComposer>();
 ```
 
----
-
-## Quick Start Examples
-
-### Decline a noun
+### Skloňování podstatného jména
 
 ```csharp
 var request = new CzechWordRequest
@@ -170,7 +219,7 @@ var form = composer.GetFullForm(request);
 Console.WriteLine(form.Form); // → "studenta"
 ```
 
-### Conjugate a verb
+### Časování slovesa
 
 ```csharp
 var request = new CzechWordRequest
@@ -189,7 +238,7 @@ var form = composer.GetFullForm(request);
 Console.WriteLine(form.Form); // → "dělám"
 ```
 
-### Inflect an adjective (comparative)
+### Komparativ přídavného jména
 
 ```csharp
 var request = new CzechWordRequest
@@ -206,7 +255,7 @@ var form = composer.GetFullForm(request);
 Console.WriteLine(form.Form); // → "mladšímu"
 ```
 
-### Inflect a pronoun
+### Skloňování zájmena
 
 ```csharp
 var request = new CzechWordRequest
@@ -222,226 +271,91 @@ Console.WriteLine(form.Form); // → "mně" / "mi"
 
 ---
 
-## API Reference
+## Datová vrstva
 
-### `CzechWordRequest`
+Všechna gramatická data jsou v **embedded JSON** souborech v `Grammar.Czech/Data/` a načítána jednou přes thread-safe `Lazy<T>` providery.
 
-The central request object. All properties except `Lemma` and `WordCategory` are
-optional; supply only those relevant to the word category and the form you need.
-
-| Property | Type | Applies to | Description |
-|---|---|---|---|
-| `Lemma` | `string` | All | Dictionary form (required) |
-| `WordCategory` | `WordCategory` | All | Noun / Adjective / Pronoun / Verb / Numerale |
-| `Pattern` | `string?` | All | Paradigm key, e.g. `"pán"`, `"žena"`, `"dělá"` |
-| `Gender` | `Gender?` | Noun, Adj, Pron | Masculine / Feminine / Neuter |
-| `Number` | `Number?` | Noun, Adj, Pron, Verb | Singular / Plural |
-| `Case` | `Case?` | Noun, Adj, Pron | Nominative … Instrumental (1–7) |
-| `IsAnimate` | `bool?` | Noun | Affects masculine accusative |
-| `Person` | `Person?` | Verb | First / Second / Third |
-| `Tense` | `Tense?` | Verb | Present / Past / Future |
-| `Aspect` | `VerbAspect?` | Verb | Perfective / Imperfective |
-| `Modus` | `Modus?` | Verb | Indicative / Conditional / Imperative |
-| `Voice` | `Voice?` | Verb | Active / Passive |
-| `VerbClass` | `VerbClass?` | Verb | Czech verb class 1–5 (optional hint) |
-| `Degree` | `Degree?` | Adjective | Possitive / Comparative / Superlative |
-| `IsNegative` | `bool` | Verb | Prepend negation prefix (`ne-`) |
-| `HasReflexive` | `bool?` | Verb | Append `se` / `si` |
-| `HasExplicitSubject` | `bool?` | Verb | Affects conditional word order |
-
-### `CzechWordFormComposer` — main entry point
-
-```csharp
-WordForm GetFullForm(CzechWordRequest request)
-```
-
-Returns the complete word form including auxiliary verbs, reflexive particles, and
-conditional particles where applicable.
-
-### `MorphologyEngine` — lower-level access
-
-Use when you need raw morphology without phrase assembly.
-
-```csharp
-WordForm GetForm(CzechWordRequest request)       // nouns, adjectives, pronouns
-WordForm GetBasicForm(CzechWordRequest request)  // verb base form only
-```
-
-### `WordForm`
-
-```csharp
-public record WordForm(string Form, string Lemma, ...);
-```
-
-The `Form` property contains the final orthographic string. Additional metadata
-(lemma, case, number, …) is preserved for downstream use.
-
----
-
-## Supported Paradigms
-
-### Nouns
-
-| Masculine animate | Masculine inanimate | Feminine | Neuter |
-|---|---|---|---|
-| `pán` | `hrad` | `žena` | `město` |
-| `muž` | `stroj` | `růže` | `moře` |
-| `předseda` | | `píseň` | `kuře` |
-| `soudce` | | `kost` | `stavení` |
-
-### Adjectives
-
-`mladý` (hard), `jarní` (soft). Comparative and superlative are derived
-algorithmically. Suppletive comparatives (`dobrý→lepší`, `malý→menší`,
-`velký→větší`, `zlý→horší`, `špatný→horší`, `dlouhý→delší`) are handled
-as a closed set.
-
-### Verbs
-
-`dělá`, `prosí`, `kupuje`, `maže`, `nese`, `peče`, `tiskne`, `mine`, `kryje`, `být`
-
-### Pronouns
-
-`já`, `ty`, `on`, `ona`, `ono`, `my`, `vy`, `oni`, `ona_` (neuter plural),
-`můj`, `tvůj`, `jeho`, `její`, `náš`, `váš`, `jejich`,
-`sebe`, `ten`, `kdo`, `co`, `jenž`
-
----
-
-## Phonological Transformations
-
-All phonological decisions are driven by the `IPhonemeRegistry`. The `Phoneme` record
-encodes:
-
-- **Articulation** — `ArticulationPlace` (Bilabial, Alveolar, Velar, …),
-  `ArticulationManner` (Plosive, Nasal, Fricative, …), `Voicing`
-- **Alternation targets** — `PalatalizeTo` (universal softening target),
-  `CzechPhoneme.PalatalizationTargets` (context-keyed: First / Second palatalization)
-- **Quantity pairs** — `ShortCounterpart`, `LongCounterpart`
-- **Voice pairs** — `VoicedCounterpart`, `VoicelessCounterpart`
-
-The transformations available through `ICzechPhonologyService`:
-
-| Method | What it does |
+| Soubor / adresář | Obsah |
 |---|---|
-| `ApplySoftening(stem, context)` | Consonant palatalization (1st or 2nd) |
-| `RevertSoftening(stem)` | Reverse a palatalization |
-| `RemoveMobileVowel(stem, flag)` | `pes` → `ps-` (genitive stem) |
-| `InsertMobileVowel(stem, pos)` | `ps-` → `pes` |
-| `ApplyEpenthesis(flag, stem, suffix)` | Inserts `e` before a derivational suffix |
-| `ShortenVowel(stem)` | Quantitative shortening via registry |
-| `LengthenVowel(stem)` | Quantitative lengthening via registry |
-
-DTN orthography (`d/t/n + e → dě/tě/ně`) is handled separately by
-`ICzechOrtographyService.ApplyDTNEndingOrthography`.
-
----
-
-## Data Layer
-
-All grammatical data is stored as **embedded JSON** in `Grammar.Czech/Data/` and loaded
-once via thread-safe `Lazy<T>` providers. The key files are:
-
-| File / directory | Contents |
-|---|---|
-| `Data/Nouns/patterns.json` | Paradigm endings for all noun patterns |
-| `Data/Nouns/irregulars.json` | Per-lemma overrides (mobile vowel, custom endings) |
-| `Data/Nouns/propers.json` | Proper-noun overrides |
-| `Data/Adjectives/` | Adjective paradigm endings |
-| `Data/Verbs/` | Verb paradigm endings + irregular conjugations |
-| `Data/Pronouns/pronouns.json` | Pronoun data and paradigm references |
-| `Data/Pronouns/paradigms.json` | Pronoun declension tables |
-| `Data/Phonology/phonemes.json` | Phoneme registry |
-| `Data/Particles/` | Conditional particles, reflexives |
-| `Data/Prepositions/` | Preposition–case mappings |
-
-Pattern inheritance is resolved at provider load time. For example, `"student"` inherits
-from `"pán"` and only stores the endings that differ:
-
-```json
-"student": {
-  "inheritsFrom": "pán",
-  "endings": {
-    "singular": { "vocative": "-e" }
-  }
-}
-```
+| `Data/Nouns/patterns.json` | Paradigmatické koncovky všech substantivních vzorů |
+| `Data/Nouns/irregulars.json` | Per-lemma přepisy (pohybné e, vlastní koncovky) |
+| `Data/Nouns/propers.json` | Vlastní jména |
+| `Data/Adjectives/` | Adjektivní paradigmata |
+| `Data/Verbs/` | Slovesná paradigmata + nepravidelné konjugace |
+| `Data/Pronouns/pronouns.json` | Data zájmen a reference na paradigmata |
+| `Data/Pronouns/paradigms.json` | Deklinační tabulky zájmen |
+| `Data/Phonology/phonemes.json` | Foném registry (artikulace, alternace, kvantitativní páry) |
+| `Data/Particles/` | Kondicionální partikule, reflexiva |
+| `Data/Prepositions/` | Mapování prepozice–pád |
+| `Data/Valency/lexicon.json` | Morfologická metadata lemmatu (rod, vzor, vid, animátnost, ...) |
+| `Data/Valency/valency.json` | Valenční rámce sloves |
 
 ---
 
-## Adding Irregular Words
+## Přidání nepravidelného slova
 
-When a word has irregular behaviour, add an entry to the relevant JSON file — do **not**
-add a code branch.
+Při nestandardním chování slova se přidá záznam do příslušného JSON, **ne větev v kódu**.
 
 ```json
 // Data/Nouns/irregulars.json
-"pes": { "hasMobileVowel": true, "inheritsFrom": "pán" },
-"den": { "hasMobileVowel": true, "inheritsFrom": "hrad" },
-"otec": { "hasMobileVowel": true, "inheritsFrom": "muž" }
+"pes":  { "hasMobileVowel": true, "inheritsFrom": "pán"  },
+"den":  { "hasMobileVowel": true, "inheritsFrom": "hrad" },
+"otec": { "hasMobileVowel": true, "inheritsFrom": "muž"  }
 ```
 
 ---
 
-## Adding a New Language
+## Přidání nového jazyka
 
-Create a new project referencing `Grammar.Core` and implement:
+Vytvoř nový projekt referencující `Grammar.Core` a implementuj:
 
-- `IInflectionService<TRequest>` — noun/adjective/pronoun inflection
-- `IPhonologyService<TRequest>` — phonological transformations
-- `IPhonemeRegistry` — phoneme data for the target language
+- `IInflectionService<TRequest>` — skloňování/časování
+- `IPhonologyService<TRequest>` — fonologické transformace
+- `IPhonemeRegistry` — registr fonémů pro cílový jazyk
 
-Register everything in a DI extension method analogous to `AddCzechGrammarServices()`.
+Vše zaregistruj v DI extension metodě analogické k `AddCzechGrammarServices()`.
 
 ---
 
-## Running Tests
+## Spuštění testů
 
 ```bash
 dotnet test Grammar.Czech.Test/
 ```
 
-Tests use MSTest's data-driven `[DataRow]` pattern to cover full paradigm tables.
-Currently covered: noun vzory *pán*, *žena*, *píseň* (gen sg pattern), *pes*;
-adjective comparative/superlative.
+Testy používají MSTest `[DataTestMethod]` / `[DataRow]` pro pokrytí celých paradigmatických tabulek.
 
 ---
 
-## Known Limitations
+## Známá omezení
 
-| Area | Status |
+| Oblast | Stav |
 |---|---|
-| Iotation (labials + `ě`) | Identified, not yet implemented |
-| `n/d/t + e → ně/dě/tě` in comparatives | Identified (affects *jemnější*), next on roadmap |
-| Vowel shortening (`ShouldShortenVowel`) | Stubbed |
-| `GuessGenderAndPattern` / `GuessVerbAspect` | Stubbed — blocked on valency dictionary |
-| Numerals | Not started |
-| Sentence generation (NLG) | Out of scope for current milestone |
-| *oni* dative `afterPreposition` | Data bug: `"nim"` should be `"ním"` |
+| `CzechAlternationRuleEvaluator` | Implementovaná, ale **nezaregistrovaná v DI** — krácení gen. pl. aktivní není |
+| `GuessGenderAndPattern` | Neimplementováno — volající musí dodat vzor explicitně |
+| `ResolveVerbAspect` | Funguje pro lemmata v `lexicon.json`; pro nezaregistrovaná lemmata hází `LemmaNotFoundException` |
+| Numeralia | Nenačato |
+| Generování vět (NLG) | Mimo scope aktuálního milníku |
 
 ---
 
 ## Roadmap
 
-### Near term
-- [ ] Implement `n/d/t + e → ně/dě/tě` orthographic rule in comparatives
-- [ ] Implement `ShouldShortenVowel` / `ShouldLengthenVowel` via `IPhonemeRegistry`
-- [ ] Fix *oni* dative `afterPreposition` data bug
-- [ ] Complete missing unit tests — vzory *hrad*, *muž*, *stroj*, *město*, *moře*,
-      *kuře*, *stavení*; all pronoun lemmas; verb conjugations
-- [ ] SQLite-backed `IValencyProvider` (lemma, category, pattern, gender, aspect, animacy)
-- [ ] Implement `GuessGenderAndPattern` and `GuessVerbAspect` (unblocked by valency dictionary)
+### Blízký horizont
+- [ ] Zaregistrovat `CzechAlternationRuleEvaluator` v DI (`IAlternationRuleEvaluator`) a aktivovat krácení gen. pl.
+- [ ] Rozšířit `lexicon.json` — doplnit lemmata pro `ResolveVerbAspect` a `GuessGenderAndPattern`
+- [ ] Implementovat `GuessGenderAndPattern` (suffix heuristika + valenční slovník)
+- [ ] Doplnit chybějící testy — všechny vzory, všechna zájmenná lemmata, slovesné konjugace
 
-### Future
-- [ ] Full jotation support (`IJotationRuleEvaluator` + `ApplyJotation`)
-- [ ] `CzechAlternationRuleEvaluator` (registered in DI)
-- [ ] Numeral inflection
-- [ ] NLG sentence construction from semantic input (`SemanticInput` → `SentencePlanner`)
-- [ ] NuGet package (dual MIT / commercial licensing)
-- [ ] Latin language support
+### Výhled
+- [ ] SQLite-backed `IValencyProvider` jako záměna za `JsonValencyProvider`
+- [ ] Skloňování číslovek (`CzechNumeralService`)
+- [ ] NLG — generování vět ze sémantického vstupu (`SemanticInput → SentencePlanner`)
+- [ ] NuGet balíček (`50PSoftware.GrammarModular.Czech`)
+- [ ] Podpora latiny
 
 ---
 
-## License
+## Licence
 
-Copyright © 50PSoftware. All rights reserved.
+Copyright © 50PSoftware. Všechna práva vyhrazena.
