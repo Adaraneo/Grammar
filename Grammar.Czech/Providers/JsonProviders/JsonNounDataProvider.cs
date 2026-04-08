@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Helpers;
+using Grammar.Core.Helpers;
 using Grammar.Czech.Helpers;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace Grammar.Czech.Providers.JsonProviders
 {
+    /// <summary>
+    /// Loads noun data provider from embedded JSON resources.
+    /// </summary>
     public class JsonNounDataProvider : INounDataProvider
     {
         private readonly string _patternPath = "Data.Rules.Nouns.patterns";
@@ -15,6 +18,9 @@ namespace Grammar.Czech.Providers.JsonProviders
         private readonly Lazy<Dictionary<string, NounPattern>> _irregulars;
         private readonly Lazy<Dictionary<string, NounPattern>> _properNames;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonNounDataProvider"/> type.
+        /// </summary>
         public JsonNounDataProvider()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -53,10 +59,22 @@ namespace Grammar.Czech.Providers.JsonProviders
             });
         }
 
+        /// <summary>
+        /// Gets regular inflection patterns loaded from embedded JSON data.
+        /// </summary>
+        /// <returns>The loaded noun declension patterns keyed by pattern name.</returns>
         public Dictionary<string, NounPattern> GetPatterns() => _patterns.Value;
 
+        /// <summary>
+        /// Gets irregular inflection patterns loaded from embedded JSON data.
+        /// </summary>
+        /// <returns>The loaded irregular noun patterns keyed by lemma or pattern name.</returns>
         public Dictionary<string, NounPattern> GetIrregulars() => _irregulars.Value;
 
+        /// <summary>
+        /// Gets proper-name noun entries loaded from embedded JSON data.
+        /// </summary>
+        /// <returns>The loaded proper-name noun entries keyed by lemma.</returns>
         public Dictionary<string, NounPattern> GetPropers() => _properNames.Value;
     }
 }

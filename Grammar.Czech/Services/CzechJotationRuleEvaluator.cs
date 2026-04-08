@@ -1,21 +1,35 @@
-﻿using Grammar.Core.Enums.PhonologicalFeatures;
+using Grammar.Core.Enums.PhonologicalFeatures;
 using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Evaluates Czech jotation rule evaluator rules.
+    /// </summary>
     public class CzechJotationRuleEvaluator : IJotationRuleEvaluator<CzechWordRequest>
     {
         private readonly IPhonemeRegistry registry;
         private readonly IWordStructureResolver<CzechWordRequest> wordResolver;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechJotationRuleEvaluator"/> type.
+        /// </summary>
         public CzechJotationRuleEvaluator(IPhonemeRegistry registry, IWordStructureResolver<CzechWordRequest> structureResolver)
         {
             this.registry = registry;
             this.wordResolver = structureResolver;
         }
 
+        /// <summary>
+        /// Determines whether should apply jotation.
+        /// </summary>
+        /// <param name="request">The Czech word request to process.</param>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="ending">The ending used to choose the morphology rule.</param>
+        /// <param name="hasMobileVowelRemoval">True when the rule removes a mobile vowel; otherwise, false.</param>
+        /// <returns>True when the condition is met; otherwise, false.</returns>
         public bool ShouldApplyJotation(CzechWordRequest request, string stem, string ending, bool hasMobileVowelRemoval)
         {
             if (request.Case == Core.Enums.Case.Vocative)

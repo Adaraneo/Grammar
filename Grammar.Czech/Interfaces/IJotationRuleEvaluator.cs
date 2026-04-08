@@ -1,7 +1,10 @@
-﻿using Grammar.Core.Interfaces;
+using Grammar.Core.Interfaces;
 
 namespace Grammar.Czech.Interfaces
 {
+    /// <summary>
+    /// Defines operations for evaluating jotation Rule rules.
+    /// </summary>
     public interface IJotationRuleEvaluator<TWord> where TWord : IWordRequest
     {
         /// <summary>

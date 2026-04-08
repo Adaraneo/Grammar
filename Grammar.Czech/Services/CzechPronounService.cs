@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Interfaces;
@@ -7,12 +7,18 @@ using Grammar.Czech.Models.Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Provides czech pronoun operations.
+    /// </summary>
     public class CzechPronounService : ICzechPronounService, IInflectionService<CzechWordRequest>
     {
         private readonly Dictionary<string, PronounData> _pronouns;
         private readonly Dictionary<string, PronounParadigm> _paradigms;
         private readonly CzechAdjectiveDeclensionService _adjectiveService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechPronounService"/> type.
+        /// </summary>
         public CzechPronounService(
             IPronounDataProvider provider,
             CzechAdjectiveDeclensionService adjectiveService)
@@ -24,9 +30,25 @@ namespace Grammar.Czech.Services
 
         // ── Veřejné API ────────────────────────────────────────────────
 
+        /// <summary>
+        /// Attempts to resolve a pronoun form for the supplied grammatical options.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="grammaticalCase">The grammatical case requested for the generated form.</param>
+        /// <returns>The matching form when the paradigm contains one; otherwise, null.</returns>
         public string? TryGetForm(string lemma, Case grammaticalCase)
             => TryGetForm(lemma, grammaticalCase, null, null, null, null);
 
+        /// <summary>
+        /// Attempts to resolve a pronoun form for the supplied grammatical options.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="grammaticalCase">The grammatical case requested for the generated form.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="animate">True when the masculine form is animate; otherwise, false.</param>
+        /// <param name="options">The JSON serializer options used to deserialize the resource.</param>
+        /// <returns>The matching form when the paradigm contains one; otherwise, null.</returns>
         public string? TryGetForm(
             string lemma,
             Case grammaticalCase,
@@ -52,6 +74,11 @@ namespace Grammar.Czech.Services
 
         // ── IInflectionService<CzechWordRequest> ───────────────────────
 
+        /// <summary>
+        /// Builds the requested inflected form.
+        /// </summary>
+        /// <param name="request">The Czech word request to process.</param>
+        /// <returns>The generated pronoun form, or the lemma when no form is found.</returns>
         public WordForm GetForm(CzechWordRequest request)
         {
             if (request.Case is null)
@@ -71,6 +98,11 @@ namespace Grammar.Czech.Services
 
         // ── ICzechPronounService helpers ───────────────────────────────
 
+        /// <summary>
+        /// Gets the cases available for the requested pronoun paradigm.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The cases supported by the pronoun data, or all cases for paradigm-based pronouns.</returns>
         public IEnumerable<Case> GetAvailableCases(string lemma)
         {
             if (!_pronouns.TryGetValue(lemma, out var data))
@@ -83,12 +115,28 @@ namespace Grammar.Czech.Services
             return Enum.GetValues<Case>();
         }
 
+        /// <summary>
+        /// Determines whether the requested pronoun case can be generated.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="grammaticalCase">The grammatical case requested for the generated form.</param>
+        /// <returns><see langword="true"/> when a form exists for the requested case; otherwise, <see langword="false"/>.</returns>
         public bool IsAllowed(string lemma, Case grammaticalCase)
             => TryGetForm(lemma, grammaticalCase) != null;
 
+        /// <summary>
+        /// Gets the pronoun type used to select a paradigm.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The pronoun type stored for the lemma, or <see langword="null"/> when the lemma is unknown.</returns>
         public PronounType? GetPronounType(string lemma)
             => _pronouns.TryGetValue(lemma, out var data) ? data.Type : null;
 
+        /// <summary>
+        /// Gets the inflection class used to choose pronoun form lookup.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The inflection class stored for the lemma, or <see langword="null"/> when the lemma is unknown.</returns>
         public InflectionClass? GetInflectionClass(string lemma)
             => _pronouns.TryGetValue(lemma, out var data) ? data.InflectionClass : null;
 

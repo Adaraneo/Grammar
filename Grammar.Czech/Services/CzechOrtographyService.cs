@@ -1,19 +1,29 @@
-﻿using Grammar.Core.Enums.PhonologicalFeatures;
+using Grammar.Core.Enums.PhonologicalFeatures;
 using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Provides Czech orthography adjustments for endings and jotation.
+    /// </summary>
     public class CzechOrtographyService : ICzechOrtographyService
     {
         private readonly IPhonemeRegistry _registry;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechOrtographyService"/> type.
+        /// </summary>
         public CzechOrtographyService(IPhonemeRegistry registry)
         {
             this._registry = registry;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Applies Czech orthographic changes caused by jotation.
+        /// </summary>
+        /// <param name="ending">The ending used to choose the morphology rule.</param>
+        /// <returns>The ending with initial e changed to e-with-caron when jotation applies.</returns>
         public string ApplyJotationOrthography(string ending)
         {
             var normalized = ending.TrimStart('-');
@@ -25,7 +35,12 @@ namespace Grammar.Czech.Services
             return ending[..dashPrefix] + 'ě' + normalized[1..];
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Normalizes ending spelling against the final stem consonant.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="ending">The ending used to choose the morphology rule.</param>
+        /// <returns>The normalized ending spelling for the supplied stem.</returns>
         public string NormalizeEndingOrthography(string stem, string ending)
         {
             if (string.IsNullOrEmpty(stem) || string.IsNullOrEmpty(ending))

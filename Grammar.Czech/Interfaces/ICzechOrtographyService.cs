@@ -1,5 +1,8 @@
-﻿namespace Grammar.Czech.Interfaces
+namespace Grammar.Czech.Interfaces
 {
+    /// <summary>
+    /// Defines operations for czech Ortography behavior.
+    /// </summary>
     public interface ICzechOrtographyService
     {
         /// <summary>

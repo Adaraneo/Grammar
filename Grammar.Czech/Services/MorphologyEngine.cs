@@ -1,10 +1,13 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Dispatches Czech word requests to the matching inflection service.
+    /// </summary>
     public class MorphologyEngine : IInflectionService<CzechWordRequest>, IVerbInflectionService<CzechWordRequest>
     {
         private readonly CzechNounDeclensionService nounDeclensionService;
@@ -12,6 +15,9 @@ namespace Grammar.Czech.Services
         private readonly CzechPronounService pronounService;
         private readonly CzechVerbConjugationService verbConjugationService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MorphologyEngine"/> type.
+        /// </summary>
         public MorphologyEngine(CzechNounDeclensionService nounDeclensionService, CzechAdjectiveDeclensionService adjectiveDeclensionService, CzechPronounService pronounService, CzechVerbConjugationService verbConjugationService)
         {
             this.nounDeclensionService = nounDeclensionService;
@@ -21,13 +27,10 @@ namespace Grammar.Czech.Services
         }
 
         /// <summary>
-        /// Retrieves the basic form (infinitive) of a Czech verb based on the specified word request.
+        /// Builds or dispatches the basic verb form without phrase-level composition.
         /// </summary>
-        /// <param name="wordRequest">An object containing the word and its grammatical category. The word category must be <see
-        /// cref="WordCategory.Verb"/>.</param>
-        /// <returns>A <see cref="WordForm"/> representing the basic form of the specified verb.</returns>
-        /// <exception cref="NotSupportedException">Thrown if <paramref name="wordRequest"/> specifies a word category other than <see
-        /// cref="WordCategory.Verb"/>.</exception>
+        /// <param name="wordRequest">The word request to analyze or inflect.</param>
+        /// <returns>The generated basic verb form.</returns>
         public WordForm GetBasicForm(CzechWordRequest wordRequest)
         {
             return wordRequest.WordCategory switch
@@ -38,11 +41,10 @@ namespace Grammar.Czech.Services
         }
 
         /// <summary>
-        /// Returns the inflected form of a Czech word based on its grammatical category.
+        /// Builds the requested inflected form.
         /// </summary>
-        /// <param name="word">A request containing the Czech word and its grammatical category. Cannot be null.</param>
-        /// <returns>A <see cref="WordForm"/> representing the inflected form of the specified word.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the <paramref name="word"/> specifies a word category that is not supported.</exception>
+        /// <param name="word">The Czech word request containing the lemma and requested grammatical categories.</param>
+        /// <returns>The generated inflected word form.</returns>
         public WordForm GetForm(CzechWordRequest word)
         {
             return word.WordCategory switch

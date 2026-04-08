@@ -9,15 +9,7 @@ using System.Reflection;
 namespace Grammar.Czech.Test
 {
     /// <summary>
-    /// Tests for <see cref="CzechWordStructureResolver"/> — noun root and derivation suffix extraction.
-    ///
-    /// Organisation:
-    ///   1. vzor žena  — základní substantiva a derivovaná na -ka
-    ///   2. vzor město — strukturní sufix (jablko, okno, peklo) + stabilní shluky (město)
-    ///   3. vzor kost  — konsonantický kmen bez sufixu
-    ///   4. Mobile vowel (pes, otec)
-    ///   5. Verbs
-    ///   6. Guard clauses
+    /// Verifies czech word structure resolver behavior.
     /// </summary>
     [TestClass]
     public class CzechWordStructureResolverTests
@@ -25,6 +17,9 @@ namespace Grammar.Czech.Test
         private IWordStructureResolver<CzechWordRequest> _resolver;
         private IVerbStructureResolver<CzechWordRequest> _verbResolver;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -46,6 +41,9 @@ namespace Grammar.Czech.Test
 
         #region vzor žena
 
+        /// <summary>
+        /// Verifies that analyze noun zena pattern extracts root.
+        /// </summary>
         [TestMethod]
         public void AnalyzeNoun_ZenaPattern_ExtractsRoot()
         {
@@ -60,6 +58,12 @@ namespace Grammar.Czech.Test
             Assert.IsNull(result.DerivationSuffix);
         }
 
+        /// <summary>
+        /// Verifies that analyze noun zena pattern ka suffix extracts root and suffix.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="expectedRoot">The expected root extracted by the resolver.</param>
+        /// <param name="expectedSuffix">The expected derivational suffix extracted by the resolver.</param>
         [TestMethod]
         [ZenaKaSuffixData]
         public void AnalyzeNoun_ZenaPatternKaSuffix_ExtractsRootAndSuffix(
@@ -82,6 +86,12 @@ namespace Grammar.Czech.Test
 
         #region vzor město — strukturní sufix
 
+        /// <summary>
+        /// Verifies that analyze noun mesto pattern epenthesis cluster extracts root and suffix.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="expectedRoot">The expected root extracted by the resolver.</param>
+        /// <param name="expectedSuffix">The expected derivational suffix extracted by the resolver.</param>
         [TestMethod]
         [MestoEpenthesisData]
         public void AnalyzeNoun_MestoPattern_EpenthesisCluster_ExtractsRootAndSuffix(
@@ -98,6 +108,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expectedSuffix, result.DerivationSuffix, $"DerivationSuffix pro {lemma}");
         }
 
+        /// <summary>
+        /// Verifies that analyze noun mesto pattern stable cluster root unchanged.
+        /// </summary>
         [TestMethod]
         public void AnalyzeNoun_MestoPattern_StableCluster_RootUnchanged()
         {
@@ -118,6 +131,9 @@ namespace Grammar.Czech.Test
 
         #region vzor kost
 
+        /// <summary>
+        /// Verifies that analyze noun kost pattern extracts root.
+        /// </summary>
         [TestMethod]
         public void AnalyzeNoun_KostPattern_ExtractsRoot()
         {
@@ -138,6 +154,9 @@ namespace Grammar.Czech.Test
 
         #region Mobile vowel
 
+        /// <summary>
+        /// Verifies that analyze noun pes nom sg keeps mobile vowel.
+        /// </summary>
         [TestMethod]
         public void AnalyzeNoun_Pes_NomSg_KeepsMobileVowel()
         {
@@ -151,6 +170,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("pes", result.Root);
         }
 
+        /// <summary>
+        /// Verifies that analyze noun pes gen sg removes mobile vowel.
+        /// </summary>
         [TestMethod]
         public void AnalyzeNoun_Pes_GenSg_RemovesMobileVowel()
         {
@@ -164,6 +186,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("ps", result.Root);
         }
 
+        /// <summary>
+        /// Verifies that analyze noun otec gen sg removes mobile vowel.
+        /// </summary>
         [TestMethod]
         public void AnalyzeNoun_Otec_GenSg_RemovesMobileVowel()
         {
@@ -183,6 +208,9 @@ namespace Grammar.Czech.Test
 
         #region Verbs
 
+        /// <summary>
+        /// Verifies that analyze verb with prefix extracts prefix and stem.
+        /// </summary>
         [TestMethod]
         public void AnalyzeVerb_WithPrefix_ExtractsPrefixAndStem()
         {
@@ -203,6 +231,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("nes", result.PresentStem);
         }
 
+        /// <summary>
+        /// Verifies that analyze verb irregular byt uses present stem.
+        /// </summary>
         [TestMethod]
         public void AnalyzeVerb_IrregularByt_UsesPresentStem()
         {
@@ -228,6 +259,9 @@ namespace Grammar.Czech.Test
 
         #region Guard clauses
 
+        /// <summary>
+        /// Verifies that analyze structure empty lemma throws argument exception.
+        /// </summary>
         [TestMethod]
         public void AnalyzeStructure_EmptyLemma_ThrowsArgumentException()
         {
@@ -236,6 +270,9 @@ namespace Grammar.Czech.Test
             Assert.ThrowsException<ArgumentException>(() => _resolver.AnalyzeStructure(request));
         }
 
+        /// <summary>
+        /// Verifies that analyze structure empty pattern throws argument exception.
+        /// </summary>
         [TestMethod]
         public void AnalyzeStructure_EmptyPattern_ThrowsArgumentException()
         {
@@ -270,10 +307,15 @@ namespace Grammar.Czech.Test
         #region Test data attributes
 
         /// <summary>
-        /// Vzor žena + sufix -ka: lemma, očekávaný root, očekávaný derivační sufix.
+        /// Provides zena ka suffix data attribute behavior.
         /// </summary>
         private sealed class ZenaKaSuffixDataAttribute : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo) =>
             [
                 ["studentka", "student", "k"],
@@ -283,11 +325,15 @@ namespace Grammar.Czech.Test
         }
 
         /// <summary>
-        /// Vzor město — strukturní sufix tvoří heterorganní shluk → epentheze.
-        /// Sloupce: lemma, očekávaný root, očekávaný derivační sufix.
+        /// Provides mesto epenthesis data attribute behavior.
         /// </summary>
         private sealed class MestoEpenthesisDataAttribute : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo) =>
             [
                 ["jablko", "jabl", "k"],  // l+k  Alveolar+Velar

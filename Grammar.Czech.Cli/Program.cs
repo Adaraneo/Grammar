@@ -1,4 +1,4 @@
-﻿namespace Grammar.Cli
+namespace Grammar.Cli
 {
     using Grammar.Core.Enums;
     using Grammar.Czech;
@@ -6,6 +6,9 @@
     using Grammar.Czech.Services;
     using Microsoft.Extensions.DependencyInjection;
 
+    /// <summary>
+    /// Runs the sample command-line entry point for Czech morphology.
+    /// </summary>
     internal class Program
     {
         private static void Main(string[] args)

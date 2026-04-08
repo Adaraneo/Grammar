@@ -1,16 +1,22 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Composes final Czech word forms by combining morphology, negation, and verb phrase logic.
+    /// </summary>
     public class CzechWordFormComposer : IWordFormComposer<CzechWordRequest>
     {
         private readonly INegationService<CzechWordRequest> negationService;
         private readonly CzechVerbPhraseBuilderService verbPhraseBuilderService;
         private readonly MorphologyEngine morphologyEngine;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechWordFormComposer"/> type.
+        /// </summary>
         public CzechWordFormComposer(CzechVerbPhraseBuilderService verbPhraseBuilderService, INegationService<CzechWordRequest> negationService, MorphologyEngine morphologyEngine)
         {
             this.negationService = negationService;
@@ -18,6 +24,11 @@ namespace Grammar.Czech.Services
             this.morphologyEngine = morphologyEngine;
         }
 
+        /// <summary>
+        /// Builds the complete requested word or phrase form.
+        /// </summary>
+        /// <param name="request">The Czech word request to process.</param>
+        /// <returns>The composed word or phrase form.</returns>
         public WordForm GetFullForm(CzechWordRequest request)
         {
             // TODO: Make full form of phrase (especially verb for now). If word is single, return single form.

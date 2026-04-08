@@ -1,17 +1,33 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Provides Czech auxiliary verb forms used by compound verb phrases.
+    /// </summary>
     public class CzechAuxiliaryVerbService
     {
         private readonly MorphologyEngine engine;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechAuxiliaryVerbService"/> type.
+        /// </summary>
         public CzechAuxiliaryVerbService(MorphologyEngine engine)
         {
             this.engine = engine;
         }
 
+        /// <summary>
+        /// Gets the Czech auxiliary form of "byt" for the requested grammatical context.
+        /// </summary>
+        /// <param name="tense">The requested grammatical tense.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="person">The requested grammatical person.</param>
+        /// <param name="modus">The requested grammatical mood.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="isNegative">True when the generated phrase should be negated; otherwise, false.</param>
+        /// <returns>The auxiliary form, including negation when requested.</returns>
         public string GetBeForm(Tense? tense, Number? number, Person? person, Modus? modus, Gender? gender, bool isNegative = false)
         {
             if (tense == Tense.Present && number == Number.Singular && person == Person.Third)

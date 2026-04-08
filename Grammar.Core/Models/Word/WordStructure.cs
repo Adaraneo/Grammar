@@ -1,29 +1,29 @@
 namespace Grammar.Core.Models.Word
 {
     /// <summary>
-    /// Represents the internal morphological structure of a word form:
-    /// an optional prefix, an inflectional root, and an optional derivational suffix.
+    /// Represents the analyzed root, prefixes, and suffixes of a word.
     /// </summary>
     public sealed class WordStructure
     {
-        /// <summary>Gets or sets the verbal prefix (e.g., "pře" in "přepsat").</summary>
+        /// <summary>
+        /// Gets or sets the analyzed prefix.
+        /// </summary>
         public string? Prefix { get; set; }
 
         /// <summary>
-        /// Gets or sets the inflectional root used to build inflected forms by appending endings.
-        /// Derived from the lemma via <c>ExtractXxxRoot</c> in <c>CzechWordStructureResolver</c>.
+        /// Gets or sets the analyzed root.
         /// </summary>
         public string Root { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the phonologically active derivational suffix that is part of the stem
-        /// and affects epenthesis and softening rules during inflection
-        /// (e.g., <c>"k"</c> in <c>studentka</c> triggers epenthesis in genitive plural).
-        /// <c>null</c> for most words.
+        /// Gets or sets the analyzed derivational suffix.
         /// </summary>
         public string? DerivationSuffix { get; set; }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Returns the reconstructed word from its analyzed prefix, root, and derivational suffix.
+        /// </summary>
+        /// <returns>The reconstructed word structure.</returns>
         public override string ToString() => $"{Prefix}{Root}{DerivationSuffix}";
     }
 }

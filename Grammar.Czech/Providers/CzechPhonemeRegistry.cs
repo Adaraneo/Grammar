@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums.PhonologicalFeatures;
+using Grammar.Core.Enums.PhonologicalFeatures;
 using Grammar.Core.Extensions;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Phonology;
@@ -7,6 +7,9 @@ using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Providers
 {
+    /// <summary>
+    /// Registers Czech phonemes and exposes phoneme lookup operations.
+    /// </summary>
     public sealed class CzechPhonemeRegistry : IPhonemeRegistry
     {
         private static readonly Dictionary<string, Phoneme> _phonemes = BuildRegistry();
@@ -91,23 +94,46 @@ namespace Grammar.Czech.Providers
             ["ě"] = new Phoneme { Symbol = "ě" },
         };
 
+        /// <summary>
+        /// Gets all phonemes registered by the Czech phoneme registry.
+        /// </summary>
         public IReadOnlyCollection<Phoneme> AllPhonemes => _phonemes.Values;
 
+        /// <summary>
+        /// Gets the phoneme matching the supplied symbol.
+        /// </summary>
+        /// <param name="symbol">The phoneme symbol to look up.</param>
+        /// <returns>The matching phoneme, or <see langword="null"/> when the symbol is not registered.</returns>
         public Phoneme? Get(string symbol)
         {
             return _phonemes.GetValueOrDefault(symbol);
         }
 
+        /// <summary>
+        /// Determines whether the supplied character is a vowel.
+        /// </summary>
+        /// <param name="c">The character to classify.</param>
+        /// <returns><see langword="true"/> when the character is a vowel; otherwise, <see langword="false"/>.</returns>
         public bool IsVowel(char c)
         {
             return Get(c.ToString())?.IsVowel() ?? false;
         }
 
+        /// <summary>
+        /// Determines whether the supplied character is a consonant.
+        /// </summary>
+        /// <param name="c">The character to classify.</param>
+        /// <returns><see langword="true"/> when the character is a consonant; otherwise, <see langword="false"/>.</returns>
         public bool IsConsonant(char c)
         {
             return Get(c.ToString())?.IsConsonant() ?? false;
         }
 
+        /// <summary>
+        /// Determines whether the supplied character is a front vowel.
+        /// </summary>
+        /// <param name="c">The character to classify.</param>
+        /// <returns><see langword="true"/> when the character is a front vowel; otherwise, <see langword="false"/>.</returns>
         public bool IsFrontVowel(char c)
         {
             return Get(c.ToString())?.Backness == VowelBackness.Front;

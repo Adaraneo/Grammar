@@ -1,8 +1,11 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Enums.Phonology;
 
 namespace Grammar.Czech.Models
 {
+    /// <summary>
+    /// Represents a Czech softening rule and its trigger context.
+    /// </summary>
     public sealed record SofteningRule(
         string? Pattern = null,
         WordCategory? Category = null,

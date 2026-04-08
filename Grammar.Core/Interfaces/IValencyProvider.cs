@@ -3,13 +3,8 @@ using Grammar.Core.Models.Valency;
 namespace Grammar.Core.Interfaces
 {
     /// <summary>
-    /// Provides access to the lexical and valency dictionary.
+    /// Defines the contract for Valency Provider.
     /// </summary>
-    /// <remarks>
-    /// The default implementation is <c>JsonValencyProvider</c> backed by embedded JSON.
-    /// The architecture allows a future swap to an SQLite or API-backed provider
-    /// without changing any call sites — only the DI registration changes.
-    /// </remarks>
     public interface IValencyProvider<T> where T : class
     {
         /// <summary>

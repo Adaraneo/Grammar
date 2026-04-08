@@ -6,11 +6,17 @@ using Grammar.Czech.Services;
 
 namespace Grammar.Czech.Test
 {
+    /// <summary>
+    /// Verifies verb Conjugation behavior.
+    /// </summary>
     [TestClass]
     public sealed class VerbConjugationTests
     {
         private CzechVerbConjugationService service;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -41,9 +47,13 @@ namespace Grammar.Czech.Test
         #region Present Tense
 
         /// <summary>
-        /// Pokrývá: named pattern (nese, dělá), generické třídy (trida3, trida4)
-        /// a nepravidelné být.
+        /// Gets basic form present tense returns correct form.
         /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="pattern">The inflection pattern used to choose the rule.</param>
+        /// <param name="person">The requested grammatical person.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("nést", "nese", "First", "Singular", "nesu", DisplayName = "nést – 1sg")]
         [DataRow("nést", "nese", "Second", "Singular", "neseš", DisplayName = "nést – 2sg")]
@@ -88,9 +98,13 @@ namespace Grammar.Czech.Test
         #region Past Tense
 
         /// <summary>
-        /// Pokrývá: named pattern (nese, dělá), generická třída (trida4), být.
-        /// Tři rody × singular/plural.
+        /// Gets basic form past tense returns correct form.
         /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="pattern">The inflection pattern used to choose the rule.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("nést", "nese", "Masculine", "Singular", "nesl", DisplayName = "nést – min. sg m")]
         [DataRow("nést", "nese", "Feminine", "Singular", "nesla", DisplayName = "nést – min. sg f")]
@@ -133,11 +147,14 @@ namespace Grammar.Czech.Test
         #region Future Tense
 
         /// <summary>
-        /// Pokrývá:
-        /// - "být" → syntetické budoucí přes futureStem z dat ("bud")
-        /// - perfektivní sloveso (donést) → přítomný tvar je fakticky budoucí
-        /// - imperfektivní sloveso (dělat) → opisné budoucí, vrací infinitiv
+        /// Gets basic form future tense returns correct form.
         /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="pattern">The inflection pattern used to choose the rule.</param>
+        /// <param name="person">The requested grammatical person.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="aspect">The verb aspect expected by the test case.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("být", "být", "First", "Singular", "Imperfective", "budu", DisplayName = "být – bud. 1sg")]
         [DataRow("být", "být", "Second", "Singular", "Imperfective", "budeš", DisplayName = "být – bud. 2sg")]

@@ -8,23 +8,8 @@ using System.Reflection;
 namespace Grammar.Czech.Providers.JsonProviders
 {
     /// <summary>
-    /// Loads lexical entries and valency frames from embedded JSON resources and
-    /// implements <see cref="IValencyProvider"/>.
+    /// Loads Czech lexical entries and valency frames from embedded JSON resources.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Two separate files are loaded:
-    /// <list type="bullet">
-    ///   <item><c>Data/Valency/lexicon.json</c> — morphological metadata for all lemmata.</item>
-    ///   <item><c>Data/Valency/valency.json</c> — valency frames keyed by verb lemma.</item>
-    /// </list>
-    /// </para>
-    /// <para>
-    /// Both files are loaded exactly once via a thread-safe <see cref="Lazy{T}"/>.
-    /// When the project migrates to SQLite, replace this class with a
-    /// <c>SqliteValencyProvider</c> and update only the DI registration.
-    /// </para>
-    /// </remarks>
     public sealed class JsonValencyProvider : IValencyProvider<CzechLexicalEntry>
     {
         private readonly string _lexiconPath = "Data.Valency.lexicon";
@@ -34,8 +19,7 @@ namespace Grammar.Czech.Providers.JsonProviders
         private readonly Lazy<Dictionary<string, List<ValencyFrame>>> _frames;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="JsonValencyProvider"/> and sets up
-        /// lazy loading from the embedded JSON resources.
+        /// Initializes a new instance of the <see cref="JsonValencyProvider"/> type.
         /// </summary>
         public JsonValencyProvider()
         {
@@ -50,19 +34,31 @@ namespace Grammar.Czech.Providers.JsonProviders
                 LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the lexical entry registered for the supplied lemma.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The lexical entry for the lemma, or null when the lemma is not present.</returns>
         public CzechLexicalEntry? GetEntry(string lemma)
             => _lexicon.Value.TryGetValue(lemma.ToLowerInvariant(), out var entry)
                 ? entry
                 : null;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets valency frames registered for the supplied verb lemma.
+        /// </summary>
+        /// <param name="verbLemma">The verb lemma whose valency frames are requested.</param>
+        /// <returns>The valency frames for the lemma, or an empty sequence when no frames are registered.</returns>
         public IEnumerable<ValencyFrame> GetFrames(string verbLemma)
             => _frames.Value.TryGetValue(verbLemma.ToLowerInvariant(), out var frames)
                 ? frames
                 : [];
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Determines whether the lexicon contains an entry for the supplied lemma.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns><see langword="true"/> when the lemma is present in the lexicon; otherwise, <see langword="false"/>.</returns>
         public bool HasEntry(string lemma)
             => _lexicon.Value.ContainsKey(lemma.ToLowerInvariant());
 

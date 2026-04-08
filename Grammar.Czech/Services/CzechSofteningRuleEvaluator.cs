@@ -1,10 +1,13 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Enums.Phonology;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Evaluates Czech Softening Rule Evaluator rules.
+    /// </summary>
     public class CzechSofteningRuleEvaluator : ISofteningRuleEvaluator<CzechWordRequest>
     {
         private readonly List<SofteningRule> rules = new()
@@ -39,6 +42,12 @@ namespace Grammar.Czech.Services
             new("pán", WordCategory.Noun, Number.Singular, Case.Vocative, req => req.Lemma.EndsWith("k") || req.Lemma.EndsWith("ch"), EndingTransformation: "-u", ApplySoftening: false)
         };
 
+        /// <summary>
+        /// Gets the ending transformation associated with the matching softening rule.
+        /// </summary>
+        /// <param name="wordRequest">The word request to analyze or inflect.</param>
+        /// <param name="applied">The consonant alternation that was applied.</param>
+        /// <returns>The ending transformation from the matching rule, or <see langword="null"/> when no transformation applies.</returns>
         public string? GetEndingTransformation(CzechWordRequest wordRequest, out bool applied)
         {
             var rule = GetMatchingRule(wordRequest);
@@ -57,6 +66,12 @@ namespace Grammar.Czech.Services
             );
         }
 
+        /// <summary>
+        /// Determines whether a matching rule requires consonant softening.
+        /// </summary>
+        /// <param name="request">The Czech word request to process.</param>
+        /// <param name="context">The palatalization context used to choose the softening target.</param>
+        /// <returns><see langword="true"/> when softening should be applied; otherwise, <see langword="false"/>.</returns>
         public bool ShouldApplySoftening(CzechWordRequest request, out PalatalizationContext context)
         {
             var rule = GetMatchingRule(request);

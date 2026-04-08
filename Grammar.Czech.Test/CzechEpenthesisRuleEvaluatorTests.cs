@@ -8,18 +8,16 @@ using System.Reflection;
 namespace Grammar.Czech.Test
 {
     /// <summary>
-    /// Tests for <see cref="CzechEpenthesisRuleEvaluator"/>.
-    ///
-    /// Organisation:
-    ///   1. ReturnsTrue  — heterorganní shluky bez asimilace (epentheze musí nastat)
-    ///   2. ReturnsFalse — fonologicky stabilní shluky (epentheze nesmí nastat)
-    ///   3. Guard clauses — nesprávný pád, číslo, slovní druh, prázdné vstupy
+    /// Verifies czech epenthesis rule evaluator behavior.
     /// </summary>
     [TestClass]
     public class CzechEpenthesisRuleEvaluatorTests
     {
         private IEpenthesisRuleEvaluator<CzechWordRequest> _evaluator;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -31,6 +29,14 @@ namespace Grammar.Czech.Test
 
         #region ReturnsTrue — heterorganní shluky bez asimilace
 
+        /// <summary>
+        /// Determines whether should apply epenthesis heterorganic cluster gen pl returns true.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="suffix">The suffix to attach or evaluate.</param>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="pattern">The inflection pattern used to choose the rule.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
         [TestMethod]
         [EpenthesisReturnsTrue]
         public void ShouldApplyEpenthesis_HeterorganicCluster_GenPl_ReturnsTrue(
@@ -52,6 +58,14 @@ namespace Grammar.Czech.Test
 
         #region ReturnsFalse — fonologicky stabilní shluky
 
+        /// <summary>
+        /// Determines whether should apply epenthesis stable cluster gen pl returns false.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="suffix">The suffix to attach or evaluate.</param>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="pattern">The inflection pattern used to choose the rule.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
         [TestMethod]
         [EpenthesisReturnsFalse]
         public void ShouldApplyEpenthesis_StableCluster_GenPl_ReturnsFalse(
@@ -73,6 +87,9 @@ namespace Grammar.Czech.Test
 
         #region Guard clauses
 
+        /// <summary>
+        /// Determines whether should apply epenthesis gen sg returns false.
+        /// </summary>
         [TestMethod]
         public void ShouldApplyEpenthesis_GenSg_ReturnsFalse()
         {
@@ -84,6 +101,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply epenthesis dat pl returns false.
+        /// </summary>
         [TestMethod]
         public void ShouldApplyEpenthesis_DatPl_ReturnsFalse()
         {
@@ -94,6 +114,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply epenthesis adjective category returns false.
+        /// </summary>
         [TestMethod]
         public void ShouldApplyEpenthesis_AdjectiveCategory_ReturnsFalse()
         {
@@ -110,6 +133,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply epenthesis stem ends with vowel returns false.
+        /// </summary>
         [TestMethod]
         public void ShouldApplyEpenthesis_StemEndsWithVowel_ReturnsFalse()
         {
@@ -120,6 +146,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply epenthesis suffix starts with vowel returns false.
+        /// </summary>
         [TestMethod]
         public void ShouldApplyEpenthesis_SuffixStartsWithVowel_ReturnsFalse()
         {
@@ -130,6 +159,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply epenthesis empty stem returns false.
+        /// </summary>
         [TestMethod]
         public void ShouldApplyEpenthesis_EmptyStem_ReturnsFalse()
         {
@@ -138,6 +170,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply epenthesis empty suffix returns false.
+        /// </summary>
         [TestMethod]
         public void ShouldApplyEpenthesis_EmptySuffix_ReturnsFalse()
         {
@@ -171,11 +206,15 @@ namespace Grammar.Czech.Test
         #region Test data attributes
 
         /// <summary>
-        /// Heterorganní shluky bez obligatorní asimilace — epentheze musí nastat.
-        /// Sloupce: stem, suffix, lemma, pattern, gender.
+        /// Provides epenthesis returns true attribute behavior.
         /// </summary>
         private sealed class EpenthesisReturnsTrueAttribute : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo) =>
             [
                 // vzor žena + sufix -ka: shluk C+k (Alveolar/Bilabial → Velar)
@@ -191,12 +230,15 @@ namespace Grammar.Czech.Test
         }
 
         /// <summary>
-        /// Fonologicky stabilní shluky — epentheze nesmí nastat.
-        /// Homorganní (st) nebo obligatorní place asimilace (nk → [ŋk]).
-        /// Sloupce: stem, suffix, lemma, pattern, gender.
+        /// Provides epenthesis returns false attribute behavior.
         /// </summary>
         private sealed class EpenthesisReturnsFalseAttribute : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo) =>
             [
                 // Homorganní: s+t — oba Alveolar

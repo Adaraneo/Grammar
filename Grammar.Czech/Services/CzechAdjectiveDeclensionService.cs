@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
 using Grammar.Czech.Enums.Phonology;
@@ -8,6 +8,9 @@ using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Builds Czech adjective forms, including comparative and superlative stems, from adjective patterns and orthographic rules.
+    /// </summary>
     public class CzechAdjectiveDeclensionService : IInflectionService<CzechWordRequest>
     {
         private readonly IAdjectiveDataProvider dataProvider;
@@ -15,6 +18,9 @@ namespace Grammar.Czech.Services
         private readonly ICzechPhonologyService czechPhonologyService;
         private readonly ICzechOrtographyService ortographyService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechAdjectiveDeclensionService"/> type.
+        /// </summary>
         public CzechAdjectiveDeclensionService(IAdjectiveDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService czechPhonologyService, ICzechOrtographyService ortographyService)
         {
             this.dataProvider = dataProvider;
@@ -23,6 +29,11 @@ namespace Grammar.Czech.Services
             this.ortographyService = ortographyService;
         }
 
+        /// <summary>
+        /// Builds the requested inflected form.
+        /// </summary>
+        /// <param name="word">The Czech word request containing the lemma and requested grammatical categories.</param>
+        /// <returns>The generated adjective form.</returns>
         public WordForm GetForm(CzechWordRequest word)
         {
             if (word.Degree != null && word.Degree != Degree.Positive)
@@ -75,6 +86,11 @@ namespace Grammar.Czech.Services
             return new WordForm(supPrefix + prefix + MorphologyHelper.ApplyFormEnding(stem, endings[caseIndex]));
         }
 
+        /// <summary>
+        /// Chooses the adjective pattern key from the lemma ending.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The adjective pattern key inferred from the lemma.</returns>
         public string GuessAdjectivePattern(string lemma)
         {
             if (lemma.EndsWith("ý") || lemma.EndsWith("á") || lemma.EndsWith("é") || lemma.EndsWith("í"))

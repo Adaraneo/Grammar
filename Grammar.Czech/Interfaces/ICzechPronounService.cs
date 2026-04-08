@@ -1,8 +1,11 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Interfaces
 {
+    /// <summary>
+    /// Defines operations for resolving Czech pronoun forms and metadata.
+    /// </summary>
     public interface ICzechPronounService
     {
         /// <summary>
@@ -25,6 +28,11 @@ namespace Grammar.Czech.Interfaces
         /// </summary>
         PronounType? GetPronounType(string baseForm);
 
+        /// <summary>
+        /// Gets the inflection class used to choose pronoun form lookup.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The inflection class stored for the lemma, or <see langword="null"/> when the lemma is unknown.</returns>
         InflectionClass? GetInflectionClass(string lemma);
     }
 }

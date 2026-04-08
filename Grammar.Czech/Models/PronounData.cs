@@ -1,67 +1,79 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 
 namespace Grammar.Czech.Models
 {
     /// <summary>
-    /// Jedna sada tvarů pro konkrétní pád zájmena.
-    /// Umožňuje rozlišit příklonky a tvary po předložce.
+    /// Represents pronoun case forms.
     /// </summary>
     public sealed record PronounCaseForms
     {
         /// <summary>
-        /// Neutrální / nejběžnější tvar (fallback).
+        /// Gets or sets default.
         /// </summary>
         public string? Default { get; init; }
 
         /// <summary>
-        /// Tvar po předložce (mně, tobě, něm, ně, nim...).
+        /// Gets or sets after Preposition.
         /// </summary>
         public string? AfterPreposition { get; init; }
 
         /// <summary>
-        /// Příklonka (mi, ti, ho, mu, ji, je...).
+        /// Gets or sets clitic.
         /// </summary>
         public string? Clitic { get; init; }
 
         /// <summary>
-        /// Knižní / alternativní tvar (mne, tebe...).
+        /// Gets or sets rare.
         /// </summary>
         public string? Rare { get; init; }
     }
 
+    /// <summary>
+    /// Represents Czech pronoun metadata loaded from JSON data.
+    /// </summary>
     public sealed record PronounData
     {
         /// <summary>
-        /// Sémantický typ zájmena (Personal, Possessive, Demonstrative...).
-        /// Říká CO zájmeno je.
+        /// Gets or sets the pattern type.
         /// </summary>
         public PronounType Type { get; init; }
 
         /// <summary>
-        /// Morfologická třída flexe — říká JAK se zájmeno ohýbá.
-        /// Nezávislé na Type.
+        /// Gets or sets inflection Class.
         /// </summary>
         public InflectionClass InflectionClass { get; init; }
 
+        /// <summary>
+        /// Gets or sets the requested grammatical person.
+        /// </summary>
         public Person? Person { get; init; }
+        /// <summary>
+        /// Gets or sets the requested grammatical number.
+        /// </summary>
         public Number? Number { get; init; }
+        /// <summary>
+        /// Gets or sets the requested grammatical gender.
+        /// </summary>
         public Gender? Gender { get; init; }
 
         /// <summary>
-        /// Pro InflectionClass.Substantive — suppletivní lookup tabulka.
+        /// Gets or sets fixed Forms.
         /// </summary>
         public Dictionary<Case, PronounCaseForms>? FixedForms { get; init; }
 
         /// <summary>
-        /// Pro InflectionClass.PronounHard / PronounSoft — klíč do paradigms.json.
+        /// Gets or sets paradigm Id.
         /// </summary>
         public string? ParadigmId { get; init; }
 
         /// <summary>
-        /// Pro InflectionClass.AdjectiveHard / AdjectiveSoft — klíč do adjectives/patterns.json.
+        /// Gets or sets declension Pattern.
         /// </summary>
         public string? DeclensionPattern { get; init; }
 
+        /// <summary>
+        /// Gets or sets the analyzed prefix.
+        /// </summary>
         public string? Prefix { get; init; }
     }
 }

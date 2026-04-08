@@ -9,17 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Grammar.Czech
 {
     /// <summary>
-    /// Provides the <see cref="AddCzechGrammarServices"/> extension method for registering
-    /// all Czech grammar services into an <see cref="IServiceCollection"/>.
+    /// Registers Czech grammar services in the dependency injection container.
     /// </summary>
     public static class CzechGrammarServiceFactory
     {
         /// <summary>
-        /// Registers all data providers and services for Czech grammar.
-        /// Call this once from <c>Program.cs</c> or your DI bootstrap.
+        /// Registers all Czech grammar providers, services, and composers in dependency injection.
         /// </summary>
-        /// <param name="services">The service collection to register into.</param>
-        /// <returns>The same <paramref name="services"/> for chaining.</returns>
+        /// <param name="services">The service collection to register Czech grammar services into.</param>
+        /// <returns>The same service collection with Czech grammar services registered.</returns>
         public static IServiceCollection AddCzechGrammarServices(this IServiceCollection services)
         {
             // ── Morphological data providers ────────────────────────────────────────

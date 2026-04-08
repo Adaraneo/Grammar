@@ -1,21 +1,30 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 using Grammar.Czech.Services;
 
 namespace Grammar.Czech.Test
 {
+    /// <summary>
+    /// Verifies czech softening rule evaluator behavior.
+    /// </summary>
     [TestClass]
     public class CzechSofteningRuleEvaluatorTests
     {
         private ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
             softeningRuleEvaluator = new CzechSofteningRuleEvaluator();
         }
 
+        /// <summary>
+        /// Gets ending transformation should return e for holka dative singular.
+        /// </summary>
         [TestMethod]
         public void GetEndingTransformation_ShouldReturnE_ForHolkaDativeSingular()
         {
@@ -31,6 +40,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("-e", result);
         }
 
+        /// <summary>
+        /// Gets ending transformation should return e for holka locative singular.
+        /// </summary>
         [TestMethod]
         public void GetEndingTransformation_ShouldReturnE_ForHolkaLocativeSingular()
         {
@@ -46,6 +58,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("-e", result);
         }
 
+        /// <summary>
+        /// Determines whether should apply softening should return false for holka genitive plural.
+        /// </summary>
         [TestMethod]
         public void ShouldApplySoftening_ShouldReturnFalse_ForHolkaGenitivePlural()
         {
@@ -61,6 +76,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Gets ending transformation should return null for holka nominative singular.
+        /// </summary>
         [TestMethod]
         public void GetEndingTransformation_ShouldReturnNull_ForHolkaNominativeSingular()
         {
@@ -76,6 +94,9 @@ namespace Grammar.Czech.Test
             Assert.IsNull(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply softening should return false for holka nominative singular.
+        /// </summary>
         [TestMethod]
         public void ShouldApplySoftening_ShouldReturnFalse_ForHolkaNominativeSingular()
         {
@@ -91,6 +112,9 @@ namespace Grammar.Czech.Test
             Assert.IsFalse(result);
         }
 
+        /// <summary>
+        /// Determines whether should apply softening should return true for holka dative singular.
+        /// </summary>
         [TestMethod]
         public void ShouldApplySoftening_ShouldReturnTrue_ForHolkaDativeSingular()
         {

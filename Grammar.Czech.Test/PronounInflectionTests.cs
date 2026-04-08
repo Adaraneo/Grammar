@@ -6,11 +6,17 @@ using Grammar.Czech.Services;
 
 namespace Grammar.Czech.Test
 {
+    /// <summary>
+    /// Verifies pronoun inflection behavior.
+    /// </summary>
     [TestClass]
     public sealed class PronounInflectionTests
     {
         private CzechPronounService service;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -164,6 +170,11 @@ namespace Grammar.Czech.Test
 
         #region Zvratné zájmeno — se
 
+        /// <summary>
+        /// Verifies that GetForm reflexive se default forms.
+        /// </summary>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("Genitive", "sebe", DisplayName = "se – gen")]
         [DataRow("Dative", "sobě", DisplayName = "se – dat")]
@@ -181,6 +192,11 @@ namespace Grammar.Czech.Test
 
         #region Nesklonná zájmena — jeho, jejich
 
+        /// <summary>
+        /// Verifies that GetForm indeclinable always returns lemma.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
         [DataTestMethod]
         [DataRow("jeho", "Nominative", DisplayName = "jeho – nom")]
         [DataRow("jeho", "Genitive", DisplayName = "jeho – gen")]
@@ -273,6 +289,14 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm tenhle demonstrative.
+        /// </summary>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("Nominative", "Masculine", "Singular", true, "tenhle", DisplayName = "tenhle – sg m.ž. nom")]
         [DataRow("Genitive", "Masculine", "Singular", true, "tohohle", DisplayName = "tenhle – sg m.ž. gen")]
@@ -293,6 +317,14 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm onen demonstrative.
+        /// </summary>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("Nominative", "Masculine", "Singular", true, "onen", DisplayName = "onen – sg m.ž. nom")]
         [DataRow("Genitive", "Masculine", "Singular", true, "onoho", DisplayName = "onen – sg m.ž. gen")]
@@ -313,6 +345,14 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm sam demonstrative.
+        /// </summary>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("Nominative", "Masculine", "Singular", true, "sám", DisplayName = "sám – sg m.ž. nom")]
         [DataRow("Genitive", "Masculine", "Singular", true, "samého", DisplayName = "sám – sg m.ž. gen")]
@@ -376,6 +416,14 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm tvuj possessive.
+        /// </summary>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("Nominative", "Masculine", "Singular", true, "tvůj", DisplayName = "tvůj – sg m.ž. nom")]
         [DataRow("Genitive", "Masculine", "Singular", true, "tvého", DisplayName = "tvůj – sg m.ž. gen")]
@@ -396,6 +444,14 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm svuj possessive.
+        /// </summary>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("Nominative", "Masculine", "Singular", true, "svůj", DisplayName = "svůj – sg m.ž. nom")]
         [DataRow("Genitive", "Masculine", "Singular", true, "svého", DisplayName = "svůj – sg m.ž. gen")]
@@ -456,6 +512,14 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm vas possessive.
+        /// </summary>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("Nominative", "Masculine", "Singular", true, "váš", DisplayName = "váš – sg m.ž. nom")]
         [DataRow("Genitive", "Masculine", "Singular", true, "vašeho", DisplayName = "váš – sg m.ž. gen")]
@@ -512,6 +576,15 @@ namespace Grammar.Czech.Test
 
         #region Tázací zájmena — kdo, co
 
+        /// <summary>
+        /// Verifies that GetForm interrogative pronoun.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="caseName">The grammatical case name supplied by the test data.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="number">The grammatical number supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [DataTestMethod]
         [DataRow("kdo", "Nominative", "Masculine", "Singular", true, "kdo", DisplayName = "kdo – nom")]
         [DataRow("kdo", "Genitive", "Masculine", "Singular", true, "koho", DisplayName = "kdo – gen")]

@@ -3,20 +3,17 @@ using Grammar.Core.Enums;
 namespace Grammar.Core.Models.Valency
 {
     /// <summary>
-    /// Describes how a valency slot is realised syntactically:
-    /// a grammatical case, optionally combined with a preposition.
+    /// Represents syntactic realization.
     /// </summary>
-    /// <example>
-    /// Bare dative: <c>{ Case = Dative, Preposition = null }</c><br/>
-    /// Directional: <c>{ Case = Accusative, Preposition = "na" }</c>
-    /// </example>
     public sealed record SyntacticRealization
     {
-        /// <summary>Gets the grammatical case in which this argument is realised.</summary>
+        /// <summary>
+        /// Gets or sets the requested grammatical case.
+        /// </summary>
         public Case Case { get; init; }
 
         /// <summary>
-        /// Gets the preposition that governs the case, or <c>null</c> for a bare (prepositional-less) case.
+        /// Gets or sets preposition.
         /// </summary>
         public string? Preposition { get; init; }
     }

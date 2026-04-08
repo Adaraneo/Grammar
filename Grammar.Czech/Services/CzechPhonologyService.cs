@@ -1,15 +1,21 @@
-﻿using Grammar.Core.Interfaces;
+using Grammar.Core.Interfaces;
 using Grammar.Czech.Enums.Phonology;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Provides czech phonology operations.
+    /// </summary>
     public class CzechPhonologyService : ICzechPhonologyService
     {
         private readonly IPhonemeRegistry _registry;
         private readonly IReadOnlyDictionary<string, string> _reverseMap;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechPhonologyService"/> type.
+        /// </summary>
         public CzechPhonologyService(IPhonemeRegistry registry)
         {
             _registry = registry ?? throw new ArgumentNullException(nameof(registry));
@@ -18,8 +24,18 @@ namespace Grammar.Czech.Services
                 .ToDictionary(p => p.PalatalizeTo!, p => p.Symbol);
         }
 
+        /// <summary>
+        /// Applies Czech consonant softening for the supplied palatalization context.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <returns>The stem after context-sensitive consonant softening has been applied.</returns>
         public string ApplySoftening(string stem) => ApplySoftening(stem, PalatalizationContext.First);
 
+        /// <summary>
+        /// Reverts the final softened consonant to its unsoftened form when a reverse mapping exists.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <returns>The stem after softening has been reverted when possible.</returns>
         public string RevertSoftening(string stem)
         {
             if (stem is null)
@@ -31,6 +47,12 @@ namespace Grammar.Czech.Services
                 : stem;
         }
 
+        /// <summary>
+        /// Inserts a mobile vowel into the supplied stem when the morphology rule requires it.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="position">The zero-based position where the mobile vowel should be inserted.</param>
+        /// <returns>The stem with the mobile vowel inserted at the requested position.</returns>
         public string InsertMobileVowel(string stem, int position)
         {
             if (position < 0 || position > stem.Length)
@@ -41,6 +63,12 @@ namespace Grammar.Czech.Services
             return stem.Insert(position, "e");
         }
 
+        /// <summary>
+        /// Removes a mobile vowel from the supplied stem when the morphology rule requires it.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="hasMobileVowel">True when the stem is known to contain a mobile vowel; otherwise, false.</param>
+        /// <returns>The stem with its mobile vowel removed when applicable.</returns>
         public string RemoveMobileVowel(string stem, bool hasMobileVowel)
         {
             if (!hasMobileVowel)
@@ -51,6 +79,13 @@ namespace Grammar.Czech.Services
             return stem[..^2] + stem[^1];
         }
 
+        /// <summary>
+        /// Adds or removes epenthetic material between a stem and suffix.
+        /// </summary>
+        /// <param name="needsEpenthesis">True when epenthesis should be applied; otherwise, false.</param>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="derivationSuffix">The derivational suffix that may require epenthesis.</param>
+        /// <returns>The stem combined with the suffix, including epenthesis when requested.</returns>
         public string ApplyEpenthesis(bool needsEpenthesis, string stem, string derivationSuffix)
         {
             if (needsEpenthesis)
@@ -61,6 +96,11 @@ namespace Grammar.Czech.Services
             return stem + derivationSuffix;
         }
 
+        /// <summary>
+        /// Shortens the final long vowel in the supplied stem when possible.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <returns>The stem with the final long vowel shortened when a short counterpart exists.</returns>
         public string ShortenVowel(string stem)
         {
             for (int i = stem.Length - 1; i >= 0; i--)
@@ -75,6 +115,11 @@ namespace Grammar.Czech.Services
             return stem;
         }
 
+        /// <summary>
+        /// Lengthens the final short vowel in the supplied stem when possible.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <returns>The stem with the final short vowel lengthened when a long counterpart exists.</returns>
         public string LengthenVowel(string stem)
         {
             for (int i = stem.Length - 1; i >= 0; i--)
@@ -89,6 +134,12 @@ namespace Grammar.Czech.Services
             return stem;
         }
 
+        /// <summary>
+        /// Applies Czech consonant softening for the supplied palatalization context.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="context">The palatalization context that selects the softening target.</param>
+        /// <returns>The stem after context-sensitive consonant softening has been applied.</returns>
         public string ApplySoftening(string stem, PalatalizationContext context)
         {
             if (stem is null)

@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Exceptions;
 using Grammar.Core.Interfaces;
 using Grammar.Core.Models.Word;
@@ -8,6 +8,9 @@ using Grammar.Czech.Models;
 
 namespace Grammar.Czech.Services
 {
+    /// <summary>
+    /// Builds Czech noun forms from declension patterns, irregular overrides, stem alternations, softening, epenthesis, and jotation rules.
+    /// </summary>
     public class CzechNounDeclensionService : IInflectionService<CzechWordRequest>
     {
         private readonly INounDataProvider _dataProvider;
@@ -19,6 +22,9 @@ namespace Grammar.Czech.Services
         private readonly ICzechOrtographyService _ortographyService;
         private readonly IValencyProvider<CzechLexicalEntry> _valencyProvider;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechNounDeclensionService"/> type.
+        /// </summary>
         public CzechNounDeclensionService(INounDataProvider dataProvider, IWordStructureResolver<CzechWordRequest> wordStructureResolver, ICzechPhonologyService phonologyService, ISofteningRuleEvaluator<CzechWordRequest> softeningRuleEvaluator, IEpenthesisRuleEvaluator<CzechWordRequest> epenthesisRuleEvaluator, IJotationRuleEvaluator<CzechWordRequest> jotationRuleEvaluator, ICzechOrtographyService ortographyService, IValencyProvider<CzechLexicalEntry> valencyProvider)
         {
             this._dataProvider = dataProvider;
@@ -31,6 +37,11 @@ namespace Grammar.Czech.Services
             this._valencyProvider = valencyProvider;
         }
 
+        /// <summary>
+        /// Builds the requested inflected form.
+        /// </summary>
+        /// <param name="word">The Czech word request containing the lemma and requested grammatical categories.</param>
+        /// <returns>The generated noun form.</returns>
         public WordForm GetForm(CzechWordRequest word)
         {
             if (_dataProvider.GetPropers().TryGetValue(word.Lemma, out var propers) && word.IsIndeclinable.HasValue && word.IsIndeclinable.Value)
@@ -127,17 +138,10 @@ namespace Grammar.Czech.Services
         }
 
         /// <summary>
-        /// Resolves the gender, inflectional pattern, grammatical number, and animacy
-        /// for the given lemma by looking it up in the lexical dictionary.
+        /// Resolves noun gender, declension pattern, animacy, and mobile vowel metadata from the lexicon.
         /// </summary>
-        /// <param name="lemma">The dictionary form of the noun.</param>
-        /// <returns>
-        /// Tuple (Gender, pattern, Number, isAnimate, hasMobileVowel) z lexicon.json.
-        /// </returns>
-        /// <exception cref="LemmaNotFoundException">
-        /// Thrown when the lemma is not registered in the lexicon.
-        /// Add a <c>LexicalEntry</c> for it in <c>lexicon.json</c>.
-        /// </exception>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The gender, pattern, default number, animacy, and mobile-vowel metadata for the lemma.</returns>
         public (Gender gender, string pattern, Number number, bool isAnimate, bool? hasMobileVowel) ResolveGenderAndPattern(string lemma)
         {
             var entry = _valencyProvider.GetEntry(lemma)

@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Models;
 using Grammar.Czech.Providers;
 using Grammar.Czech.Providers.JsonProviders;
@@ -7,11 +7,17 @@ using System.Reflection;
 
 namespace Grammar.Czech.Test
 {
+    /// <summary>
+    /// Verifies adjective declension behavior.
+    /// </summary>
     [TestClass]
     public class AdjectiveDeclensionTests
     {
         private CzechAdjectiveDeclensionService adjectiveDeclensionService;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -28,6 +34,11 @@ namespace Grammar.Czech.Test
             adjectiveDeclensionService = new CzechAdjectiveDeclensionService(adjectiveDataProvider, wordStructureResolver, phonologyService, ortographyService);
         }
 
+        /// <summary>
+        /// Verifies that GetForm comparative nom sg returns.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [TestMethod]
         [AdjectiveComparativeTest]
         public void GetForm_ComparativeNomSg_Returns(string lemma, string expected)
@@ -48,6 +59,11 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm supletive comparative nom sg returns.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [TestMethod]
         [AdjectiveSupletiveComparativeTest]
         public void GetForm_SupletiveComparativeNomSg_Returns(string lemma, string expected)
@@ -68,6 +84,11 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm superlative nom sg returns.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [TestMethod]
         [AdjectiveSuperlativeTest]
         public void GetForm_SuperlativeNomSg_Returns(string lemma, string expected)
@@ -88,8 +109,16 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Provides adjective suppletive comparative test cases.
+        /// </summary>
         private class AdjectiveSupletiveComparativeTestAttribute : AdjectiveDegreesTestAttribute
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 var list = new List<object[]>
@@ -106,8 +135,16 @@ namespace Grammar.Czech.Test
             }
         }
 
+        /// <summary>
+        /// Provides adjective comparative test cases.
+        /// </summary>
         private class AdjectiveComparativeTestAttribute : AdjectiveDegreesTestAttribute
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 var list = new List<object[]>()
@@ -128,13 +165,27 @@ namespace Grammar.Czech.Test
             }
         }
 
+        /// <summary>
+        /// Provides adjective degrees test attribute behavior.
+        /// </summary>
         private class AdjectiveDegreesTestAttribute : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// Formats a readable display name for the test case.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <param name="data">The test case data used to build the display name.</param>
+            /// <returns>The display name used by the test runner.</returns>
             public override string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
             {
                 if (data is not null && data.Length >= 2)
@@ -164,8 +215,16 @@ namespace Grammar.Czech.Test
             }
         }
 
+        /// <summary>
+        /// Provides adjective superlative test cases.
+        /// </summary>
         private class AdjectiveSuperlativeTestAttribute : AdjectiveDegreesTestAttribute
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 var list = new[]

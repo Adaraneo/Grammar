@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Models;
 using Grammar.Czech.Providers;
 using Grammar.Czech.Services;
@@ -6,11 +6,17 @@ using System.Reflection;
 
 namespace Grammar.Czech.Test
 {
+    /// <summary>
+    /// Verifies czech phonology service behavior.
+    /// </summary>
     [TestClass]
     public class CzechPhonologyServiceTests
     {
         private CzechPhonologyService service;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -20,6 +26,9 @@ namespace Grammar.Czech.Test
 
         #region Softening
 
+        /// <summary>
+        /// Verifies that apply softening should softened.
+        /// </summary>
         [TestMethod]
         public void ApplySoftening_ShouldSoftened()
         {
@@ -31,6 +40,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("ň", service.ApplySoftening("n"));
         }
 
+        /// <summary>
+        /// Verifies that revert softening should revert.
+        /// </summary>
         [TestMethod]
         public void RevertSoftening_ShouldRevert()
         {
@@ -42,6 +54,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("n", service.RevertSoftening("ň"));
         }
 
+        /// <summary>
+        /// Verifies that apply softening should not change.
+        /// </summary>
         [TestMethod]
         public void ApplySoftening_ShouldNotChange()
         {
@@ -50,6 +65,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("e", service.ApplySoftening("e"));
         }
 
+        /// <summary>
+        /// Verifies that revert softening should not change.
+        /// </summary>
         [TestMethod]
         public void RevertSoftening_ShouldNotChange()
         {
@@ -58,18 +76,27 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("e", service.RevertSoftening("e"));
         }
 
+        /// <summary>
+        /// Verifies that apply softening should handle short words.
+        /// </summary>
         [TestMethod]
         public void ApplySoftening_ShouldHandleShortWords()
         {
             Assert.AreEqual("hoš", service.ApplySoftening("hoch"));
         }
 
+        /// <summary>
+        /// Verifies that revert softening should handle short words.
+        /// </summary>
         [TestMethod]
         public void RevertSoftening_ShouldHandleShortWords()
         {
             Assert.AreEqual("hoch", service.RevertSoftening("hoš"));
         }
 
+        /// <summary>
+        /// Verifies that apply softening should handle words with softened ending.
+        /// </summary>
         [TestMethod]
         public void ApplySoftening_ShouldHandleWordsWithSoftenedEnding()
         {
@@ -81,36 +108,54 @@ namespace Grammar.Czech.Test
 
         #region MobileVowel
 
+        /// <summary>
+        /// Verifies that remove mobile vowel pes returns ps.
+        /// </summary>
         [TestMethod]
         public void RemoveMobileVowel_Pes_ReturnsPs()
         {
             Assert.AreEqual("ps", service.RemoveMobileVowel("pes", true));
         }
 
+        /// <summary>
+        /// Verifies that remove mobile vowel otec returns otc.
+        /// </summary>
         [TestMethod]
         public void RemoveMobileVowel_Otec_ReturnsOtc()
         {
             Assert.AreEqual("otc", service.RemoveMobileVowel("otec", true));
         }
 
+        /// <summary>
+        /// Verifies that remove mobile vowel den returns dn.
+        /// </summary>
         [TestMethod]
         public void RemoveMobileVowel_Den_ReturnsDn()
         {
             Assert.AreEqual("dn", service.RemoveMobileVowel("den", true));
         }
 
+        /// <summary>
+        /// Verifies that remove mobile vowel no mobile vowel returns original.
+        /// </summary>
         [TestMethod]
         public void RemoveMobileVowel_NoMobileVowel_ReturnsOriginal()
         {
             Assert.AreEqual("hrad", service.RemoveMobileVowel("hrad", false));
         }
 
+        /// <summary>
+        /// Verifies that insert mobile vowel ps returns pes.
+        /// </summary>
         [TestMethod]
         public void InsertMobileVowel_Ps_ReturnsPes()
         {
             Assert.AreEqual("pes", service.InsertMobileVowel("ps", 1));
         }
 
+        /// <summary>
+        /// Verifies that insert mobile vowel dn returns den.
+        /// </summary>
         [TestMethod]
         public void InsertMobileVowel_Dn_ReturnsDen()
         {
@@ -121,6 +166,9 @@ namespace Grammar.Czech.Test
 
         #region Epenthesis Tests
 
+        /// <summary>
+        /// Verifies that apply epenthesis studentka gen pl returns studentek.
+        /// </summary>
         [TestMethod]
         public void ApplyEpenthesis_StudentkaGenPl_ReturnsStudentek()
         {
@@ -138,6 +186,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("studentek", result);
         }
 
+        /// <summary>
+        /// Verifies that apply epenthesis matka gen pl returns matek.
+        /// </summary>
         [TestMethod]
         public void ApplyEpenthesis_MatkaGenPl_ReturnsMatek()
         {
@@ -155,6 +206,9 @@ namespace Grammar.Czech.Test
             Assert.AreEqual("matek", result);
         }
 
+        /// <summary>
+        /// Verifies that apply epenthesis okno gen pl returns oken.
+        /// </summary>
         [TestMethod]
         public void ApplyEpenthesis_OknoGenPl_ReturnsOken()
         {
@@ -177,6 +231,11 @@ namespace Grammar.Czech.Test
 
         #region Shorten and Lengthen Vowels
 
+        /// <summary>
+        /// Verifies that shorten vowels.
+        /// </summary>
+        /// <param name="input">The input text to transform.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [TestMethod]
         [ShortenVowels]
         public void ShortenVowels(string input, string expected)
@@ -186,6 +245,11 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result);
         }
 
+        /// <summary>
+        /// Verifies that lengthen vowels.
+        /// </summary>
+        /// <param name="input">The input text to transform.</param>
+        /// <param name="expected">The expected surface form asserted by the test.</param>
         [TestMethod]
         [LengthenVowel]
         public void LengthenVowels(string input, string expected)
@@ -197,8 +261,16 @@ namespace Grammar.Czech.Test
 
         #endregion Shorten and Lengthen Vowels
 
+        /// <summary>
+        /// Provides shorten vowels attribute behavior.
+        /// </summary>
         private class ShortenVowelsAttribute : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 var data = new List<string[]>()
@@ -212,8 +284,16 @@ namespace Grammar.Czech.Test
             }
         }
 
+        /// <summary>
+        /// Provides lengthen vowel attribute behavior.
+        /// </summary>
         private class LengthenVowelAttribute : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 var data = new List<string[]>()

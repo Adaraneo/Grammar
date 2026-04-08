@@ -3,22 +3,22 @@ using Grammar.Core.Enums;
 namespace Grammar.Core.Models.Valency
 {
     /// <summary>
-    /// Represents a single argument position within a <see cref="ValencyFrame"/>.
+    /// Represents valency slot.
     /// </summary>
-    /// <remarks>
-    /// Each slot binds a thematic (semantic) role to its syntactic realisation.
-    /// Optional slots represent adjuncts or arguments that may be omitted.
-    /// </remarks>
     public sealed record ValencySlot
     {
-        /// <summary>Gets the thematic role this slot expresses (e.g., Actor, Patient).</summary>
+        /// <summary>
+        /// Gets or sets the semantic role represented by the slot.
+        /// </summary>
         public SemanticRole Role { get; init; }
 
-        /// <summary>Gets the syntactic realisation: the case and optional preposition.</summary>
+        /// <summary>
+        /// Gets the syntactic realization required by the valency slot.
+        /// </summary>
         public SyntacticRealization Realization { get; init; } = new();
 
         /// <summary>
-        /// Gets a value indicating whether this slot must be filled for the sentence to be grammatical.
+        /// Gets a value indicating whether the valency slot must be expressed.
         /// </summary>
         public bool IsObligatory { get; init; }
     }

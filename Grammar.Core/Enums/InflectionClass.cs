@@ -1,8 +1,7 @@
-﻿namespace Grammar.Core.Enums
+namespace Grammar.Core.Enums
 {
     /// <summary>
-    /// Morfologická třída flexe — nezávislá na sémantickém typu slova.
-    /// Určuje, jakým mechanismem se slovo ohýbá.
+    /// Specifies broad inflection classes for words.
     /// </summary>
     public enum InflectionClass
     {

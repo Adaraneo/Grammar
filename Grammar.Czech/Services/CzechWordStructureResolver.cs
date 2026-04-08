@@ -8,8 +8,7 @@ using Grammar.Czech.Models;
 namespace Grammar.Czech.Services
 {
     /// <summary>
-    /// Analyses the internal morphological structure of a Czech word request,
-    /// resolving the inflectional root, derivational suffix, and verb stems needed for inflection.
+    /// Analyzes Czech word structure for noun and verb inflection.
     /// </summary>
     public class CzechWordStructureResolver : IWordStructureResolver<CzechWordRequest>, IVerbStructureResolver<CzechWordRequest>
     {
@@ -23,7 +22,7 @@ namespace Grammar.Czech.Services
         private readonly Dictionary<WordCategory, Func<CzechWordRequest, WordStructure>> analyzers;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="CzechWordStructureResolver"/>.
+        /// Initializes a new instance of the <see cref="CzechWordStructureResolver"/> type.
         /// </summary>
         public CzechWordStructureResolver(
             IVerbDataProvider verbDataProvider,
@@ -50,7 +49,11 @@ namespace Grammar.Czech.Services
 
         #region Structure Analysis
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Analyzes the morphological structure of the requested word.
+        /// </summary>
+        /// <param name="wordRequest">The word request to analyze or inflect.</param>
+        /// <returns>The analyzed root, prefix, and suffix structure.</returns>
         public WordStructure AnalyzeStructure(CzechWordRequest wordRequest)
         {
             ValidateRequest(wordRequest);
@@ -165,7 +168,11 @@ namespace Grammar.Czech.Services
 
         private string? ExtractPrefix(string lemma) => prefixService.FindVerbalPrefix(lemma);
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Analyzes stems and affixes needed to conjugate the requested verb.
+        /// </summary>
+        /// <param name="request">The Czech word request to process.</param>
+        /// <returns>The analyzed verb stems and prefix data.</returns>
         public VerbStructure AnalyzeVerbStructure(CzechWordRequest request)
         {
             var prefix = ExtractPrefix(request.Lemma);

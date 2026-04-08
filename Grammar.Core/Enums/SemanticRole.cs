@@ -1,8 +1,7 @@
 namespace Grammar.Core.Enums
 {
     /// <summary>
-    /// Identifies the thematic (semantic) role of an argument within a valency frame.
-    /// These roles are language-universal and belong to <c>Grammar.Core</c>.
+    /// Specifies semantic roles used in valency frames.
     /// </summary>
     public enum SemanticRole
     {

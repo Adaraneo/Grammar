@@ -1,18 +1,23 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 
 namespace Grammar.Czech.Models
 {
     namespace Grammar.Czech.Models
     {
         /// <summary>
-        /// Slot-based paradigma pro zájmenné vzory (ten, náš, váš, kdo, co).
-        /// Klíče: Number → GenderSlot → Case → tvar.
+        /// Represents pronoun paradigm.
         /// </summary>
         public sealed record PronounParadigm
         {
+            /// <summary>
+            /// Gets the forms grouped by number, gender slot, and case.
+            /// </summary>
             public Dictionary<Number, Dictionary<GenderSlot, Dictionary<Case, string>>> Slots { get; init; } = new();
         }
 
+        /// <summary>
+        /// Specifies gender Slot values.
+        /// </summary>
         public enum GenderSlot
         {
             MasculineAnimate,

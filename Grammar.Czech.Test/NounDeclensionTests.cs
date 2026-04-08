@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Czech.Models;
 using Grammar.Czech.Providers;
 using Grammar.Czech.Providers.JsonProviders;
@@ -7,11 +7,17 @@ using System.Reflection;
 
 namespace Grammar.Czech.Test
 {
+    /// <summary>
+    /// Verifies noun declension behavior.
+    /// </summary>
     [TestClass]
     public sealed class NounDeclensionTests
     {
         private CzechNounDeclensionService nounDeclensionService;
 
+        /// <summary>
+        /// Creates the test subject and its dependencies.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
@@ -83,6 +89,15 @@ namespace Grammar.Czech.Test
             Assert.AreEqual(expected, result.Form);
         }
 
+        /// <summary>
+        /// Verifies that GetForm sg nom returns expected.
+        /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <param name="pattern">The inflection pattern used to choose the rule.</param>
+        /// <param name="gender">The grammatical gender supplied by the test data.</param>
+        /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
+        /// <param name="hasMobileVowel">True when the stem is known to contain a mobile vowel; otherwise, false.</param>
+        /// <param name="vals">The test case values supplied by the data attribute.</param>
         [TestMethod]
         [PatternsNounDeclensionData]
         public void GetForm_SgNom_ReturnsExpected(string lemma, string pattern, Gender gender, bool? isAnimate, bool? hasMobileVowel, string[] vals)
@@ -109,8 +124,16 @@ namespace Grammar.Czech.Test
             }
         }
 
+        /// <summary>
+        /// Provides noun test cases for the píseň pattern.
+        /// </summary>
         private class PisenPatternNounDataTestAttribute : NounDeclensionTestAttribue
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 var list = new List<object[]>
@@ -124,8 +147,16 @@ namespace Grammar.Czech.Test
             }
         }
 
+        /// <summary>
+        /// Provides full noun declension pattern test cases.
+        /// </summary>
         private class PatternsNounDeclensionDataAttribute : NounDeclensionTestAttribue
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 var dict = new Dictionary<string, (string, Gender, bool?, bool?, string[])>
@@ -190,6 +221,12 @@ namespace Grammar.Czech.Test
                 return data;
             }
 
+            /// <summary>
+            /// Formats a readable display name for the test case.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <param name="data">The test case data used to build the display name.</param>
+            /// <returns>The display name used by the test runner.</returns>
             public override string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
             {
                 if (data is not null && data.Length >= 2)
@@ -217,13 +254,27 @@ namespace Grammar.Czech.Test
             }
         }
 
+        /// <summary>
+        /// Provides shared display-name behavior for noun declension data attributes.
+        /// </summary>
         private class NounDeclensionTestAttribue : TestAttributeBase
         {
+            /// <summary>
+            /// Provides data rows for a parameterized MSTest method.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <returns>The test data rows for the requested method.</returns>
             public override IEnumerable<object?[]> GetData(MethodInfo methodInfo)
             {
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// Formats a readable display name for the test case.
+            /// </summary>
+            /// <param name="methodInfo">The test method requesting data.</param>
+            /// <param name="data">The test case data used to build the display name.</param>
+            /// <returns>The display name used by the test runner.</returns>
             public override string? GetDisplayName(MethodInfo methodInfo, object?[]? data)
             {
                 if (data is not null && data.Length >= 2)

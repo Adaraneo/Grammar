@@ -10,9 +10,7 @@ using Grammar.Czech.Models;
 namespace Grammar.Czech.Services
 {
     /// <summary>
-    /// Konjugační služba pro česká slovesa.
-    /// Zodpovídá výhradně za výběr správných koncovek a sestavení tvaru —
-    /// analýza kmenů je delegována na <see cref="IVerbStructureResolver{TWord}"/>.
+    /// Builds Czech verb conjugation forms.
     /// </summary>
     public class CzechVerbConjugationService : IVerbInflectionService<CzechWordRequest>
     {
@@ -37,6 +35,9 @@ namespace Grammar.Czech.Services
             { VerbClass.Class5, "trida5" },
         };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CzechVerbConjugationService"/> type.
+        /// </summary>
         public CzechVerbConjugationService(
             IVerbDataProvider dataProvider,
             IVerbStructureResolver<CzechWordRequest> verbStructureResolver,
@@ -56,16 +57,10 @@ namespace Grammar.Czech.Services
         #region Public API
 
         /// <summary>
-        /// Vrátí základní morfologický tvar slovesa (bez auxiliárních sloves,
-        /// reflexiv a kondicionálních partikulí). Složené fráze sestavuje
-        /// <see cref="CzechVerbPhraseBuilderService"/>.
+        /// Builds or dispatches the basic verb form without phrase-level composition.
         /// </summary>
-        /// <exception cref="InvalidOperationException">
-        /// Pasivní imperativ, pasivum od "být", nebo chybějící data v paradigmatu.
-        /// </exception>
-        /// <exception cref="NotSupportedException">
-        /// Neznámý vzor, nepodporovaný rod nebo čas.
-        /// </exception>
+        /// <param name="word">The Czech word request containing the lemma and requested grammatical categories.</param>
+        /// <returns>The generated verb form before phrase-level composition is applied.</returns>
         public WordForm GetBasicForm(CzechWordRequest word)
         {
             if (word.Modus == Modus.Imperative && word.Voice == Voice.Passive)
@@ -111,14 +106,10 @@ namespace Grammar.Czech.Services
         }
 
         /// <summary>
-        /// Returns the verbal aspect of the given lemma from the lexical dictionary.
+        /// Resolves the verb aspect stored for the lemma in the lexicon.
         /// </summary>
-        /// <param name="lemma">The infinitive form of the verb.</param>
-        /// <returns>The <see cref="VerbAspect"/> registered for this lemma.</returns>
-        /// <exception cref="LemmaNotFoundException">
-        /// Thrown when the lemma is not registered in the lexicon, or when its
-        /// <c>aspect</c> field is null. Add or complete the entry in <c>lexicon.json</c>.
-        /// </exception>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The verb aspect stored in the valency lexicon.</returns>
         public VerbAspect ResolveVerbAspect(string lemma)
         {
             var entry = _valencyProvider.GetEntry(lemma)
@@ -131,10 +122,10 @@ namespace Grammar.Czech.Services
         }
 
         /// <summary>
-        /// Odhadne slovesnou třídu z infinitivní přípony.
-        /// Vrátí <c>null</c> pokud je lemma přímo klíčem v datech (žádný odhad není potřeba),
-        /// nebo pokud jde o trida1 (neprediktabilní kmeny — musí být v irregulars.json).
+        /// Infers a Czech verb class from the infinitive ending when the pattern is not explicit.
         /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The inferred verb class, or <see langword="null"/> when the lemma cannot be classified from its ending.</returns>
         public VerbClass? GuessVerbClass(string lemma)
         {
             // Lemma je přímo pattern v datech — žádný odhad není potřeba
@@ -154,8 +145,10 @@ namespace Grammar.Czech.Services
         }
 
         /// <summary>
-        /// Odhadne vzor slovesa. Fallback: vrátí lemma jako klíč.
+        /// Uses the lower-cased lemma as the default verb pattern key.
         /// </summary>
+        /// <param name="lemma">The dictionary form to resolve or analyze.</param>
+        /// <returns>The lower-cased lemma to use as a pattern key.</returns>
         public string GuessVerbPattern(string lemma) => lemma.ToLower();
 
         #endregion Public API

@@ -1,4 +1,4 @@
-﻿using Grammar.Core.Enums;
+using Grammar.Core.Enums;
 using Grammar.Core.Interfaces;
 using Grammar.Czech.Interfaces;
 using Grammar.Czech.Models;
@@ -6,20 +6,14 @@ using Grammar.Czech.Models;
 namespace Grammar.Czech.Services
 {
     /// <summary>
-    /// Evaluates whether vowel epenthesis should be applied when assembling an inflected noun form.
+    /// Evaluates Czech epenthesis rule evaluator rules.
     /// </summary>
-    /// <remarks>
-    /// Epenthesis (insertion of a fleeting -e-) occurs in genitive plural when the stem would
-    /// otherwise end in a phonologically difficult consonant cluster. The difficulty is determined
-    /// by whether the cluster is heterorganic (different places of articulation) and whether
-    /// obligatory place assimilation applies — both facts sourced from <see cref="IPhonemeRegistry"/>.
-    /// </remarks>
     public class CzechEpenthesisRuleEvaluator : IEpenthesisRuleEvaluator<CzechWordRequest>
     {
         private readonly IPhonemeRegistry _registry;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="CzechEpenthesisRuleEvaluator"/>.
+        /// Initializes a new instance of the <see cref="CzechEpenthesisRuleEvaluator"/> type.
         /// </summary>
         public CzechEpenthesisRuleEvaluator(IPhonemeRegistry registry)
         {
@@ -28,7 +22,13 @@ namespace Grammar.Czech.Services
 
         #region Public API
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Determines whether should apply epenthesis.
+        /// </summary>
+        /// <param name="stem">The stem to transform.</param>
+        /// <param name="derivationSuffix">The derivational suffix that may require epenthesis.</param>
+        /// <param name="request">The Czech word request to process.</param>
+        /// <returns>True when the condition is met; otherwise, false.</returns>
         public bool ShouldApplyEpenthesis(string stem, string derivationSuffix, CzechWordRequest request)
         {
             if (string.IsNullOrEmpty(stem) || string.IsNullOrEmpty(derivationSuffix))
