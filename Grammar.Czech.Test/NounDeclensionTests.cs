@@ -96,11 +96,11 @@ namespace Grammar.Czech.Test
         /// <param name="pattern">The inflection pattern used to choose the rule.</param>
         /// <param name="gender">The grammatical gender supplied by the test data.</param>
         /// <param name="isAnimate">The animacy flag supplied by the test data.</param>
-        /// <param name="hasMobileVowel">True when the stem is known to contain a mobile vowel; otherwise, false.</param>
+        /// <param name="hasMobileE">True when the stem is known to contain a mobile vowel; otherwise, false.</param>
         /// <param name="vals">The test case values supplied by the data attribute.</param>
         [TestMethod]
         [PatternsNounDeclensionData]
-        public void GetForm_SgNom_ReturnsExpected(string lemma, string pattern, Gender gender, bool? isAnimate, bool? hasMobileVowel, string[] vals)
+        public void GetForm_SgNom_ReturnsExpected(string lemma, string pattern, Gender gender, bool? isAnimate, bool? hasMobileE, string[] vals)
         {
             var request = new CzechWordRequest
             {
@@ -109,7 +109,7 @@ namespace Grammar.Czech.Test
                 Gender = gender,
                 Pattern = pattern,
                 IsAnimate = isAnimate,
-                HasMobileVowel = hasMobileVowel
+                HasMobileE = hasMobileE
             };
 
             for (int index = 0; index < vals.Length; index++)

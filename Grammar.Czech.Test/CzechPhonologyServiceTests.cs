@@ -114,7 +114,7 @@ namespace Grammar.Czech.Test
         [TestMethod]
         public void RemoveMobileVowel_Pes_ReturnsPs()
         {
-            Assert.AreEqual("ps", service.RemoveMobileVowel("pes", true));
+            Assert.AreEqual("ps", service.RemoveMobileE("pes", true));
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Grammar.Czech.Test
         [TestMethod]
         public void RemoveMobileVowel_Otec_ReturnsOtc()
         {
-            Assert.AreEqual("otc", service.RemoveMobileVowel("otec", true));
+            Assert.AreEqual("otc", service.RemoveMobileE("otec", true));
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Grammar.Czech.Test
         [TestMethod]
         public void RemoveMobileVowel_Den_ReturnsDn()
         {
-            Assert.AreEqual("dn", service.RemoveMobileVowel("den", true));
+            Assert.AreEqual("dn", service.RemoveMobileE("den", true));
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Grammar.Czech.Test
         [TestMethod]
         public void RemoveMobileVowel_NoMobileVowel_ReturnsOriginal()
         {
-            Assert.AreEqual("hrad", service.RemoveMobileVowel("hrad", false));
+            Assert.AreEqual("hrad", service.RemoveMobileE("hrad", false));
         }
 
         /// <summary>

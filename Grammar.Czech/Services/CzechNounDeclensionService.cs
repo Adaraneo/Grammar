@@ -121,11 +121,11 @@ namespace Grammar.Czech.Services
                 stem = _phonologyService.ApplySoftening(stem, palatalizationContext);
             }
 
-            var hasMobileVowelRemoval = word.HasMobileVowel ?? MorphologyHelper.EndsWithVowelConsonantVowelConsonant(word.Lemma);
+            var hasMobileERemoval = word.HasMobileE ?? MorphologyHelper.EndsWithVowelConsonantVowelConsonant(word.Lemma);
 
             var finalEnding = _softeningRuleEvaluator.GetEndingTransformation(word, out var endingTransformationApplied) ?? ending;
 
-            if (_jotationRuleEvaluator.ShouldApplyJotation(word, stem, finalEnding, hasMobileVowelRemoval))
+            if (_jotationRuleEvaluator.ShouldApplyJotation(word, stem, finalEnding, hasMobileERemoval))
             {
                 finalEnding = _ortographyService.ApplyJotationOrthography(finalEnding);
             }

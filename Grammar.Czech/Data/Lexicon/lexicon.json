@@ -5,7 +5,7 @@
     "gender": "Masculine",
     "pattern": "pán",
     "isAnimate": true,
-    "hasMobileVowel": false,
+    "hasMobileE": false,
     "aspect": null,
     "aspectCounterpart": null
   },
@@ -15,7 +15,7 @@
     "gender": "Feminine",
     "pattern": "žena",
     "isAnimate": true,
-    "hasMobileVowel": false,
+    "hasMobileE": false,
     "aspect": null,
     "aspectCounterpart": null
   },
@@ -25,7 +25,7 @@
     "gender": "Masculine",
     "pattern": "pán",
     "isAnimate": true,
-    "hasMobileVowel": true,
+    "hasMobileE": true,
     "aspect": null,
     "aspectCounterpart": null
   },
@@ -35,7 +35,7 @@
     "gender": "Masculine",
     "pattern": "hrad",
     "isAnimate": false,
-    "hasMobileVowel": true
+    "hasMobileE": true
   },
   "otec": {
     "lemma": "otec",
@@ -43,7 +43,7 @@
     "gender": "Masculine",
     "pattern": "muž",
     "isAnimate": true,
-    "hasMobileVowel": true
+    "hasMobileE": true
   },
   "město": {
     "lemma": "město",
@@ -51,7 +51,7 @@
     "gender": "Neuter",
     "pattern": "město",
     "isAnimate": false,
-    "hasMobileVowel": false,
+    "hasMobileE": false,
     "aspect": null,
     "aspectCounterpart": null
   },
@@ -61,7 +61,7 @@
     "gender": null,
     "pattern": "trida5",
     "isAnimate": null,
-    "hasMobileVowel": null,
+    "hasMobileE": null,
     "aspect": "Perfective",
     "aspectCounterpart": "dávat"
   },
@@ -71,7 +71,7 @@
     "gender": null,
     "pattern": "trida5",
     "isAnimate": null,
-    "hasMobileVowel": null,
+    "hasMobileE": null,
     "aspect": "Imperfective",
     "aspectCounterpart": "dát"
   },
@@ -81,7 +81,7 @@
     "gender": null,
     "pattern": "jít",
     "isAnimate": null,
-    "hasMobileVowel": null,
+    "hasMobileE": null,
     "aspect": "Imperfective",
     "aspectCounterpart": "zajít"
   },
@@ -91,7 +91,7 @@
     "gender": null,
     "pattern": "trida4",
     "isAnimate": null,
-    "hasMobileVowel": null,
+    "hasMobileE": null,
     "aspect": "Imperfective",
     "aspectCounterpart": "uvidět"
   },
@@ -101,7 +101,7 @@
     "gender": null,
     "pattern": "mladý",
     "isAnimate": null,
-    "hasMobileVowel": null,
+    "hasMobileE": null,
     "aspect": null,
     "aspectCounterpart": null
   }

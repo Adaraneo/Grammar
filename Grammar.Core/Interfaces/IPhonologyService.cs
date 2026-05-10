@@ -25,7 +25,7 @@ namespace Grammar.Core.Interfaces
         /// <param name="stem">The stem to transform.</param>
         /// <param name="hasMobileVowel">True when the stem is known to contain a mobile vowel; otherwise, false.</param>
         /// <returns>The stem with its mobile vowel removed when applicable.</returns>
-        string RemoveMobileVowel(string stem, bool hasMobileVowel);
+        string RemoveMobileE(string stem, bool hasMobileVowel);
 
         /// <summary>
         /// Inserts a mobile vowel into the supplied stem when the morphology rule requires it.

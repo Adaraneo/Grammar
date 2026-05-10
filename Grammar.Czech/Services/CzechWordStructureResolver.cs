@@ -134,12 +134,12 @@ namespace Grammar.Czech.Services
             }
 
             // Lexikon má přednost před heuristikou
-            bool hasMobileVowel = request.HasMobileVowel
+            bool hasMobileE = request.HasMobileE
                 ?? MorphologyHelper.EndsWithVowelConsonantVowelConsonant(lemma); // fallback
 
-            if (hasMobileVowel && !(request.Case == Case.Nominative && request.Number == Number.Singular))
+            if (hasMobileE && !(request.Case == Case.Nominative && request.Number == Number.Singular))
             {
-                root = phonologyService.RemoveMobileVowel(root, true);
+                root = phonologyService.RemoveMobileE(root, true);
             }
 
             return root;

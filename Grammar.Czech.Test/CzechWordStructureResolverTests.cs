@@ -288,7 +288,7 @@ namespace Grammar.Czech.Test
         #region Helpers
 
         private static CzechWordRequest BuildNounRequest(
-            string lemma, string pattern, Gender gender, Case @case, Number number, bool? hasMobileVowel = null) =>
+            string lemma, string pattern, Gender gender, Case @case, Number number, bool? hasMobileE = null) =>
             new()
             {
                 Lemma = lemma,
@@ -297,7 +297,7 @@ namespace Grammar.Czech.Test
                 Gender = gender,
                 Case = @case,
                 Number = number,
-                HasMobileVowel = hasMobileVowel
+                HasMobileE = hasMobileE
             };
 
         #endregion Helpers

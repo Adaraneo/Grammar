@@ -120,7 +120,7 @@ namespace Grammar.Czech.Models
         /// <summary>
         /// Gets or sets a value indicating whether mobile vowel alternation applies.
         /// </summary>
-        public bool? HasMobileVowel { get; set; }
+        public bool? HasMobileE { get; set; }
         /// <summary>
         /// Gets or sets a value indicating whether genitive plural shortening applies.
         /// </summary>

@@ -69,7 +69,7 @@ namespace Grammar.Czech.Services
         /// <param name="stem">The stem to transform.</param>
         /// <param name="hasMobileVowel">True when the stem is known to contain a mobile vowel; otherwise, false.</param>
         /// <returns>The stem with its mobile vowel removed when applicable.</returns>
-        public string RemoveMobileVowel(string stem, bool hasMobileVowel)
+        public string RemoveMobileE(string stem, bool hasMobileVowel)
         {
             if (!hasMobileVowel)
             {
