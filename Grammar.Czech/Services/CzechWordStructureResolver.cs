@@ -147,9 +147,9 @@ namespace Grammar.Czech.Services
 
         private string? DetectNounDerivationSuffix(string lemma, string pattern)
         {
-            if (pattern == "žena" && lemma.EndsWith("ka") && lemma.Length > 2)
+            if (pattern == "žena" && !MorphologyHelper.EndsWithVowelConsonantVowelConsonant(lemma) && lemma.Length > 2)
             {
-                return "k";
+                return lemma[^2].ToString();
             }
 
             if (pattern == "město" && lemma.EndsWith("o") && lemma.Length > 2)

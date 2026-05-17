@@ -257,43 +257,61 @@ namespace Grammar.Cli
 
             //PrintVerbForms(composer, projevitRequest);
 
-            var appleRequest = new CzechWordRequest
+            //var appleRequest = new CzechWordRequest
+            //{
+            //    Lemma = "jablko",
+            //    WordCategory = WordCategory.Noun,
+            //    Gender = Gender.Neuter,
+            //    Case = Case.Genitive,
+            //    Number = Number.Plural,
+            //    Pattern = "město"
+            //};
+
+            //Console.WriteLine(composer.GetFullForm(appleRequest).Form);
+
+            //var pnaWordRequest = new CzechWordRequest
+            //{
+            //    Lemma = "terminátor",
+            //    WordCategory = WordCategory.Noun,
+            //    Gender = Gender.Masculine,
+            //    Case = Case.Dative,
+            //    Number = Number.Singular,
+            //    Pattern = "pán",
+            //    IsAnimate = true,
+            //    HasMobileE = false
+            //};
+
+            //var chlap = new CzechWordRequest
+            //{
+            //    Lemma = "chlap",
+            //    WordCategory = WordCategory.Noun,
+            //    Gender = Gender.Masculine,
+            //    Number = Number.Singular,
+            //    Case = Case.Dative,
+            //    Pattern = "pán",
+            //    IsAnimate = true
+            //};
+
+            //Console.WriteLine(composer.GetFullForm(pnaWordRequest).Form);
+            //Console.WriteLine(composer.GetFullForm(chlap).Form);
+
+            var kaRequest = new CzechWordRequest
             {
-                Lemma = "jablko",
+                Lemma = "vzpomínka",
                 WordCategory = WordCategory.Noun,
-                Gender = Gender.Neuter,
-                Case = Case.Genitive,
+                Gender = Gender.Feminine,
                 Number = Number.Plural,
-                Pattern = "město"
+                Case = Case.Genitive,
+                Pattern = "žena"
             };
 
-            Console.WriteLine(composer.GetFullForm(appleRequest).Form);
+            Console.WriteLine(composer.GetFullForm(kaRequest).Form);
 
-            var pnaWordRequest = new CzechWordRequest
-            {
-                Lemma = "terminátor",
-                WordCategory = WordCategory.Noun,
-                Gender = Gender.Masculine,
-                Case = Case.Dative,
-                Number = Number.Singular,
-                Pattern = "pán",
-                IsAnimate = true,
-                HasMobileE = false
-            };
+            kaRequest.Lemma = "studentka";
+            Console.WriteLine(composer.GetFullForm(kaRequest).Form);
 
-            var chlap = new CzechWordRequest
-            {
-                Lemma = "chlap",
-                WordCategory = WordCategory.Noun,
-                Gender = Gender.Masculine,
-                Number = Number.Singular,
-                Case = Case.Dative,
-                Pattern = "pán",
-                IsAnimate = true
-            };
-
-            Console.WriteLine(composer.GetFullForm(pnaWordRequest).Form);
-            Console.WriteLine(composer.GetFullForm(chlap).Form);
+            kaRequest.Lemma = "kresba";
+            Console.WriteLine(composer.GetFullForm(kaRequest).Form);
         }
 
         private static void PrintWordInfo(CzechWordRequest request)

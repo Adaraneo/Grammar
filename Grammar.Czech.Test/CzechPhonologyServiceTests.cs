@@ -150,7 +150,7 @@ namespace Grammar.Czech.Test
         [TestMethod]
         public void InsertMobileVowel_Ps_ReturnsPes()
         {
-            Assert.AreEqual("pes", service.InsertMobileVowel("ps", 1));
+            Assert.AreEqual("pes", service.InsertMobileE("ps", 1));
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Grammar.Czech.Test
         [TestMethod]
         public void InsertMobileVowel_Dn_ReturnsDen()
         {
-            Assert.AreEqual("den", service.InsertMobileVowel("dn", 1));
+            Assert.AreEqual("den", service.InsertMobileE("dn", 1));
         }
 
         #endregion MobileVowel
@@ -184,6 +184,26 @@ namespace Grammar.Czech.Test
             var result = service.ApplyEpenthesis(true, "student", "k");
 
             Assert.AreEqual("studentek", result);
+        }
+
+        /// <summary>
+        /// Verifies that apply epenthesis vzpomínka gen pl returns vzpomínek.
+        /// </summary>
+        [TestMethod]
+        public void ApplyEpenthesis_VzpominkaGenPl_ReturnsVzpominek()
+        {
+            var request = new CzechWordRequest
+            {
+                Lemma = "vzpomínka",
+                Pattern = "žena",
+                WordCategory = WordCategory.Noun,
+                Case = Case.Genitive,
+                Number = Number.Plural
+            };
+
+            var result = service.ApplyEpenthesis(true, "vzpomín", "k");
+
+            Assert.AreEqual("vzpomínek", result);
         }
 
         /// <summary>

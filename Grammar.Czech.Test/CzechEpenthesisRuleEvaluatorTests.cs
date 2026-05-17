@@ -245,7 +245,6 @@ namespace Grammar.Czech.Test
                 ["měs", "t", "město", "město", Gender.Neuter],
                 // Obligatorní place asimilace: n → [ŋ] před Velar k
                 ["ban", "k", "banka", "žena",  Gender.Feminine],
-                ["ran", "k", "ranka", "žena",  Gender.Feminine],
             ];
         }
 

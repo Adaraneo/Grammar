@@ -53,7 +53,7 @@ namespace Grammar.Czech.Services
         /// <param name="stem">The stem to transform.</param>
         /// <param name="position">The zero-based position where the mobile vowel should be inserted.</param>
         /// <returns>The stem with the mobile vowel inserted at the requested position.</returns>
-        public string InsertMobileVowel(string stem, int position)
+        public string InsertMobileE(string stem, int position)
         {
             if (position < 0 || position > stem.Length)
             {
