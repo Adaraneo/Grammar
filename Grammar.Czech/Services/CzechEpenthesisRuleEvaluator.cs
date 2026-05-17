@@ -31,6 +31,9 @@ namespace Grammar.Czech.Services
         /// <returns>True when the condition is met; otherwise, false.</returns>
         public bool ShouldApplyEpenthesis(string stem, string derivationSuffix, CzechWordRequest request)
         {
+            if (request.HasEpenthesisInGenitivePlural.HasValue)
+                return request.HasEpenthesisInGenitivePlural.Value;
+
             if (string.IsNullOrEmpty(stem) || string.IsNullOrEmpty(derivationSuffix))
                 return false;
 

@@ -125,5 +125,10 @@ namespace Grammar.Czech.Models
         /// Gets or sets a value indicating whether genitive plural shortening applies.
         /// </summary>
         public bool? HasGenitivePluralShortening { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether genitive plural epenthesis aplies (for foreign words - eg. bank)
+        /// </summary>
+        public bool? HasEpenthesisInGenitivePlural { get; set; }
     }
 }
