@@ -32,7 +32,7 @@ namespace Grammar.Czech.Services
         public bool ShouldApplyEpenthesis(string stem, string derivationSuffix, CzechWordRequest request)
         {
             if (request.HasEpenthesisInGenitivePlural.HasValue)
-                return request.HasEpenthesisInGenitivePlural.Value;
+                return IsNounGenitivePlural(request) && request.HasEpenthesisInGenitivePlural.Value;
 
             if (string.IsNullOrEmpty(stem) || string.IsNullOrEmpty(derivationSuffix))
                 return false;
@@ -75,11 +75,6 @@ namespace Grammar.Czech.Services
             // Homorganní shluk — stejné místo artikulace, snadno vyslovitelný.
             // Příklad: st (Alveolar+Alveolar) → měst, míst — bez epentheze.
             if (p1.Place == p2.Place)
-                return false;
-
-            // Obligatorní assimilace místa — C1 se foneticky přizpůsobí C2,
-            // shluk se stane homorganním. Příklad: nk → [ŋk] — banka → bank.
-            if (p1.AssimilatesPlaceBefore == p2.Place)
                 return false;
 
             // Heterorganní shluk bez assimilace → epentheze.

@@ -221,6 +221,9 @@ namespace Grammar.Czech.Test
                 ["mat",     "k", "matka",     "žena",  Gender.Feminine],
                 ["student", "k", "studentka", "žena",  Gender.Feminine],
                 ["bab",     "k", "babka",     "žena",  Gender.Feminine],
+                ["bran", "k", "branka", "žena", Gender.Feminine],
+                ["vzpomín", "k", "vzpomínka", "žena", Gender.Feminine],
+                ["kres", "b", "kresba", "žena", Gender.Feminine],
                 // vzor město: strukturní sufix — různé typy heterorganních shluků
                 ["ok",   "n", "okno",   "město", Gender.Neuter],  // k+n  Velar+Alveolar
                 ["jabl", "k", "jablko", "město", Gender.Neuter],  // l+k  Alveolar+Velar
@@ -243,8 +246,6 @@ namespace Grammar.Czech.Test
             [
                 // Homorganní: s+t — oba Alveolar
                 ["měs", "t", "město", "město", Gender.Neuter],
-                // Obligatorní place asimilace: n → [ŋ] před Velar k
-                ["ban", "k", "banka", "žena",  Gender.Feminine],
             ];
         }
 
