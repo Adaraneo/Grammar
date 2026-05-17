@@ -312,6 +312,18 @@ namespace Grammar.Cli
 
             kaRequest.Lemma = "kresba";
             Console.WriteLine(composer.GetFullForm(kaRequest).Form);
+
+            kaRequest.Lemma = "lebka";
+            Console.WriteLine(composer.GetFullForm(kaRequest).Form);
+
+            kaRequest.Lemma = "bavlnka";
+            Console.WriteLine(composer.GetFullForm(kaRequest).Form);
+
+            kaRequest.Lemma = "sestra";
+            Console.WriteLine(composer.GetFullForm(kaRequest).Form);
+
+            kaRequest.Lemma = "pravda";
+            Console.WriteLine(composer.GetFullForm(kaRequest).Form);
         }
 
         private static void PrintWordInfo(CzechWordRequest request)

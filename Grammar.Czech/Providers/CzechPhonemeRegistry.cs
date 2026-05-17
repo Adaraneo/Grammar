@@ -16,21 +16,21 @@ namespace Grammar.Czech.Providers
 
         private static Dictionary<string, Phoneme> BuildRegistry() => new()
         {
-            ["p"] = new Phoneme { Symbol = "p", Place = ArticulationPlace.Bilabial, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiceless, VoicedCounterpart = "b" },
-            ["b"] = new Phoneme { Symbol = "b", Place = ArticulationPlace.Bilabial, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiced, VoicelessCounterpart = "p" },
-            ["f"] = new Phoneme { Symbol = "f", Place = ArticulationPlace.Labiodental, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiceless, VoicedCounterpart = "v" },
+            ["p"] = new CzechPhoneme { Symbol = "p", Place = ArticulationPlace.Bilabial, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiceless, VoicedCounterpart = "b", TriggersEpenthesisAsC2 = false },
+            ["b"] = new CzechPhoneme { Symbol = "b", Place = ArticulationPlace.Bilabial, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiced, VoicelessCounterpart = "p", TriggersEpenthesisAsC2 = true },
+            ["f"] = new CzechPhoneme { Symbol = "f", Place = ArticulationPlace.Labiodental, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiceless, TriggersEpenthesisAsC2 = false, VoicedCounterpart = "v" },
             ["v"] = new Phoneme { Symbol = "v", Place = ArticulationPlace.Labiodental, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiced, VoicelessCounterpart = "f" },
             ["m"] = new Phoneme { Symbol = "m", Place = ArticulationPlace.Bilabial, Manner = ArticulationManner.Nasal },
-            ["t"] = new Phoneme { Symbol = "t", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiceless, VoicedCounterpart = "d", PalatalizeTo = "ť" },
-            ["d"] = new Phoneme { Symbol = "d", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiced, VoicelessCounterpart = "t", PalatalizeTo = "ď" },
-            ["s"] = new Phoneme { Symbol = "s", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiceless, VoicedCounterpart = "z" },
-            ["z"] = new Phoneme { Symbol = "z", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiced, VoicelessCounterpart = "s" },
+            ["t"] = new CzechPhoneme { Symbol = "t", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiceless, VoicedCounterpart = "d", PalatalizeTo = "ť", TriggersEpenthesisAsC2 = false },
+            ["d"] = new CzechPhoneme { Symbol = "d", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiced, VoicelessCounterpart = "t", TriggersEpenthesisAsC2 = false, PalatalizeTo = "ď" },
+            ["s"] = new CzechPhoneme { Symbol = "s", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiceless, VoicedCounterpart = "z", TriggersEpenthesisAsC2 = false },
+            ["z"] = new CzechPhoneme { Symbol = "z", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiced, VoicelessCounterpart = "s", TriggersEpenthesisAsC2 = false },
             ["n"] = new Phoneme { Symbol = "n", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Nasal, PalatalizeTo = "ň", AssimilatesPlaceBefore = ArticulationPlace.Velar },
             ["c"] = new Phoneme { Symbol = "c", Place = ArticulationPlace.Alveolar, Manner = ArticulationManner.Affricate, Voicing = Voicing.Voiceless, PalatalizeTo = "č" },
             ["č"] = new Phoneme { Symbol = "č", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Affricate, Voicing = Voicing.Voiceless },
             ["ť"] = new Phoneme { Symbol = "ť", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiceless },
             ["ď"] = new Phoneme { Symbol = "ď", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Plosive, Voicing = Voicing.Voiced },
-            ["š"] = new Phoneme { Symbol = "š", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiceless, VoicedCounterpart = "ž" },
+            ["š"] = new CzechPhoneme { Symbol = "š", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiceless, VoicedCounterpart = "ž", TriggersEpenthesisAsC2 = false },
             ["ž"] = new Phoneme { Symbol = "ž", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Fricative, Voicing = Voicing.Voiced, VoicelessCounterpart = "š" },
             ["ň"] = new Phoneme { Symbol = "ň", Place = ArticulationPlace.Palatal, Manner = ArticulationManner.Nasal },
             ["k"] = new CzechPhoneme
@@ -40,6 +40,7 @@ namespace Grammar.Czech.Providers
                 Manner = ArticulationManner.Plosive,
                 Voicing = Voicing.Voiceless,
                 VoicedCounterpart = "g",
+                TriggersEpenthesisAsC2 = true,
                 PalatalizeTo = "c",
                 PalatalizationTargets = new() {
                 { PalatalizationContext.First, "č"},
@@ -53,6 +54,7 @@ namespace Grammar.Czech.Providers
                 Manner = ArticulationManner.Fricative,
                 Voicing = Voicing.Voiceless,
                 VoicedCounterpart = "h",
+                TriggersEpenthesisAsC2 = false,
                 PalatalizeTo = "š",
                 PalatalizationTargets = new Dictionary<PalatalizationContext, string>() {
                 { PalatalizationContext.First, "š" },

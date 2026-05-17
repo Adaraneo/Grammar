@@ -224,6 +224,8 @@ namespace Grammar.Czech.Test
                 ["bran", "k", "branka", "žena", Gender.Feminine],
                 ["vzpomín", "k", "vzpomínka", "žena", Gender.Feminine],
                 ["kres", "b", "kresba", "žena", Gender.Feminine],
+                ["sest","r", "sestra", "žena", Gender.Feminine],
+                ["leb","k", "lebka", "žena", Gender.Feminine],
                 // vzor město: strukturní sufix — různé typy heterorganních shluků
                 ["ok",   "n", "okno",   "město", Gender.Neuter],  // k+n  Velar+Alveolar
                 ["jabl", "k", "jablko", "město", Gender.Neuter],  // l+k  Alveolar+Velar

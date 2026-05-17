@@ -149,6 +149,8 @@ namespace Grammar.Czech.Services
         {
             if (pattern == "žena" && !MorphologyHelper.EndsWithVowelConsonantVowelConsonant(lemma) && lemma.Length > 2)
             {
+                var derivationSuffix = lemma[^2];
+                var phoneme = _registry.Get(derivationSuffix);
                 return lemma[^2].ToString();
             }
 

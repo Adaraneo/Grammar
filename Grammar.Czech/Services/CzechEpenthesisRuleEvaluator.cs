@@ -68,14 +68,22 @@ namespace Grammar.Czech.Services
         {
             var p1 = _registry.Get(c1);
             var p2 = _registry.Get(c2);
+            var p2Czech = p2 as CzechPhoneme;
 
-            if (p1?.Place is null || p2?.Place is null)
+            //if (p1?.Place is null || p2?.Place is null || p2Czech?.Place is null)
+            //    return false;
+
+            if (p2Czech?.TriggersEpenthesisAsC2 == false)
                 return false;
 
             // Homorganní shluk — stejné místo artikulace, snadno vyslovitelný.
             // Příklad: st (Alveolar+Alveolar) → měst, míst — bez epentheze.
             if (p1.Place == p2.Place)
-                return false;
+            {
+                return p2.Manner is Core.Enums.PhonologicalFeatures.ArticulationManner.Trill
+                    or Core.Enums.PhonologicalFeatures.ArticulationManner.LateralApproximant
+                    or Core.Enums.PhonologicalFeatures.ArticulationManner.Nasal;
+            }
 
             // Heterorganní shluk bez assimilace → epentheze.
             // Příklady: tk (studentka), kn (okno), kl (peklo), lk (jablko).

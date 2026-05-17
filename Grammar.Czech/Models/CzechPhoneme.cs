@@ -12,5 +12,13 @@ namespace Grammar.Czech.Models
         /// Gets or sets palatalization Targets.
         /// </summary>
         public Dictionary<PalatalizationContext, string>? PalatalizationTargets { get; init; }
+
+        /// <summary>
+        /// When false, this consonant does not trigger epenthesis when acting as C2
+        /// in a genitive plural cluster. Covers: d, t, s, z, š, f, ch, p.
+        /// Source: ÚJČ – endings -da, -ta, -sa, -za, -pa, -fa, -cha, -ša
+        /// typically have no epenthesis.
+        /// </summary>
+        public bool? TriggersEpenthesisAsC2 { get; init; }
     }
 }
